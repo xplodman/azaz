@@ -5,7 +5,7 @@ include_once "php/connection.php";
 <html>
 
 <?php
-$pageTitle = '5 In ARCH';
+$pageTitle = 'Login page';
 include_once "layout/header.php";
 ?>
 <style>
@@ -65,10 +65,6 @@ include_once "layout/header.php";
     .blink {
         -webkit-animation: blink 1s;
         -webkit-animation-iteration-count: infinite;
-        -moz-animation: blink 1s;
-        -moz-animation-iteration-count: infinite;
-        -o-animation: blink 1s;
-        -o-animation-iteration-count: infinite;
     }
 </style>
 <?php
@@ -78,13 +74,13 @@ if(isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $result = mysqli_query($con, "Select professors.professorsappid,
-  professors.professorsapppw,
-  professors.prid,
-  professors.prname,
-  professors.professorsrole
-From professors
-Where professors.professorsappid = '$username' And professors.professorsapppw = '$password' ");
+    $result = mysqli_query($con, "Select users.username,
+  users.id,
+  users.password,
+  users.nickname,
+  users.role
+From users
+Where users.username = '$username' And users.password = '$password' ");
 
     if (mysqli_num_rows($result) != 0) {
         header('Location: index.php');
@@ -95,11 +91,11 @@ Where professors.professorsappid = '$username' And professors.professorsapppw = 
         $row = mysqli_fetch_assoc($result);
 
 
-        $_SESSION['5inarch']['timestamp'] = time();
-        $_SESSION['5inarch']['authenticate'] = "true";
-        $_SESSION['5inarch']['role'] = $row[professorsrole];
-        $_SESSION['5inarch']['professorsid'] = $row[prid];
-        $_SESSION['5inarch']['username'] = $row[prname];
+        $_SESSION['azaz']['timestamp'] = time();
+        $_SESSION['azaz']['authenticate'] = "true";
+        $_SESSION['azaz']['role'] = $row[role];
+        $_SESSION['azaz']['id'] = $row[id];
+        $_SESSION['azaz']['nickname'] = $row[nickname];
         exit;
 
     } else {
@@ -107,25 +103,29 @@ Where professors.professorsappid = '$username' And professors.professorsapppw = 
         $fh = fopen('/tmp/track.txt', 'a');
         fwrite($fh, $_SERVER['REMOTE_ADDR'] . ' ' . date('c') . "\n");
         fclose($fh);
+        $_SESSION['azaz']['username'] = $username;
         exit;
     }
 
 }
+session_start();
 ?>
-<body class="gray-bg">
+<body>
 <div class="middle-box text-center loginscreen animated fadeInDown">
     <div>
-        <div class="col-lg-12">
-            <div class="square" align="left">
-                <img id="over1" src="img/test1&2.png" class="animated flip maxwidth " >
-                <img id="over3" src="img/test3.png" class="animated fadeInDownBig maxwidth" >
-                <img id="over4" src="img/test4.png" class="animated slideInRight maxwidth blink" >
+        <div class="col-xs-12" align="center">
+            <div class="square center"  align="left">
+                <img id="over1" src="img/1.png" class="animated fadeInDown maxwidth " >
+                <img id="over2" src="img/2.png" class="animated flip maxwidth " >
+                <img id="over3" src="img/3.png" class="animated fadeInDown maxwidth" >
+                <img id="over4" src="img/4.png" class="animated flip maxwidth" >
             </div>
         </div>
         <div class="col-lg-12">
             <form class="m-t" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Username" name="username" required="">
+                    <input type="text" class="form-control" placeholder="Username" name="username" required value="<?php
+                    if (isset($_SESSION['azaz']['username'])){echo $_SESSION['azaz']['username'];}?>">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" placeholder="Password" name="password" required="">

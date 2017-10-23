@@ -36,39 +36,47 @@ include_once "layout/header.php";
         </div>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInRightBig">
             <?php
-            $expense_from_date = date('Y-m-d',strtotime("-$application_setting[expense_from_date] days"));
-            $expense_to_date = date('Y-m-d',strtotime("$application_setting[expense_to_date] days"));
+            $custodies_from_date = date('Y-m-d',strtotime("-$application_setting[payment_from_date] days"));
+            $custodies_to_date = date('Y-m-d',strtotime("$application_setting[payment_to_date] days"));
             if (isset($_POST['submit']))
             {
                 $from_date=$_POST['from_date'];
                 $to_date=$_POST['to_date'];
                 $query="
-                        Select expense.date,
-                          expense.subject,
-                          expense.status,
-                          expense.value,
-                          site.name,
-                          expense.id 
-                        From expense
-                          Inner Join site On site.id = expense.site_id
-                        Where expense.date BETWEEN '$from_date' and '$to_date 23:59:59'
+                        Select custoder_accounting.date,
+                          custoder_accounting.subject,
+                          custoder_accounting.value,
+                          custoder_accounting.type,
+                          custoder_accounting.status,
+                          custoder.name,
+                          custoder_accounting.id,
+                          site.name As site_name 
+                        From custoder
+                          Inner Join custoder_accounting On custoder_accounting.custoder_id =
+                            custoder.id
+                          Inner Join site On site.id = custoder_accounting.site_id
+                        Where custoder_accounting.date BETWEEN '$from_date' and '$to_date 23:59:59'
                         ";
             }else{
                 $query="
-                        Select expense.date,
-                          expense.subject,
-                          expense.status,
-                          expense.value,
-                          site.name,
-                          expense.id 
-                        From expense
-                          Inner Join site On site.id = expense.site_id
-                        Where expense.date BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
+                        Select custoder_accounting.date,
+                          custoder_accounting.subject,
+                          custoder_accounting.value,
+                          custoder_accounting.type,
+                          custoder_accounting.status,
+                          custoder.name,
+                          custoder_accounting.id,
+                          site.name As site_name
+                        From custoder
+                          Inner Join custoder_accounting On custoder_accounting.custoder_id =
+                            custoder.id
+                          Inner Join site On site.id = custoder_accounting.site_id
+                        Where custoder_accounting.date BETWEEN '$custodies_from_date' and '$custodies_to_date 23:59:59'";
             }
             if(isset($_POST['show_deleted']) && $_POST['show_deleted']==='show_deleted'){
-            }else{
-                $query .= " and expense.status = 1";
 
+            }else{
+                $query .= " and custoder_accounting.status = 1";
             };
             ?>
             <div class="col-sm-12">
@@ -84,7 +92,7 @@ include_once "layout/header.php";
                                 if (isset($from_date)){
                                     echo $from_date;
                                 }else{
-                                    echo $expense_from_date;
+                                    echo $custodies_from_date;
                                 }?>">
                                 <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
@@ -103,7 +111,7 @@ include_once "layout/header.php";
                                 if (isset($to_date)){
                                     echo $to_date;
                                 }else{
-                                    echo $expense_to_date;
+                                    echo $custodies_to_date;
                                 }?>">
                                 <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
@@ -141,7 +149,7 @@ include_once "layout/header.php";
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <font face="myFirstFont">
-                                <h5>للبحث و مشاهدة المصاريف</h5>
+                                <h5>للبحث و مشاهدة حركة العهدة</h5>
                             </font>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
@@ -159,41 +167,50 @@ include_once "layout/header.php";
                                             <th>التاريخ</th>
                                             <th>البيان</th>
                                             <th>المبلغ</th>
+                                            <th>النوع</th>
+                                            <th>المتعهد</th>
                                             <th>الموقع</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <?php
                                         $result = mysqli_query($con, $query);
-                                        while($expenses = mysqli_fetch_assoc($result)) {
+                                        while($custodies = mysqli_fetch_assoc($result)) {
                                             ?>
                                             <tr> <!--info plus-->
                                                 <th style="width:1em">
-                                                    <a class="btn btn-success btn-circle" type="button" href="expense.php?expense_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <a class="btn btn-success btn-circle" type="button" href="custody.php?custody_id=<?php echo $custodies['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
-                                                    if ($expenses['status']=="0"){
+                                                    if ($custodies['status']=="0"){
                                                         ?>
-                                                        <button class="btn btn-circle" type="button" data-value="1" onclick="undelete_expense(<?php echo $expenses['id'] ?>)"><i class="fa fa-eye fa-2x"></i></button>
+                                                        <button class="btn btn-circle" type="button" data-value="1" onclick="undelete_custody(<?php echo $custodies['id'] ?>)"><i class="fa fa-eye fa-2x"></i></button>
                                                         <?php
                                                     }else{
                                                         ?>
-                                                        <button class="btn btn-danger btn-circle" type="button" data-value="1" onclick="delete_expense(<?php echo $expenses['id'] ?>)"><i class="fa fa-minus"></i></button>
+                                                        <button class="btn btn-danger btn-circle" type="button" data-value="1" onclick="delete_custody(<?php echo $custodies['id'] ?>)"><i class="fa fa-minus"></i></button>
                                                         <?php
                                                     }
                                                     ?>
                                                 </th>
 
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['date'] ?>
+                                                    <?php echo $custodies['date']; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['subject'] ?>
+                                                    <?php echo $custodies['subject']; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['value'] ?>
+                                                    <?php echo $custodies['value']; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['name'] ?>
+                                                    <?php
+                                                    if ($custodies['type']=='0'){echo "خصم";}else{echo "إضافة";}; ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $custodies['name']; ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $custodies['site_name']; ?>
                                                 </td>
                                             </tr>
                                             <?php
@@ -202,6 +219,8 @@ include_once "layout/header.php";
                                         </tbody>
                                         <tfoot>
                                         <tr>
+                                            <th></th>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -264,7 +283,7 @@ include_once "layout/modals.php";
     $(document).ready(function() {
         $('.dataTables-example').DataTable({
             initComplete: function () {
-                this.api().columns(':eq(4),:eq(6),:eq(7),:eq(8)').every( function () {
+                this.api().columns(':eq(4),:eq(5),:eq(6),:eq(8)').every( function () {
                     var column = this;
                     var select = $('<select><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -424,63 +443,7 @@ include_once "layout/modals.php";
     });
 </script>
 <script>
-
-    $(document).ready(function () {
-
-        $('.demo1').click(function(){
-            swal({
-                title: "Welcome in Alerts",
-                text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            });
-        });
-
-        $('.demo2').click(function(){
-            swal({
-                title: "Good job!",
-                text: "You clicked the button!",
-                type: "success"
-            });
-        });
-
-        $('.demo3').click(function () {
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this imaginary file!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            }, function () {
-                swal("Deleted!", "Your imaginary file has been deleted.", "success");
-            });
-        });
-
-        $('#btn').on('click', function (e) {
-            swal({
-                    title: "هل أنت متأكد؟",
-                    text: "هذا السجل سيتم حذفه نهائياً!!!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "No, cancel plx!",
-                    closeOnConfirm: false,
-                    closeOnCancel: false },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        swal("Deleted!", "تم حذف السجل بنجاح.", "success");
-                        alert("Your values are :"+ $(this).data("value"));
-                    } else {
-                        swal("Cancelled", "تم إيقاف عملية الحذف", "error");
-                    }
-                });
-        });
-    });
-
-</script>
-<script>
-    function delete_expense(id){
+    function delete_custody(id){
         swal({
                 title: "هل أنت متأكد؟",
                 text: "هذا السجل سيتم حذفه نهائياً!!!",
@@ -495,7 +458,7 @@ include_once "layout/modals.php";
                 if (isConfirm) {
                     swal("Deleted!", "تم حذف السجل بنجاح.", "success");
                     function explode(){
-                        window.location.href = "php/delete_expense.php?expense_id="+id;
+                        window.location.href = "php/delete_custody.php?custody_id="+id;
                     }
                     setTimeout(explode, 1200);
                 } else {
@@ -503,7 +466,7 @@ include_once "layout/modals.php";
                 }
             });
     };
-    function undelete_expense(id){
+    function undelete_custody(id){
         swal({
                 title: "هل أنت متأكد؟",
                 text: "سيتم إستعادة الملف من سلة المحذوفات!!!",
@@ -518,7 +481,7 @@ include_once "layout/modals.php";
                 if (isConfirm) {
                     swal("Deleted!", "تم إسترجاع السجل بنجاح.", "success");
                     function explode(){
-                        window.location.href = "php/undelete_expense.php?expense_id="+id;
+                        window.location.href = "php/undelete_custody.php?custody_id="+id;
                     }
                     setTimeout(explode, 1200);
                 } else {
@@ -527,5 +490,6 @@ include_once "layout/modals.php";
             });
     };
 </script>
+
 </body>
 </html>

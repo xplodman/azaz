@@ -1,16 +1,12 @@
 <?php
 include_once "connection.php";
 
-$students_stid=$_POST['students_stid'];
-$material_matid=$_POST['material_matid'];
-$date=$_POST['date'];
+$expenses_date=$_POST['expenses_date'];
+$site_id=$_POST['site_id'];
+$expenses_subject=$_POST['expenses_subject'];
+$expenses_value=$_POST['expenses_value'];
 
-
-$len = count($students_stid);
-for($x=0 ; $x < $len ; $x++){
-    $result1 = mysqli_query($con, "INSERT INTO `5inarch`.`absence` (`absid`, `date`, `students_stid`, `material_matid`) VALUES (NULL, '$date', '$students_stid[$x]', '$material_matid');");
-}
-
+$result1 = mysqli_query($con, "INSERT INTO `expense` (`id`, `date`, `subject`, `value`, `create_time`, `update_time`, `site_id`, `status`) VALUES (NULL, '$expenses_date', '$expenses_subject', '$expenses_value', CURRENT_TIMESTAMP, NULL, '$site_id', '1');");
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 if ($result1) {

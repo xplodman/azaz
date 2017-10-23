@@ -21,13 +21,13 @@ function active($currect_page){
                                 <span class="block m-t-xs">
                                     <strong class="font-bold">
                                         <?php
-                                        echo $_SESSION['5inarch']['username']
+                                        echo $_SESSION['azaz']['nickname']
                                         ?>
                                     </strong>
                              </span>
                                 <span class="text-muted text-xs block">
                                     <?php
-                                    switch ($_SESSION['5inarch']['role'])
+                                    switch ($_SESSION['azaz']['role'])
                                     {
                                         case "1":
                                             echo "Administrator";
@@ -51,43 +51,26 @@ function active($currect_page){
                         </ul>
                     </div>
                     <div class="logo-element">
-                        <font color="red">5</font> in<br><small>ARCH</small>
+                        <font color="red">A</font>Z<font color="red">A</font>Z
                     </div>
                 </li>
                 <li class="<?php active('index.php');?>">
                     <a href="index.php">
-                        <i class="fa fa-area-chart"></i> <span class="nav-label">Dashboard</span>
+                        <i class="fa fa-area-chart"></i> <span class="nav-label">الصفحة الرئيسية</span>
                     </a>
                 </li>
-                <li class="<?php active('professors.php');?>">
-                    <a href="professors.php"><i class="fa fa-user-circle"></i> <span class="nav-label">Professors</span></a>
+                <li class="<?php active('properties.php');?>">
+                    <a href="properties.php"><i class="fa fa-bank"></i> <span class="nav-label">العقارات</span></a>
                 </li>
-                <li class="<?php active('students.php');?>">
-                    <a href="students.php"><i class="fa fa-users"></i> <span class="nav-label">Students</span></a>
+                <li class="<?php active('payments.php');?>">
+                    <a href="payments.php"><i class="fa fa-book"></i> <span class="nav-label">الدفعات</span></a>
                 </li>
-                <li class="<?php active('materials.php');?>">
-                    <a href="materials.php"><i class="fa fa-database fa-1x"></i> <span class="nav-label">Materials</span></a>
+                <li class="<?php active('expenses.php');?>">
+                    <a href="expenses.php"><i class="fa fa-usd"></i> <span class="nav-label">المصاريف</span></a>
                 </li>
-                <?php
-                if ($_SESSION['5inarch']['role'] < 3){
-                    ?>
-                    <li class="<?php active('receipts.php');?>">
-                        <a href="receipts.php"><i class="fa fa-money fa-1x"></i> <span class="nav-label">Receipts</span></a>
-                    </li>
-                    <?php
-                }
-                ?>
-
-                <?php
-                if ($_SESSION['5inarch']['role'] == 1){
-                    ?>
-                    <li class="<?php active('reports.php');?>">
-                        <a href="reports.php"><i class="fa fa-thermometer-full fa-1x"></i> <span class="nav-label">Reports</span></a>
-                    </li>
-                    <?php
-                }
-                ?>
-
+                <li class="<?php active('custodies.php');?>">
+                    <a href="custodies.php"><i class="fa fa-fax"></i> <span class="nav-label">العهدة</span></a>
+                </li>
             </ul>
         </font>
     </div>

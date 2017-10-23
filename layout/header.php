@@ -1,7 +1,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5inArch | <?php echo $pageTitle;?></title>
+    <title>Azaz | <?php echo $pageTitle;?></title>
     <style>
         @font-face {
             font-family: myFirstFont;
@@ -10,13 +10,29 @@
         p,
         th,
         td,
-        tr,
+        tr{
+            font-family: myFirstFont;
+            font-size:16px;
+        }
+        span.big {
+            font-family: myFirstFont;
+            font-size:14px;
+        }
         span.arabic {
             font-family: myFirstFont;
+            font-size:16px;
+        }
+        span.vbig {
+            font-family: myFirstFont;
+            font-size:22px;
+        }
+        span.small_arabic {
+            font-family: myFirstFont;
+            font-size:14px;
         }
 
 
-        .c3 text {
+        .c3  text {
             font-size:16px;
             font-family: myFirstFont;
         }
@@ -65,4 +81,8 @@
 
     <!-- Toastr style -->
     <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+    <!-- Sweet Alert -->
+    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
 </head>

@@ -7,7 +7,7 @@ include_once "php/functions.php";
 <html>
 
 <?php
-$pageTitle = 'العهدة';
+$pageTitle = 'الدفعات';
 include_once "layout/header.php";
 ?>
 
@@ -22,54 +22,59 @@ include_once "layout/header.php";
         ?>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInLeftBig">
             <div class="col-sm-4">
-                <h2><p>العهدة</p></h2>
-            </div>
-            <div class="col-sm-8">
-                <font face="myFirstFont">
-                    <div class="title-action">
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_custody"><i class="fa fa-plus"></i> إضافة عهدة</button>
-                        <button class="btn btn-warning " type="button" data-toggle="modal" data-target="#sub_custody"><i class="fa fa-plus"></i> تخصيم عهدة</button>
-                        <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_custoder"><i class="fa fa-plus"></i> إضافة متعهد</button>
-                    </div>
-                </font>
+                <h2><p>الدفعات</p></h2>
             </div>
         </div>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInRightBig">
             <?php
-            $expense_from_date = date('Y-m-d',strtotime("-$application_setting[expense_from_date] days"));
-            $expense_to_date = date('Y-m-d',strtotime("$application_setting[expense_to_date] days"));
+            $payment_from_date = date('Y-m-d',strtotime("-$application_setting[payment_from_date] days"));
+            $payment_to_date = date('Y-m-d',strtotime("$application_setting[payment_to_date] days"));
             if (isset($_POST['submit']))
             {
                 $from_date=$_POST['from_date'];
                 $to_date=$_POST['to_date'];
                 $query="
-                        Select expense.date,
-                          expense.subject,
-                          expense.status,
-                          expense.value,
-                          site.name,
-                          expense.id 
-                        From expense
-                          Inner Join site On site.id = expense.site_id
-                        Where expense.date BETWEEN '$from_date' and '$to_date 23:59:59'
-                        ";
+                    Select payment.due_date As payment_due_date,
+                      payment.id As payment_id,
+                      payment.payment_date As payment_payment_date,
+                      payment.value As payment_value,
+                      owner.name As owner_name,
+                      owner.mobile As owner_mobile,
+                      property_type.name As property_type_name,
+                      property.id As property_id,
+                      property.name As property_name,
+                      tower.name As tower_name,
+                      site.name As site_name,
+                      payment.status As payment_status
+                    From payment
+                      Inner Join property On property.id = payment.property_id
+                      Inner Join property_type On property_type.id = property.property_type_id
+                      Inner Join owner On owner.id = payment.owner_id
+                      Inner Join tower On tower.id = property.tower_id
+                      Inner Join site On tower.site_id = site.id
+                    Where payment.removed = '0' AND payment.due_date BETWEEN '$from_date' and '$to_date 23:59:59'";
             }else{
                 $query="
-                        Select expense.date,
-                          expense.subject,
-                          expense.status,
-                          expense.value,
-                          site.name,
-                          expense.id 
-                        From expense
-                          Inner Join site On site.id = expense.site_id
-                        Where expense.date BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
+                    Select payment.due_date As payment_due_date,
+                      payment.id As payment_id,
+                      payment.payment_date As payment_payment_date,
+                      payment.value As payment_value,
+                      owner.name As owner_name,
+                      owner.mobile As owner_mobile,
+                      property_type.name As property_type_name,
+                      property.id As property_id,
+                      property.name As property_name,
+                      tower.name As tower_name,
+                      site.name As site_name,
+                      payment.status As payment_status
+                    From payment
+                      Inner Join property On property.id = payment.property_id
+                      Inner Join property_type On property_type.id = property.property_type_id
+                      Inner Join owner On owner.id = payment.owner_id
+                      Inner Join tower On tower.id = property.tower_id
+                      Inner Join site On tower.site_id = site.id
+                    Where payment.removed = '0' AND payment.due_date BETWEEN '$payment_from_date' and '$payment_to_date 23:59:59'";
             }
-            if(isset($_POST['show_deleted']) && $_POST['show_deleted']==='show_deleted'){
-            }else{
-                $query .= " and expense.status = 1";
-
-            };
             ?>
             <div class="col-sm-12">
                 <h2><p>محددات البحث</p></h2>
@@ -84,7 +89,7 @@ include_once "layout/header.php";
                                 if (isset($from_date)){
                                     echo $from_date;
                                 }else{
-                                    echo $expense_from_date;
+                                    echo $payment_from_date;
                                 }?>">
                                 <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
@@ -103,23 +108,11 @@ include_once "layout/header.php";
                                 if (isset($to_date)){
                                     echo $to_date;
                                 }else{
-                                    echo $expense_to_date;
+                                    echo $payment_to_date;
                                 }?>">
                                 <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </span>
-                            </div>
-                        </div>
-                    </font>
-                </div>
-                <br><br>
-                <div class="form-group" id="data_1">
-                    <font face="myFirstFont">
-                        <label class="col-md-1 col-md-offset-1 control-label">إظهار المحذوف</label>
-                        <div class="col-sm-2">
-                            <div class="input-group">
-                                <div class="i-checks">
-                                    <label><input type="checkbox" name="show_deleted" value="show_deleted"></label></div>
                             </div>
                         </div>
                     </font>
@@ -135,13 +128,13 @@ include_once "layout/header.php";
                 </div>
             </form>
         </div>
-        <div class="wrapper wrapper-content animated fadeInRightBig">
+        <div class="animated fadeInRightBig">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <font face="myFirstFont">
-                                <h5>للبحث و مشاهدة المصاريف</h5>
+                                <h5>للبحث و مشاهدة الدفعات</h5>
                             </font>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
@@ -157,48 +150,115 @@ include_once "layout/header.php";
                                         <tr>
                                             <th style="width:4em"></th>
                                             <th>التاريخ</th>
-                                            <th>البيان</th>
                                             <th>المبلغ</th>
+                                            <th>أسم المشتري</th>
+                                            <th>رقم المشتري</th>
+                                            <th>نوع الوحدة</th>
+                                            <th>رقم الوحدة</th>
+                                            <th>البرج</th>
                                             <th>الموقع</th>
+                                            <th>الحالة</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <?php
                                         $result = mysqli_query($con, $query);
-                                        while($expenses = mysqli_fetch_assoc($result)) {
+                                        while($payments = mysqli_fetch_assoc($result)) {
                                             ?>
                                             <tr> <!--info plus-->
                                                 <th style="width:1em">
-                                                    <a class="btn btn-success btn-circle" type="button" href="expense.php?expense_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <a class="btn btn-success btn-circle" type="button" href="payment.php?payment_id=<?php echo $payments['payment_id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
-                                                    if ($expenses['status']=="0"){
-                                                        ?>
-                                                        <button class="btn btn-circle" type="button" data-value="1" onclick="undelete_expense(<?php echo $expenses['id'] ?>)"><i class="fa fa-eye fa-2x"></i></button>
-                                                        <?php
-                                                    }else{
-                                                        ?>
-                                                        <button class="btn btn-danger btn-circle" type="button" data-value="1" onclick="delete_expense(<?php echo $expenses['id'] ?>)"><i class="fa fa-minus"></i></button>
-                                                        <?php
+                                                    switch ($payments['payment_status']) {
+                                                        case "0":
+                                                            ?>
+                                                            <a data-toggle='modal'
+                                                               data-id='<?php echo $payments['payment_id']; ?>'
+                                                               title='Add this item'
+                                                               class='property_payment_receive btn btn-primary fa fa-check'
+                                                               href='#property_payment_receive'></a>
+                                                            <?php
+                                                            break;
                                                     }
                                                     ?>
                                                 </th>
+                                                <td class="middle wrap">
+                                                    <?php
+                                                    $date1 = new DateTime($payments['payment_payment_date']);
+                                                    $date2 = new DateTime($payments['payment_due_date']);
+
+                                                    $variable =$date1 ->diff($date2)->format("%a");
+                                                    if($date1 < $date2){
+                                                        $variable = $variable *-1;
+                                                    }
+                                                    switch ($payments['payment_status']) {
+                                                        case "1":
+                                                        if ($variable <= 0)
+                                                        {
+                                                            ?>
+                                                            <span class="big badge badge-primary arabic">
+                                                            <?php echo $payments['payment_payment_date'] ?>
+                                                            </span>
+                                                            <?php
+                                                        }else{
+                                                            ?>
+                                                            <span class="big badge badge-warning arabic">
+                                                                <?php echo $payments['payment_payment_date'] ?>
+                                                            </span>
+                                                            <?php
+                                                        }
+                                                        break;
+                                                        case "0":
+                                                            ?>
+                                                            <span class="big badge badge-danger arabic">
+                                                                <?php echo $payments['payment_due_date'] ?>
+                                                            </span>
+                                                            <?php
+                                                            break;
+                                                        case "3":
+                                                            echo "دفعة إستلام";
+                                                            break;
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['payment_value']; ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['owner_name']; ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['owner_mobile']; ?>
+                                                </td>
 
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['date'] ?>
+                                                    <?php echo $payments['property_type_name'] ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['subject'] ?>
+                                                    <span class='big'>
+                                                        <a href="property.php?property_id=<?php echo $payments['property_id']; ?>"><button type='button' class='btn btn-outline btn-info'>
+                                                            <?php echo $payments['property_name']; ?>
+                                                        </button></a>
+                                                    </span>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['value'] ?>
+                                                    <?php echo $payments['tower_name'] ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['name'] ?>
+                                                    <?php echo $payments['site_name'] ?>
                                                 </td>
+                                                    <?php
+                                                    if ($payments['payment_status'] == 0){?>
+                                                <td class="middle wrap">لم يتم الدفع</td>
+                                                        <?php
+                                                        }else{
+                                                        ?>
+                                                <td class="middle wrap">تم الدفع</td>
+                                                        <?php
+                                                        }
+                                                    ?>
                                             </tr>
-                                            <?php
-                                        }
-                                        ?>
+                                        <?php } ?>
                                         </tbody>
                                         <tfoot>
                                         <tr>
@@ -207,9 +267,17 @@ include_once "layout/header.php";
                                             <th></th>
                                             <th></th>
                                             <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
                                         </tfoot>
                                     </table>
+                                    <span class="big badge badge-primary arabic">تم السداد في/قبل الميعاد</span> -
+                                    <span class="big badge badge-warning arabic">تم السداد بعد الميعاد</span> -
+                                    <span class="big badge badge-danger arabic">لم يتم السداد</span>
                                 </div>
                             </div>
                         </div>
@@ -241,11 +309,11 @@ include_once "layout/modals.php";
 <!-- Data picker -->
 <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
 
-<!-- Select2 -->
-<script src="js/plugins/select2/select2.full.min.js"></script>
-
 <!-- Sweet alert -->
 <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+
+<!-- Select2 -->
+<script src="js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Chosen -->
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
@@ -264,7 +332,7 @@ include_once "layout/modals.php";
     $(document).ready(function() {
         $('.dataTables-example').DataTable({
             initComplete: function () {
-                this.api().columns(':eq(4),:eq(6),:eq(7),:eq(8)').every( function () {
+                this.api().columns(':eq(4),:eq(5),:eq(6),:eq(7),:eq(8),:eq(9)').every( function () {
                     var column = this;
                     var select = $('<select><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -290,8 +358,7 @@ include_once "layout/modals.php";
                     target: 'tr'
                 }
             },
-
-            order: [2, 'desc'],
+            aaSorting: [ [9,'desc'],[1,'desc']],
             dom: 'Blfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -344,7 +411,7 @@ include_once "layout/modals.php";
             allowClear: true
         });
         // Setup - add a text input to each footer cell
-        $('#example tfoot th').not(':eq(0),:eq(4),:eq(5),:eq(6),:eq(7)').each(function() {
+        $('#example tfoot th').not(':eq(0),:eq(7),:eq(8),:eq(9)').each(function() {
             var title = $(this).text();
             $(this).html('<input type="text" />');
         });
@@ -373,6 +440,14 @@ include_once "layout/modals.php";
         autoclose: true,
         format: 'yyyy-m-d'
     });
+    var date_input=$('input[name="payment_date"]'); //our date input has the name "date"
+    var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+    date_input.datepicker({
+        format: 'yyyy-m-d',
+        container: container,
+        todayHighlight: true,
+        autoclose: true,
+    })
 </script>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -456,7 +531,7 @@ include_once "layout/modals.php";
             });
         });
 
-        $('#btn').on('click', function (e) {
+        $('.demo4').click(function () {
             swal({
                     title: "هل أنت متأكد؟",
                     text: "هذا السجل سيتم حذفه نهائياً!!!",
@@ -470,62 +545,26 @@ include_once "layout/modals.php";
                 function (isConfirm) {
                     if (isConfirm) {
                         swal("Deleted!", "تم حذف السجل بنجاح.", "success");
-                        alert("Your values are :"+ $(this).data("value"));
+                        if (isConfirm) {
+                            setTimeout(function() {
+                                $("#test").submit()
+                            }, 1200);
+                        }
                     } else {
                         swal("Cancelled", "تم إيقاف عملية الحذف", "error");
                     }
                 });
         });
+
+
     });
 
 </script>
 <script>
-    function delete_expense(id){
-        swal({
-                title: "هل أنت متأكد؟",
-                text: "هذا السجل سيتم حذفه نهائياً!!!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, cancel plx!",
-                closeOnConfirm: false,
-                closeOnCancel: false },
-            function (isConfirm) {
-                if (isConfirm) {
-                    swal("Deleted!", "تم حذف السجل بنجاح.", "success");
-                    function explode(){
-                        window.location.href = "php/delete_expense.php?expense_id="+id;
-                    }
-                    setTimeout(explode, 1200);
-                } else {
-                    swal("Cancelled", "تم إيقاف عملية الحذف", "error");
-                }
-            });
-    };
-    function undelete_expense(id){
-        swal({
-                title: "هل أنت متأكد؟",
-                text: "سيتم إستعادة الملف من سلة المحذوفات!!!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, show it!",
-                cancelButtonText: "No, cancel plx!",
-                closeOnConfirm: false,
-                closeOnCancel: false },
-            function (isConfirm) {
-                if (isConfirm) {
-                    swal("Deleted!", "تم إسترجاع السجل بنجاح.", "success");
-                    function explode(){
-                        window.location.href = "php/undelete_expense.php?expense_id="+id;
-                    }
-                    setTimeout(explode, 1200);
-                } else {
-                    swal("Cancelled", "تم إيقاف عملية الإسترجاع", "error");
-                }
-            });
-    };
+    $(document).on("click", ".property_payment_receive", function () {
+        var payment_id = $(this).data('id');
+        $(".modal-body #payment_id").val( payment_id );
+    });
 </script>
 </body>
 </html>

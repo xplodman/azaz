@@ -7,7 +7,7 @@ include_once "php/functions.php";
 <html>
 
 <?php
-$pageTitle = 'العهدة';
+$pageTitle = 'المصاريف';
 include_once "layout/header.php";
 ?>
 
@@ -22,14 +22,12 @@ include_once "layout/header.php";
         ?>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInLeftBig">
             <div class="col-sm-4">
-                <h2><p>العهدة</p></h2>
+                <h2><p>المصاريف</p></h2>
             </div>
             <div class="col-sm-8">
                 <font face="myFirstFont">
                     <div class="title-action">
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_custody"><i class="fa fa-plus"></i> إضافة عهدة</button>
-                        <button class="btn btn-warning " type="button" data-toggle="modal" data-target="#sub_custody"><i class="fa fa-plus"></i> تخصيم عهدة</button>
-                        <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_custoder"><i class="fa fa-plus"></i> إضافة متعهد</button>
+                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_expenses"><i class="fa fa-plus"></i> إضافة مصروفات</button>
                     </div>
                 </font>
             </div>
@@ -54,7 +52,7 @@ include_once "layout/header.php";
                         Where expense.date BETWEEN '$from_date' and '$to_date 23:59:59'
                         ";
             }else{
-                $query="
+            $query="
                         Select expense.date,
                           expense.subject,
                           expense.status,
@@ -177,8 +175,8 @@ include_once "layout/header.php";
                                                         <?php
                                                     }else{
                                                         ?>
-                                                        <button class="btn btn-danger btn-circle" type="button" data-value="1" onclick="delete_expense(<?php echo $expenses['id'] ?>)"><i class="fa fa-minus"></i></button>
-                                                        <?php
+                                                    <button class="btn btn-danger btn-circle" type="button" data-value="1" onclick="delete_expense(<?php echo $expenses['id'] ?>)"><i class="fa fa-minus"></i></button>
+                                                    <?php
                                                     }
                                                     ?>
                                                 </th>
@@ -468,13 +466,13 @@ include_once "layout/modals.php";
                     closeOnConfirm: false,
                     closeOnCancel: false },
                 function (isConfirm) {
-                    if (isConfirm) {
-                        swal("Deleted!", "تم حذف السجل بنجاح.", "success");
-                        alert("Your values are :"+ $(this).data("value"));
-                    } else {
-                        swal("Cancelled", "تم إيقاف عملية الحذف", "error");
-                    }
-                });
+                if (isConfirm) {
+                    swal("Deleted!", "تم حذف السجل بنجاح.", "success");
+                    alert("Your values are :"+ $(this).data("value"));
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الحذف", "error");
+                }
+            });
         });
     });
 

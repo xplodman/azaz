@@ -7,7 +7,7 @@ include_once "php/functions.php";
 <html>
 
 <?php
-$pageTitle = 'Dashboard';
+$pageTitle = 'الصفحة الرئيسية';
 include_once "layout/header.php";
 ?>
 <body class="animated fadeIn">
@@ -22,151 +22,21 @@ include_once "layout/header.php";
 <!--        --><?php //echo '<pre>' . print_r($_SESSION, TRUE) . '</pre>'; ?>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInLeftBig">
             <div class="col-sm-4">
-                <h2><p>Dashboard</p></h2>
+                <h2><p>الصفحة الرئيسية</p></h2>
             </div>
         </div>
-
         <div class="wrapper wrapper-content animated bounceInDown">
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="widget-head-color-box navy-bg p-lg text-center">
-                        <div class="m-b-md">
-                            <h2 class="font-bold no-margins">
-                                First year
-                            </h2>
-                        </div>
-                        <img src="images/first-year-plan_0.png" height="120">
-                        <div>
-                            <h2 class="font-bold no-margins">
-                                <?php
-                                student_count("1");
-                                ?>
-                                 student
-                            </h2>
-                        </div>
-                        <div>
-                            <span>Gourp A : <?php student_summary("1","students.stgroup","A")?></span> |
-                            <span>Gourp B : <?php student_summary("1","students.stgroup","B")?></span> <br>
-                            <span>Gourp C : <?php student_summary("1","students.stgroup","C")?></span> |
-                            <span>Gourp E : <?php student_summary("1","students.stgroup","E")?></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="widget-head-color-box navy-bg p-lg text-center">
-                        <div class="m-b-md">
-                            <h2 class="font-bold no-margins">
-                                Second year
-                            </h2>
-                        </div>
-                        <img src="images/second-year-plan_0.png" height="120">
-                        <div>
-                            <h2 class="font-bold no-margins">
-                                <?php
-                                student_count("2");
-                                ?>
-                                student
-                            </h2>
-                        </div>
-                        <div>
-                            <span>Gourp A : <?php student_summary("2","students.stgroup","A")?></span> |
-                            <span>Gourp B : <?php student_summary("2","students.stgroup","B")?></span> <br>
-                            <span>Gourp C : <?php student_summary("2","students.stgroup","C")?></span> |
-                            <span>Gourp E : <?php student_summary("2","students.stgroup","E")?></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="widget-head-color-box navy-bg p-lg text-center">
-                        <div class="m-b-md">
-                            <h2 class="font-bold no-margins">
-                                Third year
-                            </h2>
-                        </div>
-                        <img src="images/third-year-plan_0.png" height="120">
-                        <div>
-                            <h2 class="font-bold no-margins">
-                                <?php
-                                student_count("3");
-                                ?>
-                                student
-                            </h2>
-                        </div>
-                        <div>
-                            <span>Gourp A : <?php student_summary("3","students.stgroup","A")?></span> |
-                            <span>Gourp B : <?php student_summary("3","students.stgroup","B")?></span> <br>
-                            <span>Gourp C : <?php student_summary("3","students.stgroup","C")?></span> |
-                            <span>Gourp E : <?php student_summary("3","students.stgroup","E")?></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="widget-head-color-box navy-bg p-lg text-center">
-                        <div class="m-b-md">
-                            <h2 class="font-bold no-margins">
-                                Fourth year
-                            </h2>
-                        </div>
-                        <img src="images/fourth-year-plan_0.png" height="120">
-                        <div>
-                            <h2 class="font-bold no-margins">
-                                <?php
-                                student_count("4");
-                                ?>
-                                student
-                            </h2>
-                        </div>
-                        <div>
-                            <span>Gourp A : <?php student_summary("4","students.stgroup","A")?></span> |
-                            <span>Gourp B : <?php student_summary("4","students.stgroup","B")?></span> <br>
-                            <span>Gourp C : <?php student_summary("4","students.stgroup","C")?></span> |
-                            <span>Gourp E : <?php student_summary("4","students.stgroup","E")?></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h5>This chart shows the count of student per year by nature</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link">
-                                    <i class="fa fa-chevron-up"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="ibox-content">
-                            <div id="collapseOne" class="panel-collapse collapse in">
-                                <div id="chart1"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title">
-                            <h5>This chart shows the count of student per year by type</h5>
-                            <div class="ibox-tools">
-                                <a class="collapse-link">
-                                    <i class="fa fa-chevron-up"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="ibox-content">
-                            <div id="collapseOne" class="panel-collapse collapse in">
-                                <div id="chart2"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php
+
+            $site_query = mysqli_query($con,"Select site.name, site.id From site") or die(mysqli_error($con));
+            while($site_info = mysqli_fetch_assoc($site_query))
+            {
+            ?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>This chart shows the count of student per material by nature</h5>
+                            <font face="myFirstFont"><h5>تفاصيل موقع <?php echo $site_info['name']?></h5></font>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -175,53 +45,370 @@ include_once "layout/header.php";
                         </div>
                         <div class="ibox-content">
                             <div id="collapseOne" class="panel-collapse collapse in">
-                                <table id="example" class=" dataTables-example table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
-                                    <thead>
-                                    <tr>
-                                        <th>Material / Nature</th>
-                                        <th>إنتظام</th>
-                                        <th>إنتساب</th>
-                                        <th>المجموع</th>
-                                    </tr>
-                                    </thead>
+                                <div class="wrapper wrapper-content animated fadeInRight">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">ما تم صرفه خلال الشهر </span>
+                                                        <?php
+                                                        $month = date('m');
+                                                        $count_expenses_query = mysqli_query($con,"
+                                                            SELECT COALESCE(SUM(expense.value),0) AS value
+                                                            From expense
+                                                            Where expense.status = 1 And Month(expense.date) = $month And expense.site_id = $site_info[id]") or die(mysqli_error($con));
+                                                            $count_expenses_info = mysqli_fetch_assoc($count_expenses_query);
 
-                                    <tbody>
-                                    <?php
-                                    $result4 = mysqli_query($con, "SELECT * FROM `material`");
-                                    while($row4 = mysqli_fetch_assoc($result4))
-                                    {
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $row4['matname'] ?></td>
-                                            <td><?php
-                                                $matid=$row4['matid'];
-                                                echo $first_entezam = material_summary_detail($matid,'students.sttype','1');
-                                                ?>
-                                            </td>
-                                            <td><?php
-                                                $matid=$row4['matid'];
-                                                echo $first_entesab = material_summary_detail($matid,'students.sttype','2');
-                                                ?>
-                                            </td>
-                                            <td><?php echo $first_entezam+$first_entesab ?></td>
-                                        </tr>
-                                        <?php
-                                    };
-                                    ?>
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
+                                                        $count_custodies_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(custoder_accounting.value), 0) As value
+                                                            From custoder_accounting
+                                                            Where custoder_accounting.site_id = $site_info[id] And Month(custoder_accounting.date)  = $month And custoder_accounting.status = 1 And custoder_accounting.type = 0") or die(mysqli_error($con));
+                                                        $count_custodies_info = mysqli_fetch_assoc($count_custodies_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_expenses_info['value'] + $count_custodies_info['value']?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 blue-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">ما تم توريده خلال الشهر </span>
+                                                        <?php
+                                                        $month = date('m');
+                                                        $count_payment_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(payment.value), 0) As value
+                                                            From payment
+                                                              Inner Join property On property.id = payment.property_id
+                                                              Inner Join tower On tower.id = property.tower_id
+                                                              Inner Join site On tower.site_id = site.id
+                                                            Where payment.status = 1 And Month(payment.payment_date)  = $month And payment.removed = 0 And site.id = $site_info[id]") or die(mysqli_error($con));
+                                                        $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['value']?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">ما تم صرفه خلال الإسبوع </span>
+
+                                                        <?php
+                                                        $week = date('W');
+                                                        $count_expenses_query = mysqli_query($con,"
+                                                            SELECT COALESCE(SUM(expense.value),0) AS value
+                                                            From expense
+                                                            Where expense.status = 1 And WEEK(expense.date) = $week And expense.site_id = $site_info[id]") or die(mysqli_error($con));
+                                                        $count_expenses_info = mysqli_fetch_assoc($count_expenses_query);
+
+                                                        $count_custodies_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(custoder_accounting.value), 0) As value
+                                                            From custoder_accounting
+                                                            Where custoder_accounting.site_id = $site_info[id] And WEEK(custoder_accounting.date)  = $week And custoder_accounting.status = 1 And custoder_accounting.type = 0") or die(mysqli_error($con));
+                                                        $count_custodies_info = mysqli_fetch_assoc($count_custodies_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_expenses_info['value'] + $count_custodies_info['value']?></h2>                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 blue-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">ما تم توريده خلال الإسبوع </span>
+                                                        <?php
+                                                        $week = date('W');
+                                                        $count_payment_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(payment.value), 0) As value
+                                                            From payment
+                                                              Inner Join property On property.id = payment.property_id
+                                                              Inner Join tower On tower.id = property.tower_id
+                                                              Inner Join site On tower.site_id = site.id
+                                                            Where payment.status = 1 And WEEK(payment.payment_date)  = $week And payment.removed = 0 And site.id = $site_info[id]") or die(mysqli_error($con));
+                                                        $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['value']?></h2>                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold"> المطلوب تحصيلة خلال الشهر </span>
+                                                        <?php
+                                                        $month = date('m');
+                                                        $count_payment_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(payment.value), 0) As value
+                                                            From payment
+                                                              Inner Join property On property.id = payment.property_id
+                                                              Inner Join tower On tower.id = property.tower_id
+                                                              Inner Join site On site.id = tower.site_id
+                                                            Where payment.status = 0 And Month(payment.due_date) = $month And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">
+                                                            المطلوب تحصيلة خلال الإسبوع
+                                                        </span>
+                                                        <?php
+                                                        $week = date('W');
+                                                        $count_payment_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(payment.value), 0) As value
+                                                            From payment
+                                                              Inner Join property On property.id = payment.property_id
+                                                              Inner Join tower On tower.id = property.tower_id
+                                                              Inner Join site On site.id = tower.site_id
+                                                            Where payment.status = 0 And WEEK(payment.due_date) = $week And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">
+                                                            المطلوب تحصيلة خلال اليوم
+                                                        </span>
+                                                        <?php
+                                                        $today = date('j');
+                                                        $count_payment_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(payment.value), 0) As value
+                                                            From payment
+                                                              Inner Join property On property.id = payment.property_id
+                                                              Inner Join tower On tower.id = property.tower_id
+                                                              Inner Join site On site.id = tower.site_id
+                                                            Where payment.status = 0 And DATE(payment.due_date) = CURDATE() And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">ما لم يتم تحصيلة حتى الأن</span>
+                                                        <?php
+                                                        $count_payment_query = mysqli_query($con,"
+                                                            Select Coalesce(Sum(payment.value), 0) As value
+                                                            From payment
+                                                              Inner Join property On property.id = payment.property_id
+                                                              Inner Join tower On tower.id = property.tower_id
+                                                              Inner Join site On site.id = tower.site_id
+                                                            Where payment.status = 0 And DATE(payment.due_date) <= CURDATE() And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-2">
+                                            <div class="widget style1 blue-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-4">
+                                                        <i class="fa fa-home fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-8 text-right">
+                                                        <span class="arabic"> تم البيع </span>
+                                                        <?php
+                                                        $count_properties_query = mysqli_query($con,"
+                                                                Select Count(owner_has_property.id) As property_count
+From owner_has_property
+  Inner Join property On property.id = owner_has_property.property_id
+  Inner Join tower On property.tower_id = tower.id
+  Inner Join site On tower.site_id = site.id
+  Inner Join property_type On property_type.id = property.property_type_id
+  Inner Join payment On payment.property_id = property.id
+Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 3 And
+  payment.status = 1 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
+                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="widget style1 yellow-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-4">
+                                                        <i class="fa fa-home fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-8 text-right">
+                                                        <span class="arabic"> محجوز </span>
+                                                        <?php
+                                                        $count_properties_query = mysqli_query($con,"
+                                                                Select Count(owner_has_property.id) As property_count
+From owner_has_property
+  Inner Join property On property.id = owner_has_property.property_id
+  Inner Join tower On property.tower_id = tower.id
+  Inner Join site On tower.site_id = site.id
+  Inner Join property_type On property_type.id = property.property_type_id
+  Inner Join payment On payment.property_id = property.id
+Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 3 And
+  payment.status = 0 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
+                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-4">
+                                                        <i class="fa fa-home fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-8 text-right">
+                                                        <span class="arabic"> لم يتم بيعه </span>
+                                                        <h2 class="font-bold">11</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="widget style1 lazur-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-4">
+                                                        <i class="fa fa-bank fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-8 text-right">
+                                                        <span class="arabic"> تم البيع </span>
+                                                        <?php
+                                                        $count_properties_query = mysqli_query($con,"
+                                                                Select Count(owner_has_property.id) As property_count
+From owner_has_property
+  Inner Join property On property.id = owner_has_property.property_id
+  Inner Join tower On property.tower_id = tower.id
+  Inner Join site On tower.site_id = site.id
+  Inner Join property_type On property_type.id = property.property_type_id
+  Inner Join payment On payment.property_id = property.id
+Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 4 And
+  payment.status = 1 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
+                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="widget style1 yellow-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-4">
+                                                        <i class="fa fa-bank fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-8 text-right">
+                                                        <span class="arabic"> محجوز </span>
+                                                        <?php
+                                                        $count_properties_query = mysqli_query($con,"
+                                                                Select Count(owner_has_property.id) As property_count
+From owner_has_property
+  Inner Join property On property.id = owner_has_property.property_id
+  Inner Join tower On property.tower_id = tower.id
+  Inner Join site On tower.site_id = site.id
+  Inner Join property_type On property_type.id = property.property_type_id
+  Inner Join payment On payment.property_id = property.id
+Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 4 And
+  payment.status = 0 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
+                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-4">
+                                                        <i class="fa fa-bank fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-8 text-right">
+                                                        <span class="arabic"> لم يتم بيعه </span>
+                                                        <h2 class="font-bold">11</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <br><br><br>
+                                            <div id="lineChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <?php
+            }?>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="widget-head-color-box navy-bg p-lg text-center">
+                        <div class="m-b-md">
+                            <h2 class="font-bold no-margins">
+                                <span class="arabic">عهدة حمادة</span>
+                            </h2>
+                        </div>
+                        <img src="img/a4.jpg" class="img-circle circle-border m-b-md" alt="profile">
+                    </div>
+                    <div class="widget-text-box">
+                        <div class="text-center">
+                            <a href=""><button class="btn btn-primary  dim btn-large-dim" type="button"><span class="vbig">332111</span></button></a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="footer">
@@ -359,155 +546,34 @@ include_once "layout/header.php";
     });
 
 </script>
-
-<?php
-$first_entzam = student_summary_detail(1,'students.sttype',1);
-$second_entzam = student_summary_detail(2,'students.sttype',1);
-$third_entzam = student_summary_detail(3,'students.sttype',1);
-$fourth_entzam = student_summary_detail(4,'students.sttype',1);
-
-$first_entesab = student_summary_detail(1,'students.sttype',2);
-$second_entesab = student_summary_detail(2,'students.sttype',2);
-$third_entesab = student_summary_detail(3,'students.sttype',2);
-$fourth_entesab = student_summary_detail(4,'students.sttype',2);
-$php_data = array(
-    'x_labels' => array('First', 'Second', 'Third', 'Fourth', ),
-    'إنتظام' => array($first_entzam, $second_entzam, $third_entzam, $fourth_entzam),
-    'إنتساب' => array($first_entesab, $second_entesab, $third_entesab, $fourth_entesab)
-);
-?>
 <script>
-    var json_data = <?php echo json_encode($php_data) ?>;
-    var chart1 = c3.generate({
-        bindto: "#chart1",
-        data: {
-            x: 'x_labels',
-            json: json_data,
-            type: 'bar',
-            groups: [
-                ['إنتظام', 'إنتساب']
-            ]
-        },
-        axis: {
-            x: {
-                type: 'category'
+    $(document).ready(function () {
+        c3.generate({
+            bindto: '#lineChart',
+            size: {
+                height: '100%',
             },
-        }
-    });
-
-</script>
-<?php
-$first_new = student_summary_detail(1,'students.sttype2','A');
-$second_new = student_summary_detail(2,'students.sttype2','A');
-$third_new = student_summary_detail(3,'students.sttype2','A');
-$fourth_new = student_summary_detail(4,'students.sttype2','A');
-
-$first_old = student_summary_detail(1,'students.sttype2','B');
-$second_old = student_summary_detail(2,'students.sttype2','B');
-$third_old = student_summary_detail(3,'students.sttype2','B');
-$fourth_old = student_summary_detail(4,'students.sttype2','B');
-
-$first_final = student_summary_detail(1,'students.sttype2','C');
-$second_final = student_summary_detail(2,'students.sttype2','C');
-$third_final = student_summary_detail(3,'students.sttype2','C');
-$fourth_final = student_summary_detail(4,'students.sttype2','C');
-unset($php_data);
-$php_data = array(
-    'x_labels' => array('First', 'Second', 'Third', 'Fourth', ),
-    'مستجد' => array($first_new, $second_new, $third_new, $fourth_new),
-    'باقي إعادة' => array($first_old, $second_old, $third_old, $fourth_old),
-    'مراجعة نهائية' => array($first_final, $second_final, $third_final, $fourth_final)
-);
-?>
-<script>
-    var json_data = <?php echo json_encode($php_data) ?>;
-    var chart2 = c3.generate({
-        bindto: "#chart2",
-        data: {
-            x: 'x_labels',
-            json: json_data,
-            type: 'bar',
-            groups: [
-                ['مستجد', 'باقي إعادة', 'مراجعة نهائية']
-            ]
-        },
-        axis: {
-            x: {
-                type: 'category'
+            data: {
+                x : 'x',
+                columns: [
+                    ['x', 'شهر 10', 'شهر 9', 'شهر 8', 'شهر 7', 'شهر 6', 'شهر 5'],
+                    ['الإيراد', '55445', '55415', '44332', '28394', '14445', '55113' ],
+                    ['المصروف', '12111', '44', '31', '12511', '54', '53' ],
+                ],
             },
-        }
+            axis: {
+                x: {
+                    type: 'category',
+                    tick: {
+                        rotate: 0,
+                        size: 15,
+                        multiline: false,
+                    },
+                }
+            }
+        });
     });
-
 </script>
-<?php
-$first_new = student_summary_detail(1,'students.sttype2','A');
-$second_new = student_summary_detail(2,'students.sttype2','A');
-$third_new = student_summary_detail(3,'students.sttype2','A');
-$fourth_new = student_summary_detail(4,'students.sttype2','A');
-
-$first_old = student_summary_detail(1,'students.sttype2','B');
-$second_old = student_summary_detail(2,'students.sttype2','B');
-$third_old = student_summary_detail(3,'students.sttype2','B');
-$fourth_old = student_summary_detail(4,'students.sttype2','B');
-
-$first_final = student_summary_detail(1,'students.sttype2','C');
-$second_final = student_summary_detail(2,'students.sttype2','C');
-$third_final = student_summary_detail(3,'students.sttype2','C');
-$fourth_final = student_summary_detail(4,'students.sttype2','C');
-unset($php_data);
-$php_data = array(
-    'x_labels' => array('First', 'Second', 'Third', 'Fourth', ),
-    'مستجد' => array($first_new, $second_new, $third_new, $fourth_new),
-    'باقي إعادة' => array($first_old, $second_old, $third_old, $fourth_old),
-    'مراجعة نهائية' => array($first_final, $second_final, $third_final, $fourth_final)
-);
-?>
-<script>
-    var json_data = <?php echo json_encode($php_data) ?>;
-    var chart2 = c3.generate({
-        bindto: "#chart2",
-        data: {
-            x: 'x_labels',
-            json: json_data,
-            type: 'bar',
-            groups: [
-                ['مستجد', 'باقي إعادة', 'مراجعة نهائية']
-            ]
-        },
-        axis: {
-            x: {
-                type: 'category'
-            },
-        }
-    });
-
-</script>
-
-<?php
-$first_entezam = material_summary_detail(1,'students.sttype','1');
-$fourth_entesab = material_summary_detail(1,'students.sttype','2');
-?>
-<script>
-    var json_data = <?php echo json_encode($php_data) ?>;
-    var chart2 = c3.generate({
-        bindto: "#chart2",
-        data: {
-            x: 'x_labels',
-            json: json_data,
-            type: 'bar',
-            groups: [
-                ['مستجد', 'باقي إعادة', 'مراجعة نهائية']
-            ]
-        },
-        axis: {
-            x: {
-                type: 'category'
-            },
-        }
-    });
-
-</script>
-
 </body>
 <!-- Mirrored from webapplayers.com/inspinia_admin-v2.7.1/empty_page.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 25 Jul 2017 11:39:12 GMT -->
 

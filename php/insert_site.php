@@ -1,14 +1,9 @@
 <?php
 include_once "connection.php";
 
-$fromname=$_POST['fromname'];
+$site_name=$_POST['site_name'];
 
-$maxfromid = mysqli_query($con, "Select Max(`from`.`fromid`) From `from`");
-$maxfromid = mysqli_fetch_row($maxfromid);
-$maxfromid = implode("", $maxfromid);
-$maxfromid =$maxfromid+1;
-
-$query = mysqli_query($con, "INSERT INTO `from`(`fromid`, `fromname`, `createddate`, `updatedate`) VALUES ('$maxfromid','$fromname',NOW(),NULL);")or die(mysqli_error($con));
+$query = mysqli_query($con, "INSERT INTO `site` (`id`, `name`, `create_time`, `update_time`) VALUES (NULL, '$site_name', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 if ($query) {

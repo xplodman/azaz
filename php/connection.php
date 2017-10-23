@@ -1,6 +1,6 @@
 <?php
     // Configure connection settings
-    $db = '5inarch';
+    $db = 'azaz';
     $db_admin = 'root';
     $db_password = 'root';
     $con = mysqli_connect("localhost", "$db_admin", "$db_password", "$db");
