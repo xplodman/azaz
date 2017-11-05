@@ -1,30 +1,35 @@
 <?php
 include_once "connection.php";
 $transaction_id=$_GET['transaction_id'];
+session_start();
+$user_id=$_SESSION['azaz']['id'];
 $date_1=$_POST['date_1'];
-$date_2=$_POST['date_2'];
 $value=$_POST['value'];
-$owner_id=$_POST['owner_id'];
-$owner_name=$_POST['owner_name'];
-$owner_number=$_POST['owner_number'];
-
-$update_payment = mysqli_query($con, "UPDATE `transaction` SET `date_1` = '$date_1', `date_2` = '$date_2', `value` = '$value', `update_time` = NOW() WHERE `transaction`.`id` = '$transaction_id';")or die(mysqli_error($con));
-
-$update_owner = mysqli_query($con, "UPDATE `owner` SET `name` = '$owner_name' , `mobile` = '$owner_number' WHERE `id` = '$owner_id';")or die(mysqli_error($con));
+$custoder_id=$_POST['custoder_id'];
+if ($value > 0)
+{
+    $value=$value*-1;
+}
+$update_custoder = mysqli_query($con, "UPDATE `transaction` SET `date_1` = '$date_1', `value` = '$value', `custoder_id` = '$custoder_id', `users_id` = '$user_id', `update_time` = NOW() WHERE `transaction`.`id` = '$transaction_id';")or die(mysqli_error($con));
 
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 
-if ($update_payment & $update_owner) {
+if ($update_custoder) {
     mysqli_commit($con);
     header('Location: '.$uri_parts[0].'?backresult=1&transaction_id='.$transaction_id.'');
+    $fh = fopen('/tmp/track.txt','a');
+    fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
+    fclose($fh);
     exit;
 }
 else {
 
     header('Location: '.$uri_parts[0].'?backresult=0&transaction_id='.$transaction_id.'');
-    exit;
-}
+    $fh = fopen('/tmp/track.txt','a');
+    fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
+    fclose($fh);
+    exit;}
 
 
 ?>

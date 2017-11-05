@@ -41,32 +41,43 @@ include_once "layout/header.php";
                 $from_date=$_POST['from_date'];
                 $to_date=$_POST['to_date'];
                 $query="
-                        Select expense.date,
-                          expense.subject,
-                          expense.status,
-                          expense.value,
-                          site.name,
-                          expense.id 
-                        From expense
-                          Inner Join site On site.id = expense.site_id
-                        Where expense.date BETWEEN '$from_date' and '$to_date 23:59:59'
-                        ";
+                        Select transaction.id,
+                          transaction.date_1,
+                          transaction.value,
+                          transaction.removed,
+                          flag.name As flag_name,
+                          flag.id As flag_id,
+                          site.name As site_name,
+                          custoder.name As custoder_name,
+                          reason.name As reason_name
+                        From transaction
+                          Inner Join flag On flag.id = transaction.flag_id
+                          LEFT Join site On site.id = transaction.site_id
+                          LEFT Join custoder On custoder.id = transaction.custoder_id
+                          LEFT Join reason On reason.id = transaction.reason_id
+                        Where transaction.flag_id In ('4', '6') And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
             }else{
             $query="
-                        Select expense.date,
-                          expense.subject,
-                          expense.status,
-                          expense.value,
-                          site.name,
-                          expense.id 
-                        From expense
-                          Inner Join site On site.id = expense.site_id
-                        Where expense.date BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
+                        Select transaction.id,
+                          transaction.date_1,
+                          transaction.value,
+                          transaction.removed,
+                          flag.name As flag_name,
+                          flag.id As flag_id,
+                          site.name As site_name,
+                          custoder.name As custoder_name,
+                          reason.name As reason_name
+                        From transaction
+                          Inner Join flag On flag.id = transaction.flag_id
+                          LEFT Join site On site.id = transaction.site_id
+                          LEFT Join custoder On custoder.id = transaction.custoder_id
+                          LEFT Join reason On reason.id = transaction.reason_id
+                        Where transaction.flag_id In ('4', '6') And transaction.date_1 BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
             }
             if(isset($_POST['show_deleted']) && $_POST['show_deleted']==='show_deleted'){
+                $query .= "";
             }else{
-                $query .= " and expense.status = 1";
-
+                $query .= " And transaction.removed = 0";
             };
             ?>
             <div class="col-sm-12">
@@ -167,9 +178,19 @@ include_once "layout/header.php";
                                             ?>
                                             <tr> <!--info plus-->
                                                 <th style="width:1em">
-                                                    <a class="btn btn-success btn-circle" type="button" href="expense.php?expense_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
-                                                    if ($expenses['status']=="0"){
+                                                    if ($expenses['flag_id']=='6'){
+                                                        ?>
+                                                        <a class="btn btn-success btn-circle" type="button" href="custody_plus.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                        <?php
+                                                    }else{
+                                                        ?>
+                                                    <a class="btn btn-success btn-circle" type="button" href="expense.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                    <?php
+                                                    if ($expenses['removed']=="1"){
                                                         ?>
                                                         <button class="btn btn-circle" type="button" data-value="1" onclick="undelete_expense(<?php echo $expenses['id'] ?>)"><i class="fa fa-eye fa-2x"></i></button>
                                                         <?php
@@ -182,16 +203,28 @@ include_once "layout/header.php";
                                                 </th>
 
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['date'] ?>
+                                                    <?php echo $expenses['date_1'] ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['subject'] ?>
+                                                    <?php
+                                                    if ($expenses['flag_id']=='6'){
+                                                        echo "عهدة ".$expenses['custoder_name'];
+                                                    }else{
+                                                        echo $expenses['reason_name'];
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['value'] ?>
+                                                    <?php echo $expenses['value']*-1 ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['name'] ?>
+                                                    <?php
+                                                    if ($expenses['flag_id']=='6'){
+                                                        echo $expenses['flag_name'];
+                                                    }else{
+                                                        echo $expenses['site_name'];
+                                                    }
+                                                    ?>
                                                 </td>
                                             </tr>
                                             <?php
@@ -262,7 +295,7 @@ include_once "layout/modals.php";
     $(document).ready(function() {
         $('.dataTables-example').DataTable({
             initComplete: function () {
-                this.api().columns(':eq(4),:eq(6),:eq(7),:eq(8)').every( function () {
+                this.api().columns(':eq(2),:eq(4),:eq(7),:eq(8)').every( function () {
                     var column = this;
                     var select = $('<select><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -289,7 +322,7 @@ include_once "layout/modals.php";
                 }
             },
 
-            order: [2, 'desc'],
+            order: [1],
             dom: 'Blfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -342,7 +375,7 @@ include_once "layout/modals.php";
             allowClear: true
         });
         // Setup - add a text input to each footer cell
-        $('#example tfoot th').not(':eq(0),:eq(4),:eq(5),:eq(6),:eq(7)').each(function() {
+        $('#example tfoot th').not(':eq(0),:eq(4),:eq(2),:eq(6),:eq(7)').each(function() {
             var title = $(this).text();
             $(this).html('<input type="text" />');
         });

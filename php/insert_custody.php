@@ -1,14 +1,19 @@
 <?php
 include_once "connection.php";
-
-$type=$_POST['type'];
-$subject=$_POST['subject'];
+session_start();
+$user_id=$_SESSION['azaz']['id'];
+$date_1=$_POST['date_1'];
 $value=$_POST['value'];
-$custody_date=$_POST['custody_date'];
 $site_id=$_POST['site_id'];
 $custoder_id=$_POST['custoder_id'];
+$reason_id=$_POST['reason_id'];
+if ($value > 0)
+{
+    $value=$value*-1;
+}
+$query = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$date_1', NULL, '$value', NULL, '0', '5', NULL, NULL, '$site_id', '$custoder_id', '$reason_id', '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
-$query = mysqli_query($con, "INSERT INTO `custoder_accounting` (`id`, `type`, `date`, `subject`, `value`, `create_time`, `update_time`, `site_id`, `status`, `custoder_id`) VALUES (NULL, '$type', '$custody_date', '$subject', '$value', CURRENT_TIMESTAMP, NULL, '$site_id', '1', '$custoder_id');")or die(mysqli_error($con));
+
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 if ($query) {

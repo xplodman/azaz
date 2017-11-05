@@ -1,4 +1,4 @@
-<meta http-equiv="refresh" content="600;url=logout.php" />
+<meta http-equiv="refresh" content="6000000000;url=php/logout.php" />
 <!---->
 <?php
 session_start();
@@ -14,7 +14,7 @@ if (!isset($_SESSION['azaz']['authenticate']) or $_SESSION['azaz']['authenticate
  */
 if (($_SESSION['azaz']['authenticate']))
 {
-    if(time() - $_SESSION['azaz']['timestamp'] > 600) { //subtract new timestamp from the old one
+    if(time() - $_SESSION['azaz']['timestamp'] > 6000000) { //subtract new timestamp from the old one
         header('Location: php/logout.php');
     } else {
         $_SESSION['azaz']['timestamp'] = time(); //set new timestamp

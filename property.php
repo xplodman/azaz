@@ -213,7 +213,7 @@ if (!isset($_GET['property_id'])){
                                             switch ($owner_info['status']) {
                                                 default:
                                                     ?>
-                                                    <div class="col-sm-4 col-sm-offset-2">
+                                                    <div class="col-sm-2 col-sm-offset-2">
                                                         <span class="arabic  pull-right btn btn-warning">
 لم يتم البيع
                                                         </span>
@@ -222,7 +222,7 @@ if (!isset($_GET['property_id'])){
                                                 break;
                                                 case "1":
                                                     ?>
-                                                    <div class="col-sm-4 col-sm-offset-2">
+                                                    <div class="col-sm-2 col-sm-offset-2">
                                                         <span class="arabic  pull-right btn btn-info">
 تم البيع
                                                         </span>

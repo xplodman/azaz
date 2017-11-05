@@ -58,18 +58,12 @@ include_once "layout/header.php";
                                                         <?php
                                                         $month = date('m');
                                                         $count_expenses_query = mysqli_query($con,"
-                                                            SELECT COALESCE(SUM(expense.value),0) AS value
-                                                            From expense
-                                                            Where expense.status = 1 And Month(expense.date) = $month And expense.site_id = $site_info[id]") or die(mysqli_error($con));
+                                                        Select Coalesce(Sum(transaction.value), 0) As Count_value
+                                                        From transaction
+                                                        Where transaction.site_id = $site_info[id] And Month(transaction.date_1) = $month And transaction.removed = 0 And transaction.flag_id In (4, 5)") or die(mysqli_error($con));
                                                             $count_expenses_info = mysqli_fetch_assoc($count_expenses_query);
-
-                                                        $count_custodies_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(custoder_accounting.value), 0) As value
-                                                            From custoder_accounting
-                                                            Where custoder_accounting.site_id = $site_info[id] And Month(custoder_accounting.date)  = $month And custoder_accounting.status = 1 And custoder_accounting.type = 0") or die(mysqli_error($con));
-                                                        $count_custodies_info = mysqli_fetch_assoc($count_custodies_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_expenses_info['value'] + $count_custodies_info['value']?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_expenses_info['Count_value']*-1?></h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -83,17 +77,17 @@ include_once "layout/header.php";
                                                     <div class="col-xs-9 text-right">
                                                         <span class="small_arabic font-bold">ما تم توريده خلال الشهر </span>
                                                         <?php
-                                                        $month = date('m');
                                                         $count_payment_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(payment.value), 0) As value
-                                                            From payment
-                                                              Inner Join property On property.id = payment.property_id
-                                                              Inner Join tower On tower.id = property.tower_id
-                                                              Inner Join site On tower.site_id = site.id
-                                                            Where payment.status = 1 And Month(payment.payment_date)  = $month And payment.removed = 0 And site.id = $site_info[id]") or die(mysqli_error($con));
+                                                        select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join property On property.id = transaction.property_id
+  Inner Join tower On property.tower_id = tower.id
+  Inner Join site On tower.site_id = site.id
+Where Month(transaction.date_2) = Month(curdate()) And transaction.status = 1 And
+  transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['value']?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -108,20 +102,14 @@ include_once "layout/header.php";
                                                         <span class="small_arabic font-bold">ما تم صرفه خلال الإسبوع </span>
 
                                                         <?php
-                                                        $week = date('W');
                                                         $count_expenses_query = mysqli_query($con,"
-                                                            SELECT COALESCE(SUM(expense.value),0) AS value
-                                                            From expense
-                                                            Where expense.status = 1 And WEEK(expense.date) = $week And expense.site_id = $site_info[id]") or die(mysqli_error($con));
+                                                        Select Coalesce(Sum(transaction.value), 0) As Count_value
+                                                        From transaction
+                                                        Where transaction.site_id = $site_info[id] And WEEK(transaction.date_1) = WEEK(curdate()) And transaction.removed = 0 And transaction.flag_id In (4, 5)") or die(mysqli_error($con));
                                                         $count_expenses_info = mysqli_fetch_assoc($count_expenses_query);
-
-                                                        $count_custodies_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(custoder_accounting.value), 0) As value
-                                                            From custoder_accounting
-                                                            Where custoder_accounting.site_id = $site_info[id] And WEEK(custoder_accounting.date)  = $week And custoder_accounting.status = 1 And custoder_accounting.type = 0") or die(mysqli_error($con));
-                                                        $count_custodies_info = mysqli_fetch_assoc($count_custodies_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_expenses_info['value'] + $count_custodies_info['value']?></h2>                                                    </div>
+                                                        <h2 class="font-bold"><?php echo $count_expenses_info['Count_value']*-1?></h2>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,17 +122,18 @@ include_once "layout/header.php";
                                                     <div class="col-xs-9 text-right">
                                                         <span class="small_arabic font-bold">ما تم توريده خلال الإسبوع </span>
                                                         <?php
-                                                        $week = date('W');
                                                         $count_payment_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(payment.value), 0) As value
-                                                            From payment
-                                                              Inner Join property On property.id = payment.property_id
-                                                              Inner Join tower On tower.id = property.tower_id
-                                                              Inner Join site On tower.site_id = site.id
-                                                            Where payment.status = 1 And WEEK(payment.payment_date)  = $week And payment.removed = 0 And site.id = $site_info[id]") or die(mysqli_error($con));
+                                                        select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join property On property.id = transaction.property_id
+  Inner Join tower On property.tower_id = tower.id
+  Inner Join site On tower.site_id = site.id
+Where WEEK(transaction.date_2) = WEEK(curdate()) And transaction.status = 1 And
+  transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['value']?></h2>                                                    </div>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -159,17 +148,18 @@ include_once "layout/header.php";
                                                     <div class="col-xs-9 text-right">
                                                         <span class="small_arabic font-bold"> المطلوب تحصيلة خلال الشهر </span>
                                                         <?php
-                                                        $month = date('m');
                                                         $count_payment_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(payment.value), 0) As value
-                                                            From payment
-                                                              Inner Join property On property.id = payment.property_id
-                                                              Inner Join tower On tower.id = property.tower_id
-                                                              Inner Join site On site.id = tower.site_id
-                                                            Where payment.status = 0 And Month(payment.due_date) = $month And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        Select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join property On property.id = transaction.property_id
+  Inner Join tower On tower.id = property.tower_id
+  Inner Join site On tower.site_id = site.id
+Where Month(transaction.date_1) = Month(CurDate()) And transaction.status = 0
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And
+  site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -185,17 +175,18 @@ include_once "layout/header.php";
                                                             المطلوب تحصيلة خلال الإسبوع
                                                         </span>
                                                         <?php
-                                                        $week = date('W');
                                                         $count_payment_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(payment.value), 0) As value
-                                                            From payment
-                                                              Inner Join property On property.id = payment.property_id
-                                                              Inner Join tower On tower.id = property.tower_id
-                                                              Inner Join site On site.id = tower.site_id
-                                                            Where payment.status = 0 And WEEK(payment.due_date) = $week And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        Select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join property On property.id = transaction.property_id
+  Inner Join tower On tower.id = property.tower_id
+  Inner Join site On tower.site_id = site.id
+Where WEEK(transaction.date_1) = WEEK(CurDate()) And transaction.status = 0
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And
+  site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -211,17 +202,18 @@ include_once "layout/header.php";
                                                             المطلوب تحصيلة خلال اليوم
                                                         </span>
                                                         <?php
-                                                        $today = date('j');
                                                         $count_payment_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(payment.value), 0) As value
-                                                            From payment
-                                                              Inner Join property On property.id = payment.property_id
-                                                              Inner Join tower On tower.id = property.tower_id
-                                                              Inner Join site On site.id = tower.site_id
-                                                            Where payment.status = 0 And DATE(payment.due_date) = CURDATE() And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        Select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join property On property.id = transaction.property_id
+  Inner Join tower On tower.id = property.tower_id
+  Inner Join site On tower.site_id = site.id
+Where transaction.date_1 = CurDate() And transaction.status = 0
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And
+  site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -236,149 +228,141 @@ include_once "layout/header.php";
                                                         <span class="small_arabic font-bold">ما لم يتم تحصيلة حتى الأن</span>
                                                         <?php
                                                         $count_payment_query = mysqli_query($con,"
-                                                            Select Coalesce(Sum(payment.value), 0) As value
-                                                            From payment
-                                                              Inner Join property On property.id = payment.property_id
-                                                              Inner Join tower On tower.id = property.tower_id
-                                                              Inner Join site On site.id = tower.site_id
-                                                            Where payment.status = 0 And DATE(payment.due_date) <= CURDATE() And payment.removed = 0 And site.id = $site_info[id] ") or die(mysqli_error($con));
+                                                        Select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join property On property.id = transaction.property_id
+  Inner Join tower On tower.id = property.tower_id
+  Inner Join site On tower.site_id = site.id
+Where transaction.date_1 <= CurDate() And transaction.status = 0
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And
+  site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['value'] ?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-lg-2">
-                                            <div class="widget style1 blue-bg">
-                                                <div class="row">
-                                                    <div class="col-xs-4">
-                                                        <i class="fa fa-home fa-5x"></i>
-                                                    </div>
-                                                    <div class="col-xs-8 text-right">
-                                                        <span class="arabic"> تم البيع </span>
-                                                        <?php
-                                                        $count_properties_query = mysqli_query($con,"
-                                                                Select Count(owner_has_property.id) As property_count
-From owner_has_property
-  Inner Join property On property.id = owner_has_property.property_id
+                                        <?php
+                                        $count_properties_query = mysqli_query($con,"
+Select Count(Distinct(property.id)) As property_count,
+  property_type.name
+From property
+  Inner Join property_type On property.property_type_id = property_type.id
   Inner Join tower On property.tower_id = tower.id
   Inner Join site On tower.site_id = site.id
-  Inner Join property_type On property_type.id = property.property_type_id
-  Inner Join payment On payment.property_id = property.id
-Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 3 And
-  payment.status = 1 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
-                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
-                                                        ?>
-                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
+  Inner Join owner_has_property On owner_has_property.property_id = property.id
+  Inner Join transaction On property.id = transaction.property_id And
+    owner_has_property.owner_id = transaction.owner_id
+Where property.id Not In (Select property.id
+  From property Inner Join property_type On property.property_type_id =
+      property_type.id Inner Join tower On property.tower_id = tower.id
+    Inner Join site On tower.site_id = site.id Inner Join owner_has_property
+      On owner_has_property.property_id = property.id Inner Join transaction
+      On property.id = transaction.property_id And owner_has_property.owner_id =
+      transaction.owner_id
+  Where transaction.flag_id In (1, 2, 3) And owner_has_property.status = 1 And site.id = $site_info[id] And transaction.status = 0
+  Group By property.id) And transaction.flag_id In (1, 2, 3)And owner_has_property.status = 1 And site.id = $site_info[id] And
+  transaction.status = 1
+Group By 
+  property_type.name
+  ") or die(mysqli_error($con));
+                                        while($count_properties_info = mysqli_fetch_assoc($count_properties_query))
+                                        {
+                                            ?>
+                                            <div class="col-lg-2">
+                                                <div class="widget style1 blue-bg">
+                                                    <div class="row">
+                                                        <div class="col-xs-4">
+                                                            <span class="arabic"><?php echo $count_properties_info['name'] ?></span>
+                                                        </div>
+                                                        <div class="col-xs-8 text-right">
+                                                            <span class="arabic"> تم البيع </span>
+
+                                                            <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div class="widget style1 yellow-bg">
-                                                <div class="row">
-                                                    <div class="col-xs-4">
-                                                        <i class="fa fa-home fa-5x"></i>
-                                                    </div>
-                                                    <div class="col-xs-8 text-right">
-                                                        <span class="arabic"> محجوز </span>
-                                                        <?php
-                                                        $count_properties_query = mysqli_query($con,"
-                                                                Select Count(owner_has_property.id) As property_count
-From owner_has_property
-  Inner Join property On property.id = owner_has_property.property_id
+                                        <?php
+                                        }
+                                        ?>
+                                        <?php
+                                        $count_properties_query = mysqli_query($con,"
+
+Select Count(Distinct property.id) As property_count,
+  property_type.name
+From property
+  Inner Join owner_has_property On owner_has_property.property_id = property.id
+  Inner Join property_type On property_type.id = property.property_type_id
   Inner Join tower On property.tower_id = tower.id
   Inner Join site On tower.site_id = site.id
+  Inner Join transaction On transaction.property_id = property.id
+Where site.id = $site_info[id] And transaction.status = 0 And transaction.removed = 0 And
+  transaction.flag_id In (1, 2, 3) And owner_has_property.status = 1
+Group By property_type.name
+") or die(mysqli_error($con));
+                                        while($count_properties_info = mysqli_fetch_assoc($count_properties_query))
+                                        {
+                                            ?>
+                                            <div class="col-lg-2">
+                                                <div class="widget style1 yellow-bg">
+                                                    <div class="row">
+                                                        <div class="col-xs-4">
+                                                            <span class="arabic"><?php echo $count_properties_info['name'] ?></span>
+                                                        </div>
+                                                        <div class="col-xs-8 text-right">
+                                                            <span class="arabic"> محجوز </span>
+
+                                                            <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                        <?php
+                                        $count_properties_query = mysqli_query($con,"
+
+Select Count(Distinct property.id) As property_count,
+  property_type.name
+From property
   Inner Join property_type On property_type.id = property.property_type_id
-  Inner Join payment On payment.property_id = property.id
-Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 3 And
-  payment.status = 0 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
-                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
-                                                        ?>
-                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div class="widget style1 red-bg">
-                                                <div class="row">
-                                                    <div class="col-xs-4">
-                                                        <i class="fa fa-home fa-5x"></i>
-                                                    </div>
-                                                    <div class="col-xs-8 text-right">
-                                                        <span class="arabic"> لم يتم بيعه </span>
-                                                        <h2 class="font-bold">11</h2>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div class="widget style1 lazur-bg">
-                                                <div class="row">
-                                                    <div class="col-xs-4">
-                                                        <i class="fa fa-bank fa-5x"></i>
-                                                    </div>
-                                                    <div class="col-xs-8 text-right">
-                                                        <span class="arabic"> تم البيع </span>
-                                                        <?php
-                                                        $count_properties_query = mysqli_query($con,"
-                                                                Select Count(owner_has_property.id) As property_count
-From owner_has_property
-  Inner Join property On property.id = owner_has_property.property_id
-  Inner Join tower On property.tower_id = tower.id
+  Inner Join tower On tower.id = property.tower_id
   Inner Join site On tower.site_id = site.id
-  Inner Join property_type On property_type.id = property.property_type_id
-  Inner Join payment On payment.property_id = property.id
-Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 4 And
-  payment.status = 1 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
-                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
-                                                        ?>
-                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div class="widget style1 yellow-bg">
-                                                <div class="row">
-                                                    <div class="col-xs-4">
-                                                        <i class="fa fa-bank fa-5x"></i>
-                                                    </div>
-                                                    <div class="col-xs-8 text-right">
-                                                        <span class="arabic"> محجوز </span>
-                                                        <?php
-                                                        $count_properties_query = mysqli_query($con,"
-                                                                Select Count(owner_has_property.id) As property_count
-From owner_has_property
-  Inner Join property On property.id = owner_has_property.property_id
-  Inner Join tower On property.tower_id = tower.id
-  Inner Join site On tower.site_id = site.id
-  Inner Join property_type On property_type.id = property.property_type_id
-  Inner Join payment On payment.property_id = property.id
-Where owner_has_property.status = 1 And site.id = $site_info[id] And property_type.id = 4 And
-  payment.status = 0 And payment.removed = 0 Group By property.id") or die(mysqli_error($con));
-                                                        $count_properties_info = mysqli_fetch_assoc($count_properties_query);
-                                                        ?>
-                                                        <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <div class="widget style1 red-bg">
-                                                <div class="row">
-                                                    <div class="col-xs-4">
-                                                        <i class="fa fa-bank fa-5x"></i>
-                                                    </div>
-                                                    <div class="col-xs-8 text-right">
-                                                        <span class="arabic"> لم يتم بيعه </span>
-                                                        <h2 class="font-bold">11</h2>
+  Left Join owner_has_property On owner_has_property.property_id = property.id
+Where site.id = $site_info[id] And (property.id Not In (Select property.id
+  From property Inner Join property_type On property_type.id =
+      property.property_type_id Inner Join tower On tower.id = property.tower_id
+    Inner Join site On tower.site_id = site.id Left Join owner_has_property
+      On owner_has_property.property_id = property.id
+  Where owner_has_property.status = 1)) Or
+  (owner_has_property.status Is Null)
+Group By property_type.name 
+") or die(mysqli_error($con));
+                                        while($count_properties_info = mysqli_fetch_assoc($count_properties_query))
+                                        {
+                                            ?>
+                                            <div class="col-lg-2">
+                                                <div class="widget style1 red-bg">
+                                                    <div class="row">
+                                                        <div class="col-xs-4">
+                                                            <span class="arabic"><?php echo $count_properties_info['name'] ?></span>
+                                                        </div>
+                                                        <div class="col-xs-8 text-right">
+                                                            <span class="arabic"> لم يتم بيعه </span>
+
+                                                            <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                            <?php
+                                        }
+                                        ?>
                                         <div class="col-lg-12">
                                             <br><br><br>
                                             <div id="lineChart"></div>
@@ -390,25 +374,62 @@ Where owner_has_property.status = 1 And site.id = $site_info[id] And property_ty
                     </div>
                 </div>
             </div>
+            <div class="row">
             <?php
             }?>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="widget-head-color-box navy-bg p-lg text-center">
-                        <div class="m-b-md">
-                            <h2 class="font-bold no-margins">
-                                <span class="arabic">عهدة حمادة</span>
-                            </h2>
-                        </div>
-                        <img src="img/a4.jpg" class="img-circle circle-border m-b-md" alt="profile">
-                    </div>
-                    <div class="widget-text-box">
-                        <div class="text-center">
-                            <a href=""><button class="btn btn-primary  dim btn-large-dim" type="button"><span class="vbig">332111</span></button></a>
-                        </div>
-                    </div>
-                </div>
+            <?php
+            $custoders_query = mysqli_query($con,"
 
+Select custoder.name,
+  custoder.id
+From custoder 
+") or die(mysqli_error($con));
+            while($custoders_info = mysqli_fetch_assoc($custoders_query)) {
+                $get_spent_value_query="
+                        Select COALESCE(SUM(transaction.value),0) As spent_count
+From custoder
+  Inner Join transaction On custoder.id = transaction.custoder_id
+Where custoder.id = $custoders_info[id] And transaction.removed = 0 And transaction.flag_id = 5";
+
+                $get_received_value_query="
+                        Select COALESCE(SUM(transaction.value),0) As received_count
+From custoder
+  Inner Join transaction On custoder.id = transaction.custoder_id
+Where custoder.id = $custoders_info[id] And transaction.removed = 0 And transaction.flag_id = 6";
+
+
+            $get_spent_value = mysqli_query($con, $get_spent_value_query);
+            $get_spent_value = mysqli_fetch_assoc($get_spent_value);
+
+            $get_received_value = mysqli_query($con, $get_received_value_query);
+            $get_received_value = mysqli_fetch_assoc($get_received_value);
+                ?>
+                    <div class="col-lg-4">
+                        <div class="widget-head-color-box navy-bg p-lg text-center">
+                            <div class="m-b-md">
+                                <h2 class="font-bold no-margins">
+                                    <span class="arabic"><?php echo $custoders_info['name'] ?></span>
+                                </h2>
+                            </div>
+                            <img src="img/a4.jpg" class="img-circle circle-border m-b-md" alt="profile">
+                        </div>
+                        <div class="widget-text-box">
+                            <div class="text-center">
+                                <a href="custoder.php?custoder_id=<?php echo $custoders_info['id']; ?>">
+                                    <button class="btn btn-primary  dim btn-large-dim" type="button">
+                                        <span class="hvbig">
+                                            <?php
+                                            echo ($get_received_value['received_count']*-1)+($get_spent_value['spent_count']);
+                                            ?>
+                                        </span>
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php
+            }
+            ?>
             </div>
         </div>
         <div class="footer">

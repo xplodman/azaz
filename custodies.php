@@ -27,7 +27,6 @@ include_once "layout/header.php";
             <div class="col-sm-8">
                 <font face="myFirstFont">
                     <div class="title-action">
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_custody"><i class="fa fa-plus"></i> إضافة عهدة</button>
                         <button class="btn btn-warning " type="button" data-toggle="modal" data-target="#sub_custody"><i class="fa fa-plus"></i> تخصيم عهدة</button>
                         <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_custoder"><i class="fa fa-plus"></i> إضافة متعهد</button>
                     </div>
@@ -43,40 +42,43 @@ include_once "layout/header.php";
                 $from_date=$_POST['from_date'];
                 $to_date=$_POST['to_date'];
                 $query="
-                        Select custoder_accounting.date,
-                          custoder_accounting.subject,
-                          custoder_accounting.value,
-                          custoder_accounting.type,
-                          custoder_accounting.status,
-                          custoder.name,
-                          custoder_accounting.id,
-                          site.name As site_name 
-                        From custoder
-                          Inner Join custoder_accounting On custoder_accounting.custoder_id =
-                            custoder.id
-                          Inner Join site On site.id = custoder_accounting.site_id
-                        Where custoder_accounting.date BETWEEN '$from_date' and '$to_date 23:59:59'
-                        ";
+                        Select transaction.id,
+                          transaction.date_1,
+                          transaction.value,
+                          transaction.removed,
+                          flag.name As flag_name,
+                          site.name As site_name,
+                          custoder.id As custoder_id,
+                          custoder.name As custoder_name,
+                          reason.name As reason_name
+                        From transaction
+                          Inner Join flag On flag.id = transaction.flag_id
+                          Inner Join site On site.id = transaction.site_id
+                          Inner Join custoder On custoder.id = transaction.custoder_id
+                          Inner Join reason On reason.id = transaction.reason_id
+                        Where transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59' And transaction.flag_id = 5";
             }else{
                 $query="
-                        Select custoder_accounting.date,
-                          custoder_accounting.subject,
-                          custoder_accounting.value,
-                          custoder_accounting.type,
-                          custoder_accounting.status,
-                          custoder.name,
-                          custoder_accounting.id,
-                          site.name As site_name
-                        From custoder
-                          Inner Join custoder_accounting On custoder_accounting.custoder_id =
-                            custoder.id
-                          Inner Join site On site.id = custoder_accounting.site_id
-                        Where custoder_accounting.date BETWEEN '$custodies_from_date' and '$custodies_to_date 23:59:59'";
+                        Select transaction.id,
+                          transaction.date_1,
+                          transaction.value,
+                          transaction.removed,
+                          flag.name As flag_name,
+                          site.name As site_name,
+                          custoder.id As custoder_id,
+                          custoder.name As custoder_name,
+                          reason.name As reason_name
+                        From transaction
+                          Inner Join flag On flag.id = transaction.flag_id
+                          Inner Join site On site.id = transaction.site_id
+                          Inner Join custoder On custoder.id = transaction.custoder_id
+                          Inner Join reason On reason.id = transaction.reason_id
+                        Where transaction.date_1 BETWEEN '$custodies_from_date' and '$custodies_to_date 23:59:59' And transaction.flag_id = 5";
             }
             if(isset($_POST['show_deleted']) && $_POST['show_deleted']==='show_deleted'){
 
             }else{
-                $query .= " and custoder_accounting.status = 1";
+                $query .= " and transaction.removed = 0";
             };
             ?>
             <div class="col-sm-12">
@@ -165,9 +167,8 @@ include_once "layout/header.php";
                                         <tr>
                                             <th style="width:4em"></th>
                                             <th>التاريخ</th>
-                                            <th>البيان</th>
+                                            <th>السبب</th>
                                             <th>المبلغ</th>
-                                            <th>النوع</th>
                                             <th>المتعهد</th>
                                             <th>الموقع</th>
                                         </tr>
@@ -179,9 +180,9 @@ include_once "layout/header.php";
                                             ?>
                                             <tr> <!--info plus-->
                                                 <th style="width:1em">
-                                                    <a class="btn btn-success btn-circle" type="button" href="custody.php?custody_id=<?php echo $custodies['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <a class="btn btn-success btn-circle" type="button" href="custody.php?transaction_id=<?php echo $custodies['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
-                                                    if ($custodies['status']=="0"){
+                                                    if ($custodies['removed']=="1"){
                                                         ?>
                                                         <button class="btn btn-circle" type="button" data-value="1" onclick="undelete_custody(<?php echo $custodies['id'] ?>)"><i class="fa fa-eye fa-2x"></i></button>
                                                         <?php
@@ -194,20 +195,18 @@ include_once "layout/header.php";
                                                 </th>
 
                                                 <td class="middle wrap">
-                                                    <?php echo $custodies['date']; ?>
+                                                    <?php echo $custodies['date_1']; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $custodies['subject']; ?>
+                                                    <?php echo $custodies['reason_name']; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $custodies['value']; ?>
+                                                    <?php echo $custodies['value']*-1; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php
-                                                    if ($custodies['type']=='0'){echo "خصم";}else{echo "إضافة";}; ?>
-                                                </td>
-                                                <td class="middle wrap">
-                                                    <?php echo $custodies['name']; ?>
+                                                    <a href="custoder.php?custoder_id=<?php echo $custodies['custoder_id']; ?>"><button type='button' class='btn btn-outline btn-info'>
+                                                            <?php echo $custodies['custoder_name']; ?>
+                                                        </button></a>
                                                 </td>
                                                 <td class="middle wrap">
                                                     <?php echo $custodies['site_name']; ?>
@@ -219,7 +218,6 @@ include_once "layout/header.php";
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th></th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -283,7 +281,7 @@ include_once "layout/modals.php";
     $(document).ready(function() {
         $('.dataTables-example').DataTable({
             initComplete: function () {
-                this.api().columns(':eq(4),:eq(5),:eq(6),:eq(8)').every( function () {
+                this.api().columns(':eq(5),:eq(6),:eq(2)').every( function () {
                     var column = this;
                     var select = $('<select><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -363,7 +361,7 @@ include_once "layout/modals.php";
             allowClear: true
         });
         // Setup - add a text input to each footer cell
-        $('#example tfoot th').not(':eq(0),:eq(4),:eq(5),:eq(6),:eq(7)').each(function() {
+        $('#example tfoot th').not(':eq(0),:eq(5),:eq(6),:eq(7),:eq(2)').each(function() {
             var title = $(this).text();
             $(this).html('<input type="text" />');
         });

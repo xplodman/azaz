@@ -324,6 +324,24 @@ include_once "php/functions.php";
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> السبب </label>
+                            <div class="col-sm-10">
+                                <select class="chosen-select form-control" name="reason_id">
+                                    <option></option>
+                                    <?php
+                                    $query = "SELECT * FROM reason";
+                                    $results=mysqli_query($con, $query);
+                                    //loop
+                                    foreach ($results as $reason){
+                                        ?>
+                                        <option value="<?php echo $reason["id"];?>"><?php echo $reason["name"];?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> الموقع </label>
                             <div class="col-sm-10">
                                 <select class="chosen-select form-control" name="site_id">
@@ -339,12 +357,6 @@ include_once "php/functions.php";
                                     }
                                     ?>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="form-field-2"> البيان </label>
-                            <div class="col-sm-10">
-                                <input required class="form-control" type="text" id="form-field-2" name="expenses_subject" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -380,17 +392,23 @@ include_once "php/functions.php";
                     <h4 class="modal-title">إضافة عهدة</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" method="post" action="php/insert_custody.php">
+                    <form class="form-horizontal" method="post" action="php/insert_custody_to_custoder.php">
                         <input type="hidden" name="type" value="1"> <!--1 for plus custody-->
                         <div class="form-group" id="data_1">
                             <label class="col-sm-2 control-label">التاريخ </label>
                             <div class="col-sm-10">
                                 <div class="input-group date">
-                                    <input type="text" id="date" class="form-control" name="custody_date">
+                                    <input type="text" id="date" class="form-control" name="date_1">
                                     <span class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </span>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="number" id="form-field-2" name="value" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -409,36 +427,6 @@ include_once "php/functions.php";
                                     }
                                     ?>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="form-field-2"> الموقع </label>
-                            <div class="col-sm-10">
-                                <select class="chosen-select form-control" name="site_id">
-                                    <option></option>
-                                    <?php
-                                    $query = "SELECT * FROM site";
-                                    $results=mysqli_query($con, $query);
-                                    //loop
-                                    foreach ($results as $site){
-                                        ?>
-                                        <option value="<?php echo $site["id"];?>"><?php echo $site["name"];?></option>
-                                        <?php
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="form-field-2"> البيان </label>
-                            <div class="col-sm-10">
-                                <input required class="form-control" type="text" id="form-field-2" name="subject" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
-                            <div class="col-sm-10">
-                                <input required class="form-control" type="number" id="form-field-2" name="value" />
                             </div>
                         </div>
                         <div class="clearfix form-actions">
@@ -474,7 +462,7 @@ include_once "php/functions.php";
                             <label class="col-sm-2 control-label">التاريخ </label>
                             <div class="col-sm-10">
                                 <div class="input-group date">
-                                    <input type="text" id="date" class="form-control" name="custody_date">
+                                    <input type="text" id="date" class="form-control" name="date_1">
                                     <span class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </span>
@@ -518,9 +506,21 @@ include_once "php/functions.php";
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="form-field-2"> البيان </label>
+                            <label class="col-sm-2 control-label" for="form-field-2"> السبب </label>
                             <div class="col-sm-10">
-                                <input required class="form-control" type="text" id="form-field-2" name="subject" />
+                                <select class="chosen-select form-control" name="reason_id">
+                                    <option></option>
+                                    <?php
+                                    $query = "SELECT * FROM reason";
+                                    $results=mysqli_query($con, $query);
+                                    //loop
+                                    foreach ($results as $reason){
+                                        ?>
+                                        <option value="<?php echo $reason["id"];?>"><?php echo $reason["name"];?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -610,6 +610,8 @@ include_once "php/functions.php";
                             </div>
                         </div>
                         <input required class="form-control" type="hidden" id="payment_id" name="payment_id" readonly="readonly"/>
+                        <input required class="form-control" type="hidden" id="back_path" value="back_path_payment" name="back_path" readonly="readonly"/>
+
                         <div class="clearfix form-actions">
                             <div class="col-md-offset-3 col-md-9">
                                 <button class="btn btn-info"  type="Submit"  name="submit">

@@ -1,18 +1,22 @@
 <?php
 include_once "connection.php";
-$expense_id=$_GET['expense_id'];
+$transaction_id=$_GET['transaction_id'];
 $expenses_date=$_POST['expenses_date'];
-$expenses_subject=$_POST['expenses_subject'];
+$reason_id=$_POST['reason_id'];
 $expenses_value=$_POST['expenses_value'];
 $site_id=$_POST['site_id'];
+if ($expenses_value > 0)
+{
+    $expenses_value=$expenses_value*-1;
+}
 
-$update_expense = mysqli_query($con, "UPDATE `expense` SET `date` = '$expenses_date', `subject` = '$expenses_subject', `value` = '$expenses_value', `site_id` = '$site_id', `update_time` = NOW() WHERE `expense`.`id` = '$expense_id';")or die(mysqli_error($con));
+$update_expense = mysqli_query($con, "UPDATE `transaction` SET `date_1` = '$expenses_date', `value` = '$expenses_value', `site_id` = '$site_id', `reason_id` = '$reason_id', `update_time` = NOW() WHERE `transaction`.`id` = '$transaction_id';")or die(mysqli_error($con));
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 
 if ($update_expense) {
     mysqli_commit($con);
-    header('Location: '.$uri_parts[0].'?backresult=1&expense_id='.$expense_id.'');
+    header('Location: '.$uri_parts[0].'?backresult=1&transaction_id='.$transaction_id.'');
     $fh = fopen('/tmp/track.txt','a');
     fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
     fclose($fh);
@@ -20,7 +24,7 @@ if ($update_expense) {
 }
 else {
 
-    header('Location: '.$uri_parts[0].'?backresult=0&expense_id='.$expense_id.'');
+    header('Location: '.$uri_parts[0].'?backresult=0&transaction_id='.$transaction_id.'');
     $fh = fopen('/tmp/track.txt','a');
     fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
     fclose($fh);

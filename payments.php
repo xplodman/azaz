@@ -34,46 +34,52 @@ include_once "layout/header.php";
                 $from_date=$_POST['from_date'];
                 $to_date=$_POST['to_date'];
                 $query="
-                    Select payment.due_date As payment_due_date,
-                      payment.id As payment_id,
-                      payment.payment_date As payment_payment_date,
-                      payment.value As payment_value,
-                      owner.name As owner_name,
-                      owner.mobile As owner_mobile,
-                      property_type.name As property_type_name,
+                    Select transaction.id,
+                      transaction.date_1,
+                      transaction.date_2,
+                      transaction.value,
+                      transaction.status,
+                      transaction.removed,
+                      flag.name,
                       property.id As property_id,
                       property.name As property_name,
+                      property_type.name As property_type_name,
                       tower.name As tower_name,
                       site.name As site_name,
-                      payment.status As payment_status
-                    From payment
-                      Inner Join property On property.id = payment.property_id
+                      owner.name As owner_name,
+                      owner.mobile As owner_mobile
+                    From transaction
+                      Inner Join flag On flag.id = transaction.flag_id
+                      Inner Join owner On transaction.owner_id = owner.id
+                      Inner Join property On property.id = transaction.property_id 
                       Inner Join property_type On property_type.id = property.property_type_id
-                      Inner Join owner On owner.id = payment.owner_id
                       Inner Join tower On tower.id = property.tower_id
-                      Inner Join site On tower.site_id = site.id
-                    Where payment.removed = '0' AND payment.due_date BETWEEN '$from_date' and '$to_date 23:59:59'";
+                      Inner Join site On site.id = tower.site_id
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
             }else{
                 $query="
-                    Select payment.due_date As payment_due_date,
-                      payment.id As payment_id,
-                      payment.payment_date As payment_payment_date,
-                      payment.value As payment_value,
-                      owner.name As owner_name,
-                      owner.mobile As owner_mobile,
-                      property_type.name As property_type_name,
+                    Select transaction.id,
+                      transaction.date_1,
+                      transaction.date_2,
+                      transaction.value,
+                      transaction.status,
+                      transaction.removed,
+                      flag.name,
                       property.id As property_id,
                       property.name As property_name,
+                      property_type.name As property_type_name,
                       tower.name As tower_name,
                       site.name As site_name,
-                      payment.status As payment_status
-                    From payment
-                      Inner Join property On property.id = payment.property_id
+                      owner.name As owner_name,
+                      owner.mobile As owner_mobile
+                    From transaction
+                      Inner Join flag On flag.id = transaction.flag_id
+                      Inner Join owner On transaction.owner_id = owner.id
+                      Inner Join property On property.id = transaction.property_id 
                       Inner Join property_type On property_type.id = property.property_type_id
-                      Inner Join owner On owner.id = payment.owner_id
                       Inner Join tower On tower.id = property.tower_id
-                      Inner Join site On tower.site_id = site.id
-                    Where payment.removed = '0' AND payment.due_date BETWEEN '$payment_from_date' and '$payment_to_date 23:59:59'";
+                      Inner Join site On site.id = tower.site_id
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND transaction.date_1 BETWEEN '$payment_from_date' and '$payment_to_date 23:59:59'";
             }
             ?>
             <div class="col-sm-12">
@@ -167,13 +173,13 @@ include_once "layout/header.php";
                                             ?>
                                             <tr> <!--info plus-->
                                                 <th style="width:1em">
-                                                    <a class="btn btn-success btn-circle" type="button" href="payment.php?payment_id=<?php echo $payments['payment_id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <a class="btn btn-success btn-circle" type="button" href="payment.php?transaction_id=<?php echo $payments['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
-                                                    switch ($payments['payment_status']) {
+                                                    switch ($payments['status']) {
                                                         case "0":
                                                             ?>
                                                             <a data-toggle='modal'
-                                                               data-id='<?php echo $payments['payment_id']; ?>'
+                                                               data-id='<?php echo $payments['id']; ?>'
                                                                title='Add this item'
                                                                class='property_payment_receive btn btn-primary fa fa-check'
                                                                href='#property_payment_receive'></a>
@@ -184,26 +190,25 @@ include_once "layout/header.php";
                                                 </th>
                                                 <td class="middle wrap">
                                                     <?php
-                                                    $date1 = new DateTime($payments['payment_payment_date']);
-                                                    $date2 = new DateTime($payments['payment_due_date']);
-
+                                                    $date1 = new DateTime($payments['date_1']);
+                                                    $date2 = new DateTime($payments['date_2']);
                                                     $variable =$date1 ->diff($date2)->format("%a");
                                                     if($date1 < $date2){
                                                         $variable = $variable *-1;
                                                     }
-                                                    switch ($payments['payment_status']) {
+                                                    switch ($payments['status']) {
                                                         case "1":
-                                                        if ($variable <= 0)
+                                                        if ($variable >= 0)
                                                         {
                                                             ?>
                                                             <span class="big badge badge-primary arabic">
-                                                            <?php echo $payments['payment_payment_date'] ?>
+                                                            <?php echo $payments['date_2'] ?>
                                                             </span>
                                                             <?php
                                                         }else{
                                                             ?>
                                                             <span class="big badge badge-warning arabic">
-                                                                <?php echo $payments['payment_payment_date'] ?>
+                                                                <?php echo $payments['date_2'] ?>
                                                             </span>
                                                             <?php
                                                         }
@@ -211,7 +216,7 @@ include_once "layout/header.php";
                                                         case "0":
                                                             ?>
                                                             <span class="big badge badge-danger arabic">
-                                                                <?php echo $payments['payment_due_date'] ?>
+                                                                <?php echo $payments['date_1'] ?>
                                                             </span>
                                                             <?php
                                                             break;
@@ -222,7 +227,7 @@ include_once "layout/header.php";
                                                     ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $payments['payment_value']; ?>
+                                                    <?php echo $payments['value']; ?>
                                                 </td>
                                                 <td class="middle wrap">
                                                     <?php echo $payments['owner_name']; ?>
@@ -248,7 +253,7 @@ include_once "layout/header.php";
                                                     <?php echo $payments['site_name'] ?>
                                                 </td>
                                                     <?php
-                                                    if ($payments['payment_status'] == 0){?>
+                                                    if ($payments['status'] == 0){?>
                                                 <td class="middle wrap">لم يتم الدفع</td>
                                                         <?php
                                                         }else{

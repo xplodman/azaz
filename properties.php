@@ -93,22 +93,27 @@ include_once "layout/header.php";
                                             <tr data-child-value="<p><?php
                                             $y=0;
                                             $property_query_payment_info = mysqli_query($con,"
-                                                Select payment.type,
-                                                  payment.value,
-                                                  payment.due_date,
-                                                  payment.payment_date,
-                                                  payment.status,
-                                                  payment.id
-                                                From payment
-                                                  Inner Join property On property.id = payment.property_id
-                                                Where property.id = $property_info[property_id]") or die(mysqli_error($con));
+                                                Select transaction.id,
+                                                  transaction.date_1,
+                                                  transaction.date_2,
+                                                  transaction.value,
+                                                  transaction.status,
+                                                  flag.id As flag_id,
+                                                  flag.name As flag_name,
+                                                  property.name As property_name,
+                                                  owner.name As owner_name,
+                                                  property.id As property_id
+                                                From transaction
+                                                  Inner Join flag On flag.id = transaction.flag_id
+                                                  Inner Join property On property.id = transaction.property_id
+                                                  Inner Join owner On owner.id = transaction.owner_id
+                                                Where transaction.removed = 0 And property.id = $property_info[property_id]") or die(mysqli_error($con));
                                             while($property_payment_info = mysqli_fetch_assoc($property_query_payment_info))
                                             {
                                                 ?>
-                                                <a href='payment.php?payment_id=<?php echo $property_payment_info['id'] ?>'><span class='badge big badge-success'>
+                                                <a href='payment.php?transaction_id=<?php echo $property_payment_info['id'] ?>'><span class='badge big badge-success'>
                                                 <?php
-                                                $lengh_property_payment_info = count($property_payment_info);
-                                                switch ($property_payment_info['type']) {
+                                                switch ($property_payment_info['flag_id']) {
                                                     case "1":
                                                         echo "مقدم";
                                                         break;
@@ -117,6 +122,8 @@ include_once "layout/header.php";
                                                         break;
                                                     case "3":
                                                         echo "دفعة إستلام";
+                                                        break;
+                                                    default:
                                                         break;
                                                 }
                                                 $y++;
@@ -129,14 +136,14 @@ echo $property_payment_info['value'];
                                                 جنيه </button>
                                                 <?php
                                                 if ($property_payment_info['status'] == 0){
-                                                    echo $property_payment_info['due_date'];
+                                                    echo $property_payment_info['date_1'];
                                                     ?>
                                                     <span class='big badge badge-danger'>لم يتم الدفع</span>
 
-                                        <a data-toggle='modal' data-id='<?php echo $property_payment_info['id'];?>' title='Add this item' class='property_payment_receive btn btn-primary fa fa-plus' href='#property_payment_receive'></a>
+                                        <a data-toggle='modal' data-id='<?php echo $property_payment_info['id'];?>' title='Add this item' class='property_payment_receive btn btn-primary fa fa-check' href='#property_payment_receive'></a>
                                                     <?php
                                                 }else{
-                                                    echo $property_payment_info['payment_date'];
+                                                    echo $property_payment_info['date_2'];
                                                     ?>
                                                     <span class='big badge badge-primary'>تم الدفع</span>
                                                     <?php
@@ -209,12 +216,13 @@ echo $property_payment_info['value'];
                                                         echo "";
                                                     }else{
                                                         $payment_query_info = mysqli_query($con, "
-                                                        Select Count(property.id) As `property.id.count`
-                                                        From property
-                                                          Inner Join payment On property.id = payment.property_id
-                                                        Where payment.status = 0 And payment.property_id = $property_info[property_id] ");
+                                                            Select Coalesce(Count(property.id), 0) As property_id_count
+                                                            From transaction
+                                                              Inner Join property On property.id = transaction.property_id
+                                                            Where transaction.status = 0 And transaction.removed = 0 And
+                                                              transaction.flag_id in (1,2,3) And property.id = $property_info[property_id]");
                                                         $payment_info = mysqli_fetch_assoc($payment_query_info);
-                                                        if ($payment_info['property.id.count'] > 0){
+                                                        if ($payment_info['property_id_count'] > 0){
                                                             echo "جاري الدفع";
                                                         }else{
                                                             echo "تم الدفع";

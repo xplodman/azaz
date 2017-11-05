@@ -26,6 +26,11 @@
             font-family: myFirstFont;
             font-size:22px;
         }
+        span.hvbig {
+            font-family: myFirstFont;
+            font-size:20px;
+            text-align: center;
+        }
         span.small_arabic {
             font-family: myFirstFont;
             font-size:14px;

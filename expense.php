@@ -11,7 +11,7 @@ include_once "layout/header.php";
 ?>
 
 <?php
-if (!isset($_GET['expense_id'])){
+if (!isset($_GET['transaction_id'])){
     header("location:javascript://history.go(-1)");
     exit;
 }
@@ -35,17 +35,25 @@ if (!isset($_GET['expense_id'])){
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <?php
-                        $expense_id=$_GET['expense_id'];
+                        $transaction_id=$_GET['transaction_id'];
+
                         $result=mysqli_query($con, "
-                            Select expense.date,
-                              expense.subject,
-                              expense.value,
-                              site.id AS site_id,
-                              site.name,
-                              expense.id
-                            From expense
-                              Inner Join site On site.id = expense.site_id
-                            Where expense.id = $expense_id");
+                            Select transaction.id,
+                          transaction.date_1,
+                          transaction.value,
+                          transaction.removed,
+                          flag.name,
+                          site.id As site_id,
+                          site.name As site_name,
+                          custoder.name As custoder_name,
+                          reason.id As reason_id,
+                          reason.name As reason_name
+                        From transaction
+                          Inner Join flag On flag.id = transaction.flag_id
+                          LEFT Join site On site.id = transaction.site_id
+                          LEFT Join custoder On custoder.id = transaction.custoder_id
+                          LEFT Join reason On reason.id = transaction.reason_id
+                        Where transaction.id = $transaction_id");
                         $expense_info = mysqli_fetch_assoc($result)
                         ?>
                         <div class="ibox-title">
@@ -58,13 +66,13 @@ if (!isset($_GET['expense_id'])){
                         </div>
                         <div class="ibox-content">
                             <div id="collapseOne" class="panel-collapse collapse in">
-                                <form method="post" action="php/edit_expense.php?expense_id=<?php echo $expense_info['id']?>" class="form-horizontal">
+                                <form method="post" action="php/edit_expense.php?transaction_id=<?php echo $expense_info['id']?>" class="form-horizontal">
                                     <div class="form-group" id="data_1">
                                         <span class="arabic">
                                         <label class="col-sm-2 control-label">التاريخ </label>
                                         <div class="col-sm-10">
                                             <div class="input-group date">
-                                                <input type="text" id="date" class="form-control" name="expenses_date" value="<?php echo $expense_info['date']?>" required>
+                                                <input type="text" id="date" class="form-control" name="expenses_date" value="<?php echo $expense_info['date_1']?>" required>
                                                 <span class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                                 </span>
@@ -74,17 +82,30 @@ if (!isset($_GET['expense_id'])){
                                     </div>
                                     <div class="form-group">
                                         <span class="arabic">
-                                            <label class="col-sm-2 control-label">البيان</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="expenses_subject"  value="<?php echo $expense_info['subject']?>" required>
-                                            </div>
+
+                                        <label class="col-sm-2 control-label" for="form-field-2"> السبب </label>
+                                        <div class="col-sm-10">
+                                            <select class="chosen-select form-control" name="reason_id">
+                                                <option></option>
+                                                <?php
+                                                $query = "SELECT * FROM reason";
+                                                $results=mysqli_query($con, $query);
+                                                //loop
+                                                foreach ($results as $reason){
+                                                    ?>
+                                                    <option  <?php if ($expense_info['reason_id']==$reason['id']) echo "selected" ?> value="<?php echo $reason["id"];?>"><?php echo $reason["name"];?></option>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
                                         </span>
                                     </div>
                                     <div class="form-group">
                                         <span class="arabic">
                                             <label class="col-sm-2 control-label">المبلغ</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="text" name="expenses_value"   value="<?php echo $expense_info['value']?>" required/>
+                                                <input class="form-control" type="text" name="expenses_value"   value="<?php echo $expense_info['value']*-1?>" required/>
                                             </div>
                                         </span>
                                     </div>
@@ -121,6 +142,31 @@ if (!isset($_GET['expense_id'])){
                                                 Submit
                                             </button>
                                         </div>
+                                        <?php
+                                        if ($expense_info['removed']=="1"){
+                                            ?>
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a data-toggle='modal' class=" pull-right btn btn-info" href='' onclick="undelete_expense(<?php echo $expense_info['id'] ?>)">
+                                                        <span class="arabic">
+                                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                                   إستعادة السجل
+                                                        </span>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }else{
+                                            ?>
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a data-toggle='modal' class=" pull-right btn btn-danger" href='' onclick="delete_expense(<?php echo $expense_info['id'] ?>)">
+                                                        <span class="arabic">
+                                                            <i class="ace-icon fa fa-remove bigger-110"></i>
+حذف السجل
+                                                        </span>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </form>
                             </div>
@@ -213,11 +259,11 @@ include_once "layout/modals.php";
     });
 </script>
 <script>
+    <?php
+    if (isset($_GET['backresult'])){
+    $backresult=$_GET['backresult'];
+    ?>
     $(document).ready(function() {
-        <?php
-        if (isset($_GET['backresult'])){
-        $backresult=$_GET['backresult'];
-        ?>
         setTimeout(function() {
             toastr.options = {
                 closeButton: true,
@@ -232,11 +278,12 @@ include_once "layout/modals.php";
             }else{
                 echo "error('برجاء إعادة المحاولة', 'لم تتم العملية بنجاح')";
             }
-            };?>;
-
+?>
         }, 1300);
 
     });
+            <?php };?>;
+
 </script>
 
 <script>
@@ -284,47 +331,6 @@ include_once "layout/modals.php";
         calendarWeeks: true,
         autoclose: true,
         format: 'yyyy-m-d'
-    });
-</script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        var maxField = 15; //Input fields increment limitation
-        var addButton = $('.add_button'); //Add button selector
-        var wrapper = $('.field_wrapper'); //Input field wrapper
-        var fieldHTML = '<div>' +
-            '<input style="width: 50px" type="text" class="form-control" name="quantity[]"/>' +
-            '<select class="chosen-select2 form-control" name="category[]">' +
-            '<option></option>' +
-            <?php
-            $query6 = "SELECT * FROM `owncategory`";
-            $results6=mysqli_query($con, $query6);
-            //loop
-            foreach ($results6 as $owncategory){
-            ?>
-            '<option value="<?php echo $owncategory["owncategoryid"];?>"><?php echo $owncategory["owncategoryname"];?></option>' +
-            <?php
-            }
-            ?>
-            '</select>' +
-            '<input type="text" style="width: 250px" placeholder="item name" class="form-control" name="itemname[]">' +
-            '<button class="btn btn-danger remove_button" type="button">' +
-            '<i class="fa fa-minus"></i>' +
-            '</button>' +
-            '</div>'; //New input field html
-        var x = 1; //Initial field counter is 1
-        $(addButton).click(function(){ //Once add button is clicked
-            if(x < maxField){ //Check maximum number of input fields
-                x++; //Increment field counter
-                $(wrapper).append(fieldHTML); // Add field html
-                $('.chosen-select2').chosen({width: "200px"});
-
-            }
-        });
-        $(wrapper).on('click', '.remove_button', function(e){ //Once remove button is clicked
-            e.preventDefault();
-            $(this).parent('div').remove(); //Remove field html
-            x--; //Decrement field counter
-        });
     });
 </script>
 <script>
@@ -392,6 +398,53 @@ include_once "layout/modals.php";
     });
 
 </script>
-
+<script>
+    function delete_expense(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "هذا السجل سيتم حذفه نهائياً!!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel plx!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم حذف السجل بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/delete_expense.php?expense_id="+id;
+                    }
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الحذف", "error");
+                }
+            });
+    };
+    function undelete_expense(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "سيتم إستعادة الملف من سلة المحذوفات!!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, show it!",
+                cancelButtonText: "No, cancel plx!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم إسترجاع السجل بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/undelete_expense.php?expense_id="+id;
+                    }
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الإسترجاع", "error");
+                }
+            });
+    };
+</script>
 </body>
 </html>

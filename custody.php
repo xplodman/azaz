@@ -11,7 +11,7 @@ include_once "layout/header.php";
 ?>
 
 <?php
-if (!isset($_GET['custody_id'])){
+if (!isset($_GET['transaction_id'])){
     header("location:javascript://history.go(-1)");
     exit;
 }
@@ -35,22 +35,25 @@ if (!isset($_GET['custody_id'])){
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <?php
-                        $custody_id=$_GET['custody_id'];
+                        $transaction_id=$_GET['transaction_id'];
                         $result=mysqli_query($con, "
-                            Select custoder_accounting.date,
-                              custoder_accounting.subject,
-                              custoder_accounting.value,
-                              custoder_accounting.id,
-                              custoder_accounting.status,
-                              custoder_accounting.custoder_id,
-                              custoder_accounting.type,
-                              custoder.name,
-                              site.id As site_id,
-                              site.name As site_name
-                            From custoder_accounting
-                              Inner Join site On site.id = custoder_accounting.site_id
-                              Inner Join custoder On custoder.id = custoder_accounting.custoder_id
-                            Where custoder_accounting.id = $custody_id");
+                            Select transaction.id,
+                          transaction.date_1,
+                          transaction.value,
+                          transaction.removed,
+                          flag.name As flag_name,
+                          site.id As site_id,
+                          site.name As site_name,
+                          custoder.id As custoder_id,
+                          custoder.name As custoder_name,
+                          reason.id As reason_id,
+                          reason.name As reason_name
+                        From transaction
+                          Inner Join flag On flag.id = transaction.flag_id
+                          Inner Join site On site.id = transaction.site_id
+                          Inner Join custoder On custoder.id = transaction.custoder_id
+                          Inner Join reason On reason.id = transaction.reason_id
+                        Where transaction.id = $transaction_id");
                         $custody_info = mysqli_fetch_assoc($result)
                         ?>
                         <div class="ibox-title">
@@ -63,13 +66,13 @@ if (!isset($_GET['custody_id'])){
                         </div>
                         <div class="ibox-content">
                             <div id="collapseOne" class="panel-collapse collapse in">
-                                <form method="post" action="php/edit_custody.php?custody_id=<?php echo $custody_info['id']?>" class="form-horizontal">
+                                <form method="post" action="php/edit_custody.php?transaction_id=<?php echo $custody_info['id']?>" class="form-horizontal">
                                     <div class="form-group" id="data_1">
                                         <span class="arabic">
                                         <label class="col-sm-2 control-label">التاريخ </label>
                                         <div class="col-sm-10">
                                             <div class="input-group date">
-                                                <input type="text" id="date" class="form-control" name="custody_date" value="<?php echo $custody_info['date']?>" required>
+                                                <input type="text" id="date" class="form-control" name="date_1" value="<?php echo $custody_info['date_1']?>" required>
                                                 <span class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                                 </span>
@@ -79,9 +82,21 @@ if (!isset($_GET['custody_id'])){
                                     </div>
                                     <div class="form-group">
                                         <span class="arabic">
-                                            <label class="col-sm-2 control-label">البيان</label>
+                                            <label class="col-sm-2 control-label">السبب</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="custody_subject"  value="<?php echo $custody_info['subject']?>" required>
+                                                <select class="chosen-select form-control" name="reason_id">
+                                                    <option></option>
+                                                    <?php
+                                                    $query = "SELECT * FROM reason";
+                                                    $results=mysqli_query($con, $query);
+                                                    //loop
+                                                    foreach ($results as $reason){
+                                                        ?>
+                                                        <option  <?php if ($custody_info['reason_id']== $reason['id']) echo "selected";?> value="<?php echo $reason["id"];?>"><?php echo $reason["name"];?></option>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                </select>
                                             </div>
                                         </span>
                                     </div>
@@ -89,20 +104,7 @@ if (!isset($_GET['custody_id'])){
                                         <span class="arabic">
                                             <label class="col-sm-2 control-label">المبلغ</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="text" name="custody_value"   value="<?php echo $custody_info['value']?>" required/>
-                                            </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="arabic">
-                                            <label class="col-sm-2 control-label">النوع</label>
-                                            <div class="col-sm-10">
-                                                <div class="i-checks">
-                                                    <label> <input <?php if ($custody_info['type']== 1) echo "checked";?> type="radio" value="1" name="type"> <i></i> إضافة </label>
-                                                </div>
-                                                <div class="i-checks">
-                                                    <label> <input <?php if ($custody_info['type']== 0) echo "checked";?> type="radio"  value="0" name="type"> <i></i> خصم </label>
-                                                </div>
+                                                <input class="form-control" type="text" name="value"   value="<?php echo $custody_info['value']*-1?>" required/>
                                             </div>
                                         </span>
                                     </div>
@@ -118,7 +120,7 @@ if (!isset($_GET['custody_id'])){
                                                         //loop
                                                         foreach ($results as $custoder){
                                                             ?>
-                                                            <option  <?php if ($custody_info['custoder_id']= $custoder['id']) echo "selected";?> value="<?php echo $custoder["id"];?>"><?php echo $custoder["name"];?></option>
+                                                            <option  <?php if ($custody_info['custoder_id']== $custoder['id']) echo "selected";?> value="<?php echo $custoder["id"];?>"><?php echo $custoder["name"];?></option>
                                                             <?php
                                                         }
                                                         ?>
@@ -159,6 +161,31 @@ if (!isset($_GET['custody_id'])){
                                                 Submit
                                             </button>
                                         </div>
+                                        <?php
+                                        if ($custody_info['removed']=="1"){
+                                            ?>
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a data-toggle='modal' class=" pull-right btn btn-info" href='' onclick="undelete_custody(<?php echo $custody_info['id'] ?>)">
+                                                        <span class="arabic">
+                                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                                   إستعادة السجل
+                                                        </span>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }else{
+                                            ?>
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a data-toggle='modal' class=" pull-right btn btn-danger" href='' onclick="delete_custody(<?php echo $custody_info['id'] ?>)">
+                                                        <span class="arabic">
+                                                            <i class="ace-icon fa fa-remove bigger-110"></i>
+حذف السجل
+                                                        </span>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </form>
                             </div>
@@ -374,61 +401,52 @@ include_once "layout/modals.php";
     });
 </script>
 <script>
-
-    $(document).ready(function () {
-
-        $('.demo1').click(function(){
-            swal({
-                title: "Welcome in Alerts",
-                text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            });
-        });
-
-        $('.demo2').click(function(){
-            swal({
-                title: "Good job!",
-                text: "You clicked the button!",
-                type: "success"
-            });
-        });
-
-        $('.demo3').click(function () {
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this imaginary file!",
+    function delete_custody(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "هذا السجل سيتم حذفه نهائياً!!!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            }, function () {
-                swal("Deleted!", "Your imaginary file has been deleted.", "success");
-            });
-        });
-
-        $('.demo4').click(function () {
-            swal({
-                    title: "هل أنت متأكد؟",
-                    text: "هذا السجل سيتم حذفه نهائياً!!!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "No, cancel plx!",
-                    closeOnConfirm: false,
-                    closeOnCancel: false },
-                function (isConfirm) {
-                    if (isConfirm) {
-                        swal("Deleted!", "تم حذف السجل بنجاح.", "success");
-                    } else {
-                        swal("Cancelled", "تم إيقاف عملية الحذف", "error");
+                cancelButtonText: "No, cancel plx!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم حذف السجل بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/delete_custody.php?custody_id="+id;
                     }
-                });
-        });
-
-
-    });
-
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الحذف", "error");
+                }
+            });
+    };
+    function undelete_custody(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "سيتم إستعادة الملف من سلة المحذوفات!!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, show it!",
+                cancelButtonText: "No, cancel plx!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم إسترجاع السجل بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/undelete_custody.php?custody_id="+id;
+                    }
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الإسترجاع", "error");
+                }
+            });
+    };
 </script>
 
 </body>

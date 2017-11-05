@@ -1,20 +1,25 @@
 <?php
 include_once "connection.php";
-$custody_id=$_GET['custody_id'];
-$custody_date=$_POST['custody_date'];
-$custody_subject=$_POST['custody_subject'];
-$custody_value=$_POST['custody_value'];
-$type=$_POST['type'];
-$custoder_id=$_POST['custoder_id'];
+$transaction_id=$_GET['transaction_id'];
+session_start();
+$user_id=$_SESSION['azaz']['id'];
+$date_1=$_POST['date_1'];
+$value=$_POST['value'];
 $site_id=$_POST['site_id'];
+$custoder_id=$_POST['custoder_id'];
+$reason_id=$_POST['reason_id'];
+if ($value > 0)
+{
+    $value=$value*-1;
+}
+$update_custoder = mysqli_query($con, "UPDATE `transaction` SET `date_1` = '$date_1', `value` = '$value', `site_id` = '$site_id', `custoder_id` = '$custoder_id', `reason_id` = '$reason_id', `users_id` = '$user_id', `update_time` = NOW() WHERE `transaction`.`id` = '$transaction_id';")or die(mysqli_error($con));
 
-$update_custoder = mysqli_query($con, "UPDATE `custoder_accounting` SET `type` = '$type', `custoder_id` = '$custoder_id', `date` = '$custody_date', `subject` = '$custody_subject', `value` = '$custody_value', `update_time` = CURRENT_TIMESTAMP , `site_id` = '$site_id' WHERE `custoder_accounting`.`id` = '$custody_id';")or die(mysqli_error($con));
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 
 if ($update_custoder) {
     mysqli_commit($con);
-    header('Location: '.$uri_parts[0].'?backresult=1&custody_id='.$custody_id.'');
+    header('Location: '.$uri_parts[0].'?backresult=1&transaction_id='.$transaction_id.'');
     $fh = fopen('/tmp/track.txt','a');
     fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
     fclose($fh);
@@ -22,7 +27,7 @@ if ($update_custoder) {
 }
 else {
 
-    header('Location: '.$uri_parts[0].'?backresult=0&custody_id='.$custody_id.'');
+    header('Location: '.$uri_parts[0].'?backresult=0&transaction_id='.$transaction_id.'');
     $fh = fopen('/tmp/track.txt','a');
     fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
     fclose($fh);

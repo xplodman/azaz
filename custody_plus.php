@@ -6,10 +6,16 @@ include_once "php/checkauthentication.php";
 <html>
 
 <?php
-$pageTitle = 'القسط';
+$pageTitle = 'سجل إضافة عهدة';
 include_once "layout/header.php";
 ?>
 
+<?php
+if (!isset($_GET['transaction_id'])){
+    header("location:javascript://history.go(-1)");
+    exit;
+}
+?>
 <body class="animated fadeIn">
 <div id="wrapper">
     <?php
@@ -21,43 +27,31 @@ include_once "layout/header.php";
         ?>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInLeftBig">
             <div class="col-sm-4">
-                <h2><p>تفاصيل السجل</p></h2>
+                <h2><p>تفاصيل سجل إضافة عهدة</p></h2>
             </div>
         </div>
-        <div class="animated fadeInRightBig">
+        <div class="wrapper wrapper-content animated fadeInRightBig">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <?php
                         $transaction_id=$_GET['transaction_id'];
                         $result=mysqli_query($con, "
-                    Select transaction.id,
-                      transaction.date_1,
-                      transaction.date_2,
-                      transaction.value,
-                      transaction.status,
-                      transaction.removed,
-                      flag.name As flag_name,
-                      property.name As property_name,
-                      property_type.name As property_type_name,
-                      tower.name As tower_name,
-                      site.name As site_name,
-                      owner.id As owner_id,
-                      owner.name As owner_name,
-                      owner.mobile As owner_mobile
-                    From transaction
-                      Inner Join flag On flag.id = transaction.flag_id
-                      Inner Join owner On transaction.owner_id = owner.id,
-                      property
-                      Inner Join property_type On property_type.id = property.property_type_id
-                      Inner Join tower On tower.id = property.tower_id
-                      Inner Join site On site.id = tower.site_id
-                    Where transaction.id = $transaction_id And transaction.removed = 0 And
-                      transaction.flag_id In ('1', '2', '3')");
-                        $payment_info = mysqli_fetch_assoc($result)
+                            Select transaction.id,
+                          transaction.date_1,
+                          transaction.value,
+                          transaction.removed,
+                          flag.name As flag_name,
+                          custoder.id As custoder_id,
+                          custoder.name As custoder_name
+                        From transaction
+                          Inner Join flag On flag.id = transaction.flag_id
+                          Inner Join custoder On custoder.id = transaction.custoder_id
+                        Where transaction.id = $transaction_id");
+                        $custody_info = mysqli_fetch_assoc($result)
                         ?>
                         <div class="ibox-title">
-                            <h5><p>للتعديل على القسط</p></h5>
+                            <h5><span class="big"> لمشاهدة التفاصيل و تعديلها</span> </h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -66,29 +60,13 @@ include_once "layout/header.php";
                         </div>
                         <div class="ibox-content">
                             <div id="collapseOne" class="panel-collapse collapse in">
-                                <form method="post" id="form_submit" action="php/edit_payment.php?transaction_id=<?php echo $payment_info['id']; ?>" class="form-horizontal">
-
-                                    <input type="hidden" name="owner_id" value="<?php echo $payment_info['owner_id']; ?>">
-
+                                <form method="post" action="php/edit_custody_plus.php?transaction_id=<?php echo $custody_info['id']?>" class="form-horizontal">
                                     <div class="form-group" id="data_1">
                                         <span class="arabic">
-                                        <label class="col-sm-2 control-label">تاريخ الإستحقاق </label>
+                                        <label class="col-sm-2 control-label">التاريخ </label>
                                         <div class="col-sm-10">
                                             <div class="input-group date">
-                                                <input type="text" id="date" class="form-control" name="date_1"  value="<?php echo $payment_info['date_1']; ?>">
-                                                <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group" id="data_1">
-                                        <span class="arabic">
-                                        <label class="col-sm-2 control-label">تاريخ السداد </label>
-                                        <div class="col-sm-10">
-                                            <div class="input-group date">
-                                                <input type="text" id="date" class="form-control" name="date_2" value="<?php echo $payment_info['date_2']; ?>" <?php if ($payment_info['status']==0){ echo "disabled";}?>>
+                                                <input type="text" id="date" class="form-control" name="date_1" value="<?php echo $custody_info['date_1']?>" required>
                                                 <span class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                                 </span>
@@ -98,67 +76,29 @@ include_once "layout/header.php";
                                     </div>
                                     <div class="form-group">
                                         <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> نوع القسط </label>
+                                            <label class="col-sm-2 control-label">المبلغ</label>
                                             <div class="col-sm-10">
-                                                <input required class="form-control" type="text" id="form-field-2" value="<?php
-                                                echo $payment_info['flag_name'];
-                                                ?>" readonly/>
+                                                <input class="form-control" type="text" name="value"   value="<?php echo $custody_info['value']*-1?>" required/>
                                             </div>
                                         </span>
                                     </div>
                                     <div class="form-group">
                                         <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
+                                            <label class="col-sm-2 control-label">المتعهد</label>
                                             <div class="col-sm-10">
-                                                <input required class="form-control" type="number" id="form-field-2" name="value" value="<?php echo $payment_info['value']; ?>"/>
-                                            </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> أسم المشتري </label>
-                                            <div class="col-sm-10">
-                                                <input required class="form-control" type="text" name="owner_name" value="<?php echo $payment_info['owner_name']; ?>" />
-                                            </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> رقم المشتري </label>
-                                            <div class="col-sm-10">
-                                                <input required class="form-control" type="text" name="owner_number" value="<?php echo $payment_info['owner_mobile']; ?>" />
-                                            </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> رقم الوحدة</label>
-                                            <div class="col-sm-10">
-                                                <input required class="form-control" type="text" value="<?php echo $payment_info['property_name']; ?>" readonly />
-                                            </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2">نوع الوحدة</label>
-                                            <div class="col-sm-10">
-                                                <input required class="form-control" type="text" value="<?php echo $payment_info['property_type_name']; ?>" readonly />
-                                            </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> البرج</label>
-                                            <div class="col-sm-10">
-                                                <input required class="form-control" type="text" value="<?php echo $payment_info['tower_name']; ?>" readonly />
-                                            </div>
-                                        </span>
-                                    </div>
-                                    <div class="form-group">
-                                        <span class="arabic">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> الموقع</label>
-                                            <div class="col-sm-10">
-                                                <input required class="form-control" type="text" value="<?php echo $payment_info['site_name']; ?>" readonly />
+                                                <select class="chosen-select form-control" name="custoder_id">
+                                                    <option></option>
+                                                        <?php
+                                                        $query = "SELECT * FROM custoder";
+                                                        $results=mysqli_query($con, $query);
+                                                        //loop
+                                                        foreach ($results as $custoder){
+                                                            ?>
+                                                            <option  <?php if ($custody_info['custoder_id']== $custoder['id']) echo "selected";?> value="<?php echo $custoder["id"];?>"><?php echo $custoder["name"];?></option>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                </select>
                                             </div>
                                         </span>
                                     </div>
@@ -176,34 +116,30 @@ include_once "layout/header.php";
                                             </button>
                                         </div>
                                         <?php
-                                        switch ($payment_info['status']) {
-                                            case "0":
-                                                ?>
-                                                <div class="col-sm-4 col-sm-offset-2">
-                                                    <a data-toggle='modal' class=" pull-right property_payment_receive btn btn-info" href='#property_payment_receive' data-id='<?php echo $payment_info['id']; ?>'>
-                                                        <span class="arabic">
-                                                            <i class="ace-icon fa fa-usd bigger-110"></i>
-                                                    تحصيل القسط
-                                                        </span>
-                                                    </a>
-                                                </div>
-                                                <?php
-                                                break;
-                                            case "1":
-                                                ?>
-                                                <div class="col-sm-4 col-sm-offset-2">
-                                                    <a data-toggle='modal' class=" pull-right property_payment_receive btn btn-primary">
+                                        if ($custody_info['removed']=="1"){
+                                            ?>
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a data-toggle='modal' class=" pull-right btn btn-info" href='' onclick="undelete_custody(<?php echo $custody_info['id'] ?>)">
                                                         <span class="arabic">
                                                             <i class="ace-icon fa fa-check bigger-110"></i>
-تم السداد
+                                                   إستعادة السجل
                                                         </span>
-                                                    </a>
-                                                </div>
-                                                <?php
-                                                break;
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }else{
+                                            ?>
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <a data-toggle='modal' class=" pull-right btn btn-danger" href='' onclick="delete_custody(<?php echo $custody_info['id'] ?>)">
+                                                        <span class="arabic">
+                                                            <i class="ace-icon fa fa-remove bigger-110"></i>
+حذف السجل
+                                                        </span>
+                                                </a>
+                                            </div>
+                                            <?php
                                         }
                                         ?>
-
                                     </div>
                                 </form>
                             </div>
@@ -368,14 +304,6 @@ include_once "layout/modals.php";
         autoclose: true,
         format: 'yyyy-m-d'
     });
-    var date_input=$('input[name="payment_date"]'); //our date input has the name "date"
-    var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-    date_input.datepicker({
-        format: 'yyyy-m-d',
-        container: container,
-        todayHighlight: true,
-        autoclose: true,
-    })
 </script>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -427,10 +355,53 @@ include_once "layout/modals.php";
     });
 </script>
 <script>
-    $(document).on("click", ".property_payment_receive", function () {
-        var payment_id = $(this).data('id');
-        $(".modal-body #payment_id").val( payment_id );
-    });
+    function delete_custody(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "هذا السجل سيتم حذفه نهائياً!!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel plx!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم حذف السجل بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/delete_custody.php?custody_id="+id;
+                    }
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الحذف", "error");
+                }
+            });
+    };
+    function undelete_custody(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "سيتم إستعادة الملف من سلة المحذوفات!!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, show it!",
+                cancelButtonText: "No, cancel plx!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم إسترجاع السجل بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/undelete_custody.php?custody_id="+id;
+                    }
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الإسترجاع", "error");
+                }
+            });
+    };
 </script>
+
 </body>
 </html>

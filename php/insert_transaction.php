@@ -1,5 +1,7 @@
 <?php
 include_once "connection.php";
+session_start();
+$user_id=$_SESSION['azaz']['id'];
 $property_number=$_POST['property_number'];
 $owner_name=$_POST['owner_name'];
 $owner_number=$_POST['owner_number'];
@@ -22,18 +24,19 @@ $maxownerid = mysqli_query($con, "SELECT MAX(id) FROM owner");
 $maxownerid = mysqli_fetch_row($maxownerid);
 $maxownerid = implode("", $maxownerid);
 
-$insert_owner_has_property = mysqli_query($con, "INSERT INTO `owner_has_property` (`id`, `owner_id`, `property_id`, `create_time`, `update_time`, `status`, `contract_date`) VALUES (NULL, '$maxownerid', '$property_number', CURRENT_TIMESTAMP, NULL, '1', '$contract_date');")or die(mysqli_error($con));
+$insert_owner_has_property = mysqli_query($con, "INSERT INTO `owner_has_property` (`id`, `owner_id`, `property_id`, `create_time`, `update_time`, `status`, `contract_date`, `users_id`) VALUES (NULL, '$maxownerid', '$property_number', CURRENT_TIMESTAMP, NULL, '1', '$contract_date', '$user_id');")or die(mysqli_error($con));
 
-$insert_first_payment = mysqli_query($con, "INSERT INTO `payment` (`id`, `due_date`, `payment_date`, `value`, `create_time`, `update_time`, `property_id`, `owner_id`, `status`, `type`, `removed`) VALUES (NULL, '$first_date', '$first_date', '$first_price', CURRENT_TIMESTAMP, NULL, '$property_number', '$maxownerid', '1', '1', '0');")or die(mysqli_error($con));
+$insert_first_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$first_date', '$first_date', '$first_price', '1', '0', '1', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
 if ($len_date == $len_price) {
     for($y=0 ; $y < $len_date ; $y++)
     {
-        $insert_payment = mysqli_query($con, "INSERT INTO `payment` (`id`, `due_date`, `payment_date`, `value`, `create_time`, `update_time`, `property_id`, `owner_id`, `status`, `type`, `removed`) VALUES (NULL, '$date[$y]', NULL, '$price[$y]', CURRENT_TIMESTAMP, NULL, '$property_number', '$maxownerid', '0', '2', '0');")or die(mysqli_error($con));
+        $insert_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$date[$y]', NULL, '$price[$y]', '0', '0', '2', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
     }
 }
 
-$insert_last_payment = mysqli_query($con, "INSERT INTO `payment` (`id`, `due_date`, `payment_date`, `value`, `create_time`, `update_time`, `property_id`, `owner_id`, `status`, `type`, `removed`) VALUES (NULL, '$last_date', NULL, '$last_price', CURRENT_TIMESTAMP, NULL, '$property_number', '$maxownerid', '0', '3', '0');")or die(mysqli_error($con));
+$insert_last_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$last_date', NULL, '$last_price', '0', '0', '3', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
+
 
 
 
