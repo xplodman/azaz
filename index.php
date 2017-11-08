@@ -279,7 +279,7 @@ Group By
                                                             <span class="arabic"><?php echo $count_properties_info['name'] ?></span>
                                                         </div>
                                                         <div class="col-xs-8 text-right">
-                                                            <span class="arabic"> تم البيع </span>
+                                                            <span class="arabic"> تم السداد </span>
 
                                                             <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
                                                         </div>
@@ -314,7 +314,7 @@ Group By property_type.name
                                                             <span class="arabic"><?php echo $count_properties_info['name'] ?></span>
                                                         </div>
                                                         <div class="col-xs-8 text-right">
-                                                            <span class="arabic"> محجوز </span>
+                                                            <span class="arabic"> تم البيع </span>
 
                                                             <h2 class="font-bold"><?php echo $count_properties_info['property_count'] ?></h2>
                                                         </div>
@@ -363,10 +363,10 @@ Group By property_type.name
                                             <?php
                                         }
                                         ?>
-                                        <div class="col-lg-12">
-                                            <br><br><br>
-                                            <div id="lineChart"></div>
-                                        </div>
+<!--                                        <div class="col-lg-12">-->
+<!--                                            <br><br><br>-->
+<!--                                            <div id="lineChart"></div>-->
+<!--                                        </div>-->
                                     </div>
                                 </div>
                             </div>

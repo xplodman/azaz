@@ -20,17 +20,11 @@ $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 if ($update_custoder) {
     mysqli_commit($con);
     header('Location: '.$uri_parts[0].'?backresult=1&transaction_id='.$transaction_id.'');
-    $fh = fopen('/tmp/track.txt','a');
-    fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
-    fclose($fh);
     exit;
 }
 else {
 
     header('Location: '.$uri_parts[0].'?backresult=0&transaction_id='.$transaction_id.'');
-    $fh = fopen('/tmp/track.txt','a');
-    fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
-    fclose($fh);
     exit;}
 
 

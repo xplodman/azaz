@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once "php/connection.php";
 ?>
 <!DOCTYPE html>
@@ -69,7 +70,6 @@ include_once "layout/header.php";
 </style>
 <?php
 if(isset($_POST['submit'])) {
-    session_start();
 
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -83,32 +83,35 @@ From users
 Where users.username = '$username' And users.password = '$password' ");
 
     if (mysqli_num_rows($result) != 0) {
-        header('Location: index.php');
-        $fh = fopen('/tmp/track.txt','a');
-        fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
-        fclose($fh);
 
         $row = mysqli_fetch_assoc($result);
 
 
         $_SESSION['azaz']['timestamp'] = time();
         $_SESSION['azaz']['authenticate'] = "true";
-        $_SESSION['azaz']['role'] = $row[role];
-        $_SESSION['azaz']['id'] = $row[id];
-        $_SESSION['azaz']['nickname'] = $row[nickname];
+        $_SESSION['azaz']['role'] = $row['role'];
+        $_SESSION['azaz']['id'] = $row['id'];
+        $_SESSION['azaz']['nickname'] = $row['nickname'];
+        if ($_SESSION['azaz']['role'] < 2){
+            ?>
+            <meta http-equiv="Refresh" content="0; url=index.php">
+            <?php
+        }elseif ($_SESSION['azaz']['role'] < 3){
+            ?>
+            <meta http-equiv="Refresh" content="0; url=payments.php">
+            <?php
+        }
         exit;
 
     } else {
-        header('Location: login.php?backresult=0');
-        $fh = fopen('/tmp/track.txt', 'a');
-        fwrite($fh, $_SERVER['REMOTE_ADDR'] . ' ' . date('c') . "\n");
-        fclose($fh);
+        ?>
+        <meta http-equiv="Refresh" content="0; url=login.php?backresult=0">
+        <?php
         $_SESSION['azaz']['username'] = $username;
         exit;
     }
 
 }
-session_start();
 ?>
 <body>
 <div class="middle-box text-center loginscreen animated fadeInDown">

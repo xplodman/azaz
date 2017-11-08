@@ -160,18 +160,25 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2">نوع العقار </label>
                             <div class="col-sm-10">
-                                <select required class="chosen-select" size="6" name="property_type" id="form-field-13">
-                                    <?php
-                                    $query = "SELECT * FROM property_type";
-                                    $results=mysqli_query($con, $query);
-                                    //loop
-                                    foreach ($results as $property_type){
-                                        ?>
-                                        <option value="<?php echo $property_type["id"];?>"><?php echo $property_type["name"];?></option>
+                                <div class="input-group">
+                                    <select required class="chosen-select" size="6" name="property_type" id="form-field-13">
                                         <?php
-                                    }
-                                    ?>
-                                </select>
+                                        $query = "SELECT * FROM property_type";
+                                        $results=mysqli_query($con, $query);
+                                        //loop
+                                        foreach ($results as $property_type){
+                                            ?>
+                                            <option value="<?php echo $property_type["id"];?>"><?php echo $property_type["name"];?></option>
+                                            <?php
+                                        }
+                                        ?>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_property_type">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+								    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -326,19 +333,26 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> السبب </label>
                             <div class="col-sm-10">
-                                <select class="chosen-select form-control" name="reason_id">
-                                    <option></option>
-                                    <?php
-                                    $query = "SELECT * FROM reason";
-                                    $results=mysqli_query($con, $query);
-                                    //loop
-                                    foreach ($results as $reason){
-                                        ?>
-                                        <option value="<?php echo $reason["id"];?>"><?php echo $reason["name"];?></option>
+                                <div class="input-group">
+                                    <select class="chosen-select form-control" name="reason_id">
+                                        <option></option>
                                         <?php
-                                    }
-                                    ?>
-                                </select>
+                                        $query = "SELECT * FROM reason";
+                                        $results=mysqli_query($con, $query);
+                                        //loop
+                                        foreach ($results as $reason){
+                                            ?>
+                                            <option value="<?php echo $reason["id"];?>"><?php echo $reason["name"];?></option>
+                                            <?php
+                                        }
+                                        ?>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_reason">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+								    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -612,6 +626,145 @@ include_once "php/functions.php";
                         <input required class="form-control" type="hidden" id="payment_id" name="payment_id" readonly="readonly"/>
                         <input required class="form-control" type="hidden" id="back_path" value="back_path_payment" name="back_path" readonly="readonly"/>
 
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info"  type="Submit"  name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="add_property_type" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated rotateIn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة نوع عقار</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post" action="php/insert_property_type.php">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> أسم النوع </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="property_type_name" />
+                            </div>
+                        </div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info"  type="Submit"  name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="add_reason" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated rotateIn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة نوع المصروف</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post" action="php/insert_reason.php">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> أسم المصروف </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="reason_name" />
+                            </div>
+                        </div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info"  type="Submit"  name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="add_user" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated rotateIn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة مستخدم</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post" action="php/insert_user.php">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> أسم المستخدم </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="nickname" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> أسم الدخول </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="username" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> كلمة السر </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="password" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <font face="myFirstFont">
+                                <label class="col-sm-2 control-label">Professor role</label>
+                                <div class="col-sm-10">
+                                    <div class="i-checks">
+                                        <label>
+                                            <input type="radio" value="1" name="role">
+                                            Administrator
+                                        </label>
+                                    </div>
+                                    <div class="i-checks">
+                                        <label>
+                                            <input type="radio" value="2" name="role">
+                                            Power user
+                                        </label>
+                                    </div>
+                                    <div class="i-checks">
+                                        <label>
+                                            <input type="radio" value="3" name="role">
+                                            User
+                                        </label>
+                                    </div>
+                                </div>
+                            </font>
+                        </div>
                         <div class="clearfix form-actions">
                             <div class="col-md-offset-3 col-md-9">
                                 <button class="btn btn-info"  type="Submit"  name="submit">

@@ -54,23 +54,62 @@ function active($currect_page){
                         <font color="red">A</font>Z<font color="red">A</font>Z
                     </div>
                 </li>
-                <li class="<?php active('index.php');?>">
-                    <a href="index.php">
-                        <i class="fa fa-area-chart"></i> <span class="nav-label">الصفحة الرئيسية</span>
-                    </a>
-                </li>
-                <li class="<?php active('properties.php');?>">
-                    <a href="properties.php"><i class="fa fa-bank"></i> <span class="nav-label">العقارات</span></a>
-                </li>
-                <li class="<?php active('payments.php');?>">
-                    <a href="payments.php"><i class="fa fa-book"></i> <span class="nav-label">الدفعات</span></a>
-                </li>
-                <li class="<?php active('expenses.php');?>">
-                    <a href="expenses.php"><i class="fa fa-usd"></i> <span class="nav-label">المصاريف</span></a>
-                </li>
-                <li class="<?php active('custodies.php');?>">
-                    <a href="custodies.php"><i class="fa fa-fax"></i> <span class="nav-label">العهدة</span></a>
-                </li>
+                <?php
+                if ($_SESSION['azaz']['role'] < 2){
+                    ?>
+                    <li class="<?php active('index.php');?>">
+                        <a href="index.php">
+                            <i class="fa fa-area-chart"></i> <span class="nav-label">الصفحة الرئيسية</span>
+                        </a>
+                    </li>
+                    <?php
+                }
+                ?>
+                <?php
+                if ($_SESSION['azaz']['role'] < 2){
+                    ?>
+                    <li class="<?php active('properties.php');?>">
+                        <a href="properties.php"><i class="fa fa-bank"></i> <span class="nav-label">العقارات</span></a>
+                    </li>
+                    <?php
+                }
+                ?>
+                <?php
+                if ($_SESSION['azaz']['role'] < 3){
+                    ?>
+                    <li class="<?php active('payments.php');?>">
+                        <a href="payments.php"><i class="fa fa-book"></i> <span class="nav-label">الدفعات</span></a>
+                    </li>
+                    <?php
+                }
+                ?>
+                <?php
+                if ($_SESSION['azaz']['role'] < 2){
+                    ?>
+                    <li class="<?php active('expenses.php');?>">
+                        <a href="expenses.php"><i class="fa fa-usd"></i> <span class="nav-label">المصاريف</span></a>
+                    </li>
+                    <?php
+                }
+                ?>
+                <?php
+                if ($_SESSION['azaz']['role'] < 2){
+                    ?>
+                    <li class="<?php active('custodies.php');?>">
+                        <a href="custodies.php"><i class="fa fa-fax"></i> <span class="nav-label">العهدة</span></a>
+                    </li>
+                    <?php
+                }
+                ?>
+                <?php
+                if ($_SESSION['azaz']['role'] < 2){
+                    ?>
+                    <li class="<?php active('settings.php');?>">
+                        <a href="settings.php"><i class="fa fa-cogs"></i> <span class="nav-label">الإعدادات</span></a>
+                    </li>
+                    <?php
+                }
+                ?>
             </ul>
         </font>
     </div>

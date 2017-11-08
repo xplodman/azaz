@@ -1,19 +1,12 @@
 <?php
 include_once "connection.php";
-session_start();
-$user_id=$_SESSION['azaz']['id'];
-$date_1=$_POST['date_1'];
-$value=$_POST['value'];
-$site_id=$_POST['site_id'];
-$custoder_id=$_POST['custoder_id'];
-$reason_id=$_POST['reason_id'];
-if ($value > 0)
-{
-    $value=$value*-1;
-}
-$query = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$date_1', NULL, '$value', NULL, '0', '5', NULL, NULL, '$site_id', '$custoder_id', '$reason_id', '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
+$nickname=$_POST['nickname'];
+$username=$_POST['username'];
+$password=$_POST['password'];
+$role=$_POST['role'];
 
+$query = mysqli_query($con, "INSERT INTO `users` (`id`, `username`, `password`, `nickname`, `role`, `create_time`, `update_time`) VALUES (NULL, '$username', '$password', '$nickname', '$password', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 if ($query) {
@@ -27,7 +20,6 @@ else {
     header('Location: '.$uri_parts[0].'?backresult=0');
     exit;}
 ?>
-<!---->
 <!--<table>-->
 <!--    --><?php
 //    foreach ($_POST as $key => $value) {
@@ -47,4 +39,3 @@ else {
 //    ?>
 <!--</table>-->
 <!---->
-

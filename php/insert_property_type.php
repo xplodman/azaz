@@ -1,9 +1,9 @@
 <?php
 include_once "connection.php";
 
-$site_name=$_POST['site_name'];
+$property_type_name=$_POST['property_type_name'];
 
-$query = mysqli_query($con, "INSERT INTO `site` (`id`, `name`, `create_time`, `update_time`) VALUES (NULL, '$site_name', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
+$query = mysqli_query($con, "INSERT INTO `property_type` (`id`, `name`) VALUES (NULL, '$property_type_name');")or die(mysqli_error($con));
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 if ($query) {

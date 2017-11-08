@@ -16,7 +16,6 @@
             text-align: right;
         }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 </head>
 <body>
 <table width="300px" border="1" style="border-collapse:collapse;background-color:#E8DCFF">

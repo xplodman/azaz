@@ -16,9 +16,6 @@ mysqli_commit($con);
     }else{
         header('Location: '.$uri_parts[0].'?backresult=1');
     }
-$fh = fopen('/tmp/track.txt','a');
-fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
-fclose($fh);
 exit;
 }
 else {
@@ -27,9 +24,6 @@ else {
     }else{
         header('Location: '.$uri_parts[0].'?backresult=0');
     }
-$fh = fopen('/tmp/track.txt','a');
-fwrite($fh, $_SERVER['REMOTE_ADDR'].' '.date('c')."\n");
-fclose($fh);
 exit;}
 ?>
 

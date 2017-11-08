@@ -144,9 +144,25 @@ echo $property_payment_info['value'];
                                                     <?php
                                                 }else{
                                                     echo $property_payment_info['date_2'];
-                                                    ?>
-                                                    <span class='big badge badge-primary'>تم الدفع</span>
-                                                    <?php
+
+                                                    $date1 = new DateTime($property_payment_info['date_1']);
+                                                    $date2 = new DateTime($property_payment_info['date_2']);
+                                                    $variable =$date1 ->diff($date2)->format('%a');
+                                                    if($date1 < $date2){
+                                                        $variable = $variable *-1;
+                                                    }
+                                                    if ($variable >= 0)
+                                                        {
+                                                            ?>
+                                                            <span class='big badge badge-primary arabic'>
+تم الدفع                                                            </span>
+                                                            <?php
+                                                        }else{
+                                                            ?>
+                                                            <span class='big badge badge-warning arabic'>
+تم الدفع                                                            </span>
+                                                            <?php
+                                                        }
                                                 }
                                                 echo '<br>';
                                             }
