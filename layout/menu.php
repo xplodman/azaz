@@ -110,6 +110,15 @@ function active($currect_page){
                     <?php
                 }
                 ?>
+                <?php
+                if ($_SESSION['azaz']['role'] < 2){
+                    ?>
+                    <li class="<?php active('contractors.php');?>">
+                        <a href="contractors.php"><i class="fa fa-users"></i> <span class="nav-label">المقاولين</span></a>
+                    </li>
+                    <?php
+                }
+                ?>
             </ul>
         </font>
     </div>

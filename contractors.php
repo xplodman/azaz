@@ -6,7 +6,7 @@ include_once "php/checkauthentication.php";
 <html>
 
 <?php
-$pageTitle = 'عقارات';
+$pageTitle = 'المقاولين';
 include_once "layout/header.php";
 ?>
 
@@ -21,16 +21,11 @@ include_once "layout/header.php";
         ?>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInLeftBig">
             <div class="col-sm-4">
-                <h2><p>عقارات</p></h2>
+                <h2><p>المقاولين</p></h2>
             </div>
             <div class="col-sm-8">
                 <font face="myFirstFont">
-                    <div class="title-action">
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_properties"><i class="fa fa-plus"></i> إضافة عقار</button>
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_tower"><i class="fa fa-plus"></i> إضافة برج</button>
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_site"><i class="fa fa-plus"></i> إضافة موقع</button>
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_transaction"><i class="fa fa-plus"></i> إضافة عملية بيع</button>
-                    </div>
+
                 </font>
             </div>
         </div>
@@ -40,7 +35,7 @@ include_once "layout/header.php";
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
                             <font face="myFirstFont">
-                                <h5>للبحث و مشاهدة العقارات</h5>
+                                <h5>للبحث و مشاهدة المقاولين</h5>
                             </font>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
@@ -54,215 +49,92 @@ include_once "layout/header.php";
                                     <table id="example" class=" dataTables-example table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
-                                            <th>extn</th>
                                             <th style="width:1em"></th>
-                                            <th style="width:1em"></th><!--order column-->
-                                            <th>نوع الوحدة</th>
-                                            <th>رقم الوحدة</th>
-                                            <th>المساحة</th>
-                                            <th>السعر</th>
-                                            <th>أسم المالك</th>
-                                            <th>تاريخ التعاقد</th>
-                                            <th>البرج</th>
-                                            <th>الموقع</th>
-                                            <th>الحالة</th>
-                                            <th>الحسابات</th>
+                                            <th>الأسم</th>
+                                            <th>عليه</th>
+                                            <th>له</th>
+                                            <th>الإجمالي</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <?php
-                                        $property_query_info = mysqli_query($con,"
-                                                Select tower.name As tower_name,
-                                                  tower.id As tower_id,
-                                                  site.name As site_name,
-                                                  site.id As site_id,
-                                                  property_type.id As property_type_id,
-                                                  property_type.name As property_type_name,
-                                                  property.id As property_id,
-                                                  property.name As property_name,
-                                                  property.area As property_area,
-                                                  property.price As property_price
-                                                From property
-                                                  Inner Join tower On tower.id = property.tower_id
-                                                  Inner Join site On site.id = tower.site_id
-                                                  Inner Join property_type On property_type.id = property.property_type_id
-                                                  Order By property_id desc") or die(mysqli_error($con));
-                                        while($property_info = mysqli_fetch_assoc($property_query_info))
+                                        $contractor_query_info = mysqli_query($con,"
+                                                SELECT
+                                                  reason.name,
+                                                  reason.id
+                                                FROM
+                                                  reason") or die(mysqli_error($con));
+                                        while($contractor_info = mysqli_fetch_assoc($contractor_query_info))
                                         {
+                                        $contractor_query_out_info = mysqli_query($con,"
+                                                SELECT
+                                                  ABS(COALESCE(SUM(transaction.value),0)) AS Sum_value,
+                                                  reason.name,
+                                                  reason.id
+                                                FROM
+                                                  transaction
+                                                  INNER JOIN reason ON transaction.reason_id = reason.id
+                                                WHERE
+                                                  transaction.flag_id IN (4, 5) AND
+                                                  transaction.removed = 0 AND 
+                                                  reason.id = $contractor_info[id]
+                                                  ") or die(mysqli_error($con));
+                                            $contractor_out_info = mysqli_fetch_assoc($contractor_query_out_info);
+
+                                            $contractor_query_in_info = mysqli_query($con,"
+                                                SELECT
+                                                  ABS(COALESCE(SUM(transaction.value),0)) AS Sum_value,
+                                                  reason.name,
+                                                  reason.id
+                                                FROM
+                                                  transaction
+                                                  INNER JOIN reason ON transaction.reason_id = reason.id
+                                                WHERE
+                                                  transaction.flag_id = 7 AND
+                                                  transaction.removed = 0 AND 
+                                                  reason.id = $contractor_info[id]
+                                                  ") or die(mysqli_error($con));
+                                            $contractor_in_info = mysqli_fetch_assoc($contractor_query_in_info)
                                             ?>
-                                            <tr data-child-value="<p><?php
-                                            $y=0;
-                                            $property_query_payment_info = mysqli_query($con,"
-                                                Select transaction.id,
-                                                  transaction.date_1,
-                                                  transaction.date_2,
-                                                  transaction.value,
-                                                  transaction.status,
-                                                  flag.id As flag_id,
-                                                  flag.name As flag_name,
-                                                  property.name As property_name,
-                                                  owner.name As owner_name,
-                                                  property.id As property_id
-                                                From transaction
-                                                  Inner Join flag On flag.id = transaction.flag_id
-                                                  Inner Join property On property.id = transaction.property_id
-                                                  Inner Join owner On owner.id = transaction.owner_id
-                                                Where transaction.removed = 0 And property.id = $property_info[property_id]") or die(mysqli_error($con));
-                                            while($property_payment_info = mysqli_fetch_assoc($property_query_payment_info))
-                                            {
-                                                ?>
-                                                <a href='payment.php?transaction_id=<?php echo $property_payment_info['id'] ?>'><span class='badge big badge-success'>
-                                                <?php
-                                                switch ($property_payment_info['flag_id']) {
-                                                    case "1":
-                                                        echo "مقدم";
-                                                        break;
-                                                    case "2":
-                                                        echo $y.' قسط رقم';
-                                                        break;
-                                                    case "3":
-                                                        echo "دفعة إستلام";
-                                                        break;
-                                                    default:
-                                                        break;
-                                                }
-                                                $y++;
-                                                ?>
-                                                </span>
-                                                <span class='big'> <button type='button' class='btn btn-outline btn-info'>
-                                                <?php
-echo $property_payment_info['value'];
-                                                ?>
-                                                جنيه </button>
-                                                <?php
-                                                if ($property_payment_info['status'] == 0){
-                                                    echo $property_payment_info['date_1'];
-                                                    ?>
-                                                    <span class='big badge badge-danger'>لم يتم الدفع</span>
-
-                                        <a data-toggle='modal' data-id='<?php echo $property_payment_info['id'];?>' title='Add this item' class='property_payment_receive btn btn-primary fa fa-check' href='#property_payment_receive'></a>
-                                                    <?php
-                                                }else{
-                                                    echo $property_payment_info['date_2'];
-
-                                                    $date1 = new DateTime($property_payment_info['date_1']);
-                                                    $date2 = new DateTime($property_payment_info['date_2']);
-                                                    $variable =$date1 ->diff($date2)->format('%a');
-                                                    if($date1 < $date2){
-                                                        $variable = $variable *-1;
-                                                    }
-                                                    if ($variable >= 0)
-                                                        {
-                                                            ?>
-                                                            <span class='big badge badge-primary arabic'>
-تم الدفع                                                            </span>
-                                                            <?php
-                                                        }else{
-                                                            ?>
-                                                            <span class='big badge badge-warning arabic'>
-تم الدفع                                                            </span>
-                                                            <?php
-                                                        }
-                                                }
-                                                echo '<br>';
-                                            }
-                                            ?></a></p>"> <!--info plus-->
+                                            <tr data-child-value=""> <!--info plus-->
                                                 <td><!--search in info plus-->
-                                                </td>
-                                                <td class="details-control"></td>
-                                                <td>
-                                                    order
-                                                </td><!--order column-->
-                                                <td class="middle wrap">
-                                                    <?php echo $property_info['property_type_name']; ?>
                                                 </td>
                                                 <td class="middle wrap">
                                                     <span class='big'>
-                                                        <a href="property.php?property_id=<?php echo $property_info['property_id']; ?>"><button type='button' class='btn btn-outline btn-info'>
-                                                            <?php echo $property_info['property_name']; ?>
+                                                        <a href="contractor.php?reason_id=<?php echo $contractor_out_info['id']; ?>"><button type='button' class='btn btn-outline btn-info'>
+                                                    <?php echo $contractor_out_info['name']; ?>
                                                         </button></a>
                                                     </span>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $property_info['property_area']; ?>
+                                                    <?php echo $contractor_out_info['Sum_value']; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $property_info['property_price']; ?>
+                                                    <?php echo $contractor_in_info['Sum_value']; ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php
-                                                        $owner_query_info = mysqli_query($con, "
-                                                        Select property.id As property_id,
-                                                          property.name As property_name,
-                                                          property.area As property_area,
-                                                          property.price As property_price,
-                                                          owner_has_property.contract_date As contract_date,
-                                                          owner.name As owner_name,
-                                                          owner.mobile As owner_mobile
-                                                        From property
-                                                          Inner Join owner_has_property On owner_has_property.property_id = property.id
-                                                          Inner Join owner On owner.id = owner_has_property.owner_id
-                                                        Where property.id = $property_info[property_id] And owner_has_property.status = 1");
-
-                                                        $owner_info = mysqli_fetch_assoc($owner_query_info);
-                                                        echo $owner_info['owner_name'];
-                                                    ?>
-                                                </td>
-                                                <td class="middle wrap">
-                                                    <?php echo $owner_info['contract_date']; ?>
-                                                </td>
-                                                <td class="middle wrap">
-                                                    <a href="tower.php?tower_id=<?php echo $property_info['tower_id']; ?>"><button type='button' class='btn btn-outline btn-info'>
-                                                            <?php echo $property_info['tower_name']; ?>
-                                                        </button></a>
-                                                </td>
-                                                <td class="middle wrap">
-                                                    <?php echo $property_info['site_name']; ?>
-                                                </td>
-                                                <td class="middle wrap">
-                                                    <?php
-                                                    if ($owner_info == 0){
-                                                        echo "لم يتم البيع";
+                                                    <?php $contractor_result = $contractor_in_info['Sum_value'] - $contractor_out_info['Sum_value'];
+                                                    if ($contractor_result > 0)
+                                                    {
+                                                        echo $contractor_result;
+                                                        ?>
+                                                        <span class='big badge badge-danger'>له</span>
+                                                        <?php
                                                     }else{
-                                                        echo "تم البيع";
-                                                    }
-                                                    ?>
-                                                </td>
-                                                <td class="middle wrap">
-                                                    <?php
-                                                    if ($owner_info == 0){
-                                                        echo "";
-                                                    }else{
-                                                        $payment_query_info = mysqli_query($con, "
-                                                            Select Coalesce(Count(property.id), 0) As property_id_count
-                                                            From transaction
-                                                              Inner Join property On property.id = transaction.property_id
-                                                            Where transaction.status = 0 And transaction.removed = 0 And
-                                                              transaction.flag_id in (1,2,3) And property.id = $property_info[property_id]");
-                                                        $payment_info = mysqli_fetch_assoc($payment_query_info);
-                                                        if ($payment_info['property_id_count'] > 0){
-                                                            echo "جاري الدفع";
-                                                        }else{
-                                                            echo "تم الدفع";
-                                                        }
+                                                        echo $contractor_result*-1;
+                                                        ?>
+                                                        <span class='big badge badge-success'>عليه</span>
+                                                        <?php
                                                     }
                                                     ?>
                                                 </td>
                                             </tr>
-                                        <?php
+                                            <?php
                                         }
                                         ?>
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -329,7 +201,7 @@ include_once "layout/modals.php";
     $(document).ready(function() {
         $('.dataTables-example').DataTable({
             initComplete: function () {
-                this.api().columns(':eq(3),:eq(10),:eq(11),:eq(12)').every( function () {
+                this.api().columns('').every( function () {
                     var column = this;
                     var select = $('<select><option value=""></option></select>')
                         .appendTo( $(column.footer()).empty() )
@@ -361,7 +233,7 @@ include_once "layout/modals.php";
                 targets: [ 1 ]
             }],
             columnDefs: [{
-                targets: [ 0,2 ],
+                targets: [ 0 ],
                 visible: false
             }],
 
@@ -453,7 +325,7 @@ include_once "layout/modals.php";
             allowClear: true
         });
         // Setup - add a text input to each footer cell
-        $('#example tfoot th').not(':eq(0),:eq(1),:eq(8),:eq(9),:eq(10)').each(function() {
+        $('#example tfoot th').not('').each(function() {
             var title = $(this).text();
             $(this).html('<input type="text" />');
         });
@@ -607,7 +479,7 @@ include_once "layout/modals.php";
 </script>
 <script>
     function get_property_number(){
-    //We create ajax function
+        //We create ajax function
         var site_id = $("#site_id").val();
         var towerlist = $("#towerlist").val();
         var property_type = $("#property_type").val();

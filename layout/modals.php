@@ -63,6 +63,12 @@ include_once "php/functions.php";
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> رقم آخر للمشتري</label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="owner_number_2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> سعر العقار قبل التعديل</label>
                             <div class="col-sm-10">
                                 <input required class="form-control" type="text" id="property_price_2" name="property_price_2"  readonly="readonly" />
@@ -102,6 +108,12 @@ include_once "php/functions.php";
                                         <i class="fa fa-calendar"></i>
                                     </span>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2">المقايسات</label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="basics_cost" />
                             </div>
                         </div>
                         <div class="clearfix form-actions">
@@ -377,6 +389,94 @@ include_once "php/functions.php";
                             <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
                             <div class="col-sm-10">
                                 <input required class="form-control" type="number" id="form-field-2" name="expenses_value" />
+                            </div>
+                        </div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info"  type="Submit"  name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="add_contractor_transaction" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة عملية توريد لمقاول</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post" action="php/insert_contractor_transaction.php">
+                        <div class="form-group" id="data_1">
+                            <label class="col-sm-2 control-label">التاريخ </label>
+                            <div class="col-sm-10">
+                                <div class="input-group date">
+                                    <input type="text" id="date" class="form-control" name="contractor_transaction_date">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> السبب </label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <select class="chosen-select form-control" name="reason_id">
+                                        <option></option>
+                                        <?php
+                                        $query = "SELECT * FROM reason";
+                                        $results=mysqli_query($con, $query);
+                                        //loop
+                                        foreach ($results as $reason){
+                                            ?>
+                                            <option value="<?php echo $reason["id"];?>"><?php echo $reason["name"];?></option>
+                                            <?php
+                                        }
+                                        ?>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_reason">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+								    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> الموقع </label>
+                            <div class="col-sm-10">
+                                <select class="chosen-select form-control" name="site_id">
+                                    <option></option>
+                                    <?php
+                                    $query = "SELECT * FROM site";
+                                    $results=mysqli_query($con, $query);
+                                    //loop
+                                    foreach ($results as $site){
+                                        ?>
+                                        <option value="<?php echo $site["id"];?>"><?php echo $site["name"];?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="number" id="form-field-2" name="contractor_transaction_value" />
                             </div>
                         </div>
                         <div class="clearfix form-actions">

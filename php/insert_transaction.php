@@ -5,6 +5,7 @@ $user_id=$_SESSION['azaz']['id'];
 $property_number=$_POST['property_number'];
 $owner_name=$_POST['owner_name'];
 $owner_number=$_POST['owner_number'];
+$owner_number_2=$_POST['owner_number_2'];
 $property_price_2=$_POST['property_price_2'];
 $property_price=$_POST['property_price'];
 $first_date=$_POST['first_date'];
@@ -18,7 +19,7 @@ $contract_date=$_POST['contract_date'];
 $len_date = count($date);
 $len_price = count($price);
 
-$insert_owner = mysqli_query($con, "INSERT INTO `owner` (`id`, `name`, `mobile`, `create_time`, `update_time`) VALUES (NULL, '$owner_name', '$owner_number', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
+$insert_owner = mysqli_query($con, "INSERT INTO `owner` (`id`, `name`, `mobile`,`mobile_2`, `create_time`, `update_time`) VALUES (NULL, '$owner_name', '$owner_number','$owner_number_2', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
 $maxownerid = mysqli_query($con, "SELECT MAX(id) FROM owner");
 $maxownerid = mysqli_fetch_row($maxownerid);

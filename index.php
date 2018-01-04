@@ -38,6 +38,14 @@ include_once "layout/header.php";
                         <div class="ibox-title">
                             <font face="myFirstFont"><h5>تفاصيل موقع <?php echo $site_info['name']?></h5></font>
                             <div class="ibox-tools">
+                            <?php /*
+                                <button class="btn btn-danger" type="button"  onclick="delete_site(<?php echo $site_info['id'] ?>)">
+                                    <font face="myFirstFont">
+                                    لإزالة الموقع
+                                    </font>
+                                </button>
+                            */ ?>
+
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
                                 </a>
@@ -368,6 +376,32 @@ Group By property_type.name
 <!--                                            <div id="lineChart"></div>-->
 <!--                                        </div>-->
                                     </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="widget style1 navy-bg">
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <i class="fa fa-usd fa-5x"></i>
+                                                    </div>
+                                                    <div class="col-xs-9 text-right">
+                                                        <span class="small_arabic font-bold">إجمالي سعر الوحدات بعد البيع</span>
+                                                        <?php
+                                                        $count_all_income_query = mysqli_query($con,"
+                                                        Select Coalesce(Sum(transaction.value), 0) As sum_transaction_value
+From transaction
+  Inner Join property On property.id = transaction.property_id
+  Inner Join tower On tower.id = property.tower_id
+  Inner Join site On site.id = tower.site_id
+Where transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And
+  site.id = $site_info[id]") or die(mysqli_error($con));
+                                                        $count_all_income = mysqli_fetch_assoc($count_all_income_query);
+                                                        ?>
+                                                        <h2 class="font-bold"><?php echo $count_all_income['sum_transaction_value']?></h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -463,6 +497,8 @@ Where custoder.id = $custoders_info[id] And transaction.removed = 0 And transact
 <!-- Toastr -->
 <script src="js/plugins/toastr/toastr.min.js"></script>
 
+<!-- Sweet alert -->
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
 
 <script src="js/plugins/dataTables/datatables.min.js"></script>
 <script>
@@ -594,6 +630,32 @@ Where custoder.id = $custoders_info[id] And transaction.removed = 0 And transact
             }
         });
     });
+</script>
+<script>
+    function delete_site(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "هذا الموقع سيتم إلغائه!!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel please!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم حذف الموقع بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/delete_site.php?site_id=" + id;
+
+                    }
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الحذف", "error");
+                }
+            });
+    };
 </script>
 </body>
 <!-- Mirrored from webapplayers.com/inspinia_admin-v2.7.1/empty_page.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 25 Jul 2017 11:39:12 GMT -->

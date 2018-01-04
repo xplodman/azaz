@@ -1,6 +1,7 @@
 <?php
 include_once "php/connection.php";
 include_once "php/checkauthentication.php";
+include_once "php/functions.php";
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,9 +56,10 @@ if (!isset($_GET['property_id'])){
                         $property_info = mysqli_fetch_assoc($result);
 
                         $result2=mysqli_query($con, "
-                            Select owner.id,
+                            Select owner.id As owner_id,
                               owner.name,
                               owner.mobile,
+                              owner.mobile_2,
                               owner_has_property.contract_date,
                               owner_has_property.id As owner_has_property_id,
                               owner_has_property.status,
@@ -83,7 +85,7 @@ if (!isset($_GET['property_id'])){
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label" for="form-field-2"> الموقع </label>
                                             <div class="col-sm-10">
-                                                <select class="chosen-select form-control" id="site_id" name="site_id"  onchange="disable_tower_and_type()" disabled>
+                                                <select class="chosen-select form-control" id="site_id" name="site_id"  onchange="disable_tower_and_type(this.value)">
                                                     <option></option>
                                                     <?php
                                                     $query = "SELECT * FROM site";
@@ -101,14 +103,13 @@ if (!isset($_GET['property_id'])){
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label" for="form-field-2">رقم البرج </label>
                                             <div class="col-sm-10">
-                                                <select required class="chosen-select" size="6" name="tower_number" id="towerlist2"  disabled>
+                                                <select required class="chosen-select" size="6" name="tower_number" id="towerlist2" >
                                                     <option></option>
                                                     <?php
                                                     $query = "Select tower.name,
                                                                   tower.id
                                                                 From tower
-                                                                  Inner Join site On site.id = tower.site_id
-                                                                Where site.id = $property_info[tower_id]";
+                                                                  Inner Join site On site.id = tower.site_id";
                                                     $results=mysqli_query($con, $query);
                                                     //loop
                                                     foreach ($results as $tower){
@@ -123,16 +124,12 @@ if (!isset($_GET['property_id'])){
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label" for="form-field-2">نوع العقار </label>
                                             <div class="col-sm-10">
-                                                <select required class="chosen-select" size="6" name="property_type" id="property_type"  disabled>
+                                                <select required class="chosen-select" size="6" name="property_type" id="property_type">
                                                     <option></option>
                                                     <?php
                                                     $query = "Select property_type.name,
                   property_type.id
-                From tower
-                  Inner Join property On property.tower_id = tower.id
-                  Inner Join property_type On property_type.id = property.property_type_id
-                Where property.tower_id  = $property_info[tower_id]
-                Group By property_type.id";
+                From property_type";
                                                     $results=mysqli_query($con, $query);
                                                     //loop
                                                     foreach ($results as $property_type){
@@ -164,7 +161,7 @@ if (!isset($_GET['property_id'])){
                                         </div>
                                         <input type="hidden" name="property_status"  value="<?php echo $owner_info['status']?>" />
                                         <input type="hidden" name="owner_has_property_id"  value="<?php echo $owner_info['owner_has_property_id']?>" />
-                                        <input type="hidden" name="owner_id"  value="<?php echo $owner_info['id']?>" />
+                                        <input type="hidden" name="owner_id"  value="<?php echo $owner_info['owner_id']?>" />
                                         <?php
                                         switch ($owner_info['status']) {
                                         case "1":?>
@@ -178,6 +175,12 @@ if (!isset($_GET['property_id'])){
                                                 <label class="col-sm-2 control-label"> رقم المشتري</label>
                                                 <div class="col-sm-10">
                                                     <input required class="form-control" type="text" name="owner_mobile"  value="<?php echo $owner_info['mobile']?>" required />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label"> رقم آخر للمشتري</label>
+                                                <div class="col-sm-10">
+                                                    <input required class="form-control" type="text" name="owner_mobile_2"  value="<?php echo $owner_info['mobile_2']?>" required />
                                                 </div>
                                             </div>
                                             <div class="form-group" id="data_1">
@@ -228,6 +231,7 @@ if (!isset($_GET['property_id'])){
                                                         </span>
                                                     </div>
                                                     <button class="arabic btn btn-danger" type="button" onclick="delete_contract(<?php echo $owner_info['owner_has_property_id'] ?> , <?php echo $property_info['property_id'] ?>)" data-value="1" > لفسخ التعاقد </button>
+                                                    <button class="arabic btn btn-danger" type="button" onclick="delete_property(<?php echo $property_info['property_id'] ?>)" data-value="1" > لحذف العقار </button>
                                                     <?php
                                                 break;
                                                 }
@@ -235,6 +239,183 @@ if (!isset($_GET['property_id'])){
                                         </div>
                                     </span>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <font face="myFirstFont">
+                                <h5>للبحث و مشاهدة الدفعات</h5>
+                            </font>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <?php
+                                $query="
+                    Select transaction.id,
+                      transaction.date_1,
+                      transaction.date_2,
+                      transaction.value,
+                      transaction.status,
+                      transaction.removed,
+                      flag.name,
+                      property.id As property_id,
+                      property.name As property_name,
+                      property_type.name As property_type_name,
+                      tower.name As tower_name,
+                      site.name As site_name,
+                      owner.name As owner_name,
+                      owner.mobile As owner_mobile
+                    From transaction
+                      Inner Join flag On flag.id = transaction.flag_id
+                      Inner Join owner On transaction.owner_id = owner.id
+                      Inner Join property On property.id = transaction.property_id 
+                      Inner Join property_type On property_type.id = property.property_type_id
+                      Inner Join tower On tower.id = property.tower_id
+                      Inner Join site On site.id = tower.site_id
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND property.id= $property_id"
+                            ?>
+                            <div id="collapseOne" class="panel-collapse collapse in">
+                                <div class="table-responsive">
+                                    <table id="example" class=" dataTables-example table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th style="width:4em"></th>
+                                            <th>التاريخ</th>
+                                            <th>المبلغ</th>
+                                            <th>أسم المشتري</th>
+                                            <th>رقم المشتري</th>
+                                            <th>نوع الوحدة</th>
+                                            <th>رقم الوحدة</th>
+                                            <th>البرج</th>
+                                            <th>الموقع</th>
+                                            <th>الحالة</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                        $result = mysqli_query($con, $query);
+                                        while($payments = mysqli_fetch_assoc($result)) {
+                                            ?>
+                                            <tr> <!--info plus-->
+                                                <th style="width:1em">
+                                                    <a class="btn btn-success btn-circle" type="button" href="payment.php?transaction_id=<?php echo $payments['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <?php
+                                                    switch ($payments['status']) {
+                                                        case "0":
+                                                            ?>
+                                                            <a data-toggle='modal'
+                                                               data-id='<?php echo $payments['id']; ?>'
+                                                               title='Add this item'
+                                                               class='property_payment_receive btn btn-primary fa fa-check'
+                                                               href='#property_payment_receive'></a>
+                                                            <?php
+                                                            break;
+                                                    }
+                                                    ?>
+                                                </th>
+                                                <td class="middle wrap">
+                                                    <?php
+                                                    $date1 = new DateTime($payments['date_1']);
+                                                    $date2 = new DateTime($payments['date_2']);
+                                                    $variable =$date1 ->diff($date2)->format("%a");
+                                                    if($date1 < $date2){
+                                                        $variable = $variable *-1;
+                                                    }
+                                                    switch ($payments['status']) {
+                                                        case "1":
+                                                            if ($variable >= 0)
+                                                            {
+                                                                ?>
+                                                                <span class="big badge badge-primary arabic">
+                                                            <?php echo $payments['date_2'] ?>
+                                                            </span>
+                                                                <?php
+                                                            }else{
+                                                                ?>
+                                                                <span class="big badge badge-warning arabic">
+                                                                <?php echo $payments['date_2'] ?>
+                                                            </span>
+                                                                <?php
+                                                            }
+                                                            break;
+                                                        case "0":
+                                                            ?>
+                                                            <span class="big badge badge-danger arabic">
+                                                                <?php echo $payments['date_1'] ?>
+                                                            </span>
+                                                            <?php
+                                                            break;
+                                                        case "3":
+                                                            echo "دفعة إستلام";
+                                                            break;
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['value']; ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['owner_name']; ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['owner_mobile']; ?>
+                                                </td>
+
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['property_type_name'] ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <span class='big'>
+                                                        <a href="property.php?property_id=<?php echo $payments['property_id']; ?>"><button type='button' class='btn btn-outline btn-info'>
+                                                            <?php echo $payments['property_name']; ?>
+                                                        </button></a>
+                                                    </span>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['tower_name'] ?>
+                                                </td>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['site_name'] ?>
+                                                </td>
+                                                <?php
+                                                if ($payments['status'] == 0){?>
+                                                    <td class="middle wrap">لم يتم الدفع</td>
+                                                    <?php
+                                                }else{
+                                                    ?>
+                                                    <td class="middle wrap">تم الدفع</td>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </tr>
+                                        <?php } ?>
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                    <span class="big badge badge-primary arabic">تم السداد في/قبل الميعاد</span> -
+                                    <span class="big badge badge-warning arabic">تم السداد بعد الميعاد</span> -
+                                    <span class="big badge badge-danger arabic">لم يتم السداد</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -504,9 +685,21 @@ include_once "layout/modals.php";
 
 </script>
 <script>
-    function disable_tower_and_type() {
-        $('#towerlist2').prop('disabled', true).trigger("chosen:updated");
-        $('#property_type').prop('disabled', true).trigger("chosen:updated");
+    function disable_tower_and_type(site_id) {
+        $("#towerlist2 option:selected").removeAttr("selected").trigger('chosen:updated');
+        $("#property_type option:selected").removeAttr("selected").trigger('chosen:updated');
+            //We create ajax function
+            $.ajax({
+                type: "POST",
+                url: "php/get_tower.php",
+                data: "site="+site_id,
+                success: function(data){
+                    $("#towerlist2").empty();
+                    $("#towerlist2").append(data);
+                    $("#towerlist2").trigger("chosen:updated");
+                }
+            });
+//        $('#property_type').prop('disabled', true).trigger("chosen:updated");
     }
 </script>
 <script>
@@ -526,6 +719,32 @@ include_once "layout/modals.php";
                     swal("Deleted!", "تم حذف العقد بنجاح.", "success");
                     function explode(){
                         window.location.href = "php/delete_contract.php?contract_id=" + id + "&property_id=" + id2;
+
+                    }
+                    setTimeout(explode, 1200);
+                } else {
+                    swal("Cancelled", "تم إيقاف عملية الحذف", "error");
+                }
+            });
+    };
+</script>
+<script>
+    function delete_property(id){
+        swal({
+                title: "هل أنت متأكد؟",
+                text: "هذا العقار سيتم إلغائه!!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel please!",
+                closeOnConfirm: false,
+                closeOnCancel: false },
+            function (isConfirm) {
+                if (isConfirm) {
+                    swal("Deleted!", "تم حذف العقار بنجاح.", "success");
+                    function explode(){
+                        window.location.href = "php/delete_property.php?property_id=" + id;
 
                     }
                     setTimeout(explode, 1200);

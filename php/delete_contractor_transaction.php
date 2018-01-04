@@ -1,24 +1,20 @@
 <?php
 include_once "connection.php";
-$custoder_id=$_GET['custoder_id'];
-$name=$_POST['name'];
-$mobile=$_POST['mobile'];
-$notes=$_POST['notes'];
+$expense_id=$_GET['expense_id'];
 
-$update_custoder = mysqli_query($con, "UPDATE `custoder` SET `name` = '$name', `mobile` = '$mobile', `notes` = '$notes', `update_time` = NOW() WHERE `custoder`.`id` = '$custoder_id';")or die(mysqli_error($con));
+
+$remove_expense = mysqli_query($con, "UPDATE `transaction` SET `removed` = '1', `update_time` = NOW() WHERE `transaction`.`id` = '$expense_id';")or die(mysqli_error($con));
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 
-if ($update_custoder) {
+if ($remove_expense) {
     mysqli_commit($con);
-    header('Location: '.$uri_parts[0].'?backresult=1&custoder_id='.$custoder_id.'');
+    header('Location: ../contractors.php?backresult=1');
     exit;
 }
 else {
-
-    header('Location: '.$uri_parts[0].'?backresult=0&custoder_id='.$custoder_id.'');
-    exit;
-}
+    header('Location: ../contractors.php?backresult=0');
+    exit;}
 
 
 ?>
@@ -40,4 +36,4 @@ else {
 //    }
 //    ?>
 <!--</table>-->
-<!---->
+
