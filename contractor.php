@@ -266,7 +266,25 @@ if (!isset($_GET['reason_id'])){
                                             ?>
                                             <tr> <!--info plus-->
                                                 <th style="width:1em">
-                                                    <a class="btn btn-success btn-circle" type="button" href="contractor_transaction.php?transaction_id=<?php echo $records['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <?php
+                                                    switch ($records['flag_id']) {
+                                                        case "4":
+                                                            ?>
+                                                            <a class="btn btn-success btn-circle" type="button" href="expense.php?transaction_id=<?php echo $records['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                            <?php
+                                                            break;
+                                                        case "5":
+                                                            ?>
+                                                            <a class="btn btn-success btn-circle" type="button" href="expense.php?transaction_id=<?php echo $records['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                            <?php
+                                                            break;
+                                                        case "7":
+                                                            ?>
+                                                            <a class="btn btn-success btn-circle" type="button" href="contractor_transaction.php?transaction_id=<?php echo $records['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                            <?php
+                                                            break;
+                                                    }
+                                                    ?>
                                                 </th>
                                                 <td class="middle wrap">
                                                     <span class="big badge badge-primary arabic">
