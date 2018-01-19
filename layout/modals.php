@@ -498,6 +498,75 @@ include_once "php/functions.php";
             </div>
         </div>
     </div>
+    <div class="modal inmodal" id="add_partner_income" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة عملية توريد من شريك</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post" action="php/insert_partner_income.php">
+                        <div class="form-group" id="data_1">
+                            <label class="col-sm-2 control-label">التاريخ </label>
+                            <div class="col-sm-10">
+                                <div class="input-group date">
+                                    <input type="text" id="date" class="form-control" name="partner_income_date">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> أسم الشريك </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="partner_name" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> الموقع </label>
+                            <div class="col-sm-10">
+                                <select class="chosen-select form-control" name="site_id">
+                                    <option></option>
+                                    <?php
+                                    $query = "SELECT * FROM site";
+                                    $results=mysqli_query($con, $query);
+                                    //loop
+                                    foreach ($results as $site){
+                                        ?>
+                                        <option value="<?php echo $site["id"];?>"><?php echo $site["name"];?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="number" id="form-field-2" name="partner_income_value" />
+                            </div>
+                        </div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info"  type="Submit"  name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal inmodal" id="add_custody" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content animated flipInY">
@@ -726,6 +795,42 @@ include_once "php/functions.php";
                         <input required class="form-control" type="hidden" id="payment_id" name="payment_id" readonly="readonly"/>
                         <input required class="form-control" type="hidden" id="back_path" value="back_path_payment" name="back_path" readonly="readonly"/>
 
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info"  type="Submit"  name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="property_payment_receive_2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إيصال إستلام قسط</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post" action="php/property_payment_receive.php">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2">تاريخ الإستلام </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="payment_date" required placeholder="تاريخ الإستلام">&nbsp;
+                            </div>
+                        </div>
+                        <input required class="form-control" type="hidden" id="payment_id" name="payment_id" readonly="readonly"/>
+                        <input required class="form-control" type="hidden" id="property_id" name="property_id" readonly="readonly"/>
                         <div class="clearfix form-actions">
                             <div class="col-md-offset-3 col-md-9">
                                 <button class="btn btn-info"  type="Submit"  name="submit">

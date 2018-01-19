@@ -87,7 +87,7 @@ function active($currect_page){
                 if ($_SESSION['azaz']['role'] < 2){
                     ?>
                     <li class="<?php active('expenses.php');?>">
-                        <a href="expenses.php"><i class="fa fa-usd"></i> <span class="nav-label">المصاريف</span></a>
+                        <a href="expenses.php"><i class="fa fa-usd"></i> <span class="nav-label">الخزنة</span></a>
                     </li>
                     <?php
                 }

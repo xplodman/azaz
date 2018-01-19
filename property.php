@@ -31,7 +31,7 @@ if (!isset($_GET['property_id'])){
                 <h2><p>تفاصيل الوحدة</p></h2>
             </div>
         </div>
-        <div class="wrapper wrapper-content animated fadeInRightBig">
+        <div class="animated fadeInRightBig">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
@@ -314,7 +314,7 @@ if (!isset($_GET['property_id'])){
                                                                data-id='<?php echo $payments['id']; ?>'
                                                                title='Add this item'
                                                                class='property_payment_receive btn btn-primary fa fa-check'
-                                                               href='#property_payment_receive'></a>
+                                                               href='#property_payment_receive_2'></a>
                                                             <?php
                                                             break;
                                                     }
@@ -570,6 +570,50 @@ include_once "layout/modals.php";
 
 </script>
 <script>
+    $(document).ready(function(){
+        var date_input=$('input[name="date[]"]'); //our date input has the name "date"
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        date_input.datepicker({
+            format: 'yyyy-m-d',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+        var date_input=$('input[name="first_date"]'); //our date input has the name "date"
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        date_input.datepicker({
+            format: 'yyyy-m-d',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+        var date_input=$('input[name="last_date"]'); //our date input has the name "date"
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        date_input.datepicker({
+            format: 'yyyy-m-d',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+        var date_input=$('input[name="payment_date"]'); //our date input has the name "date"
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        date_input.datepicker({
+            format: 'yyyy-m-d',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+        var date_input=$('input[name="contract_date"]'); //our date input has the name "date"
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        date_input.datepicker({
+            format: 'yyyy-m-d',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+    })
+</script>
+<script>
     $('#data_1 .input-group.date').datepicker({
         todayBtn: "linked",
         keyboardNavigation: false,
@@ -753,6 +797,14 @@ include_once "layout/modals.php";
                 }
             });
     };
+</script>
+<script>
+    $(document).on("click", ".property_payment_receive", function () {
+        var payment_id = $(this).data('id');
+        var property_id = "<?php echo $property_id ?>";
+        $(".modal-body #payment_id").val( payment_id );
+        $(".modal-body #property_id").val( property_id );
+    });
 </script>
 </body>
 </html>

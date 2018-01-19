@@ -7,7 +7,7 @@ include_once "php/functions.php";
 <html>
 
 <?php
-$pageTitle = 'المصاريف';
+$pageTitle = 'الخزنة';
 include_once "layout/header.php";
 ?>
 
@@ -22,12 +22,13 @@ include_once "layout/header.php";
         ?>
         <div class="row wrapper border-bottom white-bg page-heading animated fadeInLeftBig">
             <div class="col-sm-4">
-                <h2><p>المصاريف</p></h2>
+                <h2><p>الخزنة</p></h2>
             </div>
             <div class="col-sm-8">
                 <font face="myFirstFont">
                     <div class="title-action">
                         <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_expenses"><i class="fa fa-plus"></i> إضافة مصروفات</button>
+                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_partner_income"><i class="fa fa-plus"></i> إضافة إيراد</button>
                     </div>
                 </font>
             </div>
@@ -36,15 +37,18 @@ include_once "layout/header.php";
             <?php
             $expense_from_date = date('Y-m-d',strtotime("-$application_setting[expense_from_date] days"));
             $expense_to_date = date('Y-m-d',strtotime("$application_setting[expense_to_date] days"));
-            if (isset($_POST['submit']))
+            if (isset($_POST['submit1']))
             {
                 $from_date=$_POST['from_date'];
                 $to_date=$_POST['to_date'];
                 $query="
                         Select transaction.id,
                           transaction.date_1,
+                          transaction.date_2,
                           transaction.value,
+                          transaction.comment,
                           transaction.removed,
+                          transaction.property_id,
                           flag.name As flag_name,
                           flag.id As flag_id,
                           site.name As site_name,
@@ -55,13 +59,16 @@ include_once "layout/header.php";
                           LEFT Join site On site.id = transaction.site_id
                           LEFT Join custoder On custoder.id = transaction.custoder_id
                           LEFT Join reason On reason.id = transaction.reason_id
-                        Where transaction.flag_id In ('4', '6') And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
+                        Where transaction.flag_id In ('1', '2', '3', '4', '6', '8') And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
             }else{
             $query="
                         Select transaction.id,
                           transaction.date_1,
+                          transaction.date_2,
                           transaction.value,
+                          transaction.comment,
                           transaction.removed,
+                          transaction.property_id,
                           flag.name As flag_name,
                           flag.id As flag_id,
                           site.name As site_name,
@@ -72,7 +79,7 @@ include_once "layout/header.php";
                           LEFT Join site On site.id = transaction.site_id
                           LEFT Join custoder On custoder.id = transaction.custoder_id
                           LEFT Join reason On reason.id = transaction.reason_id
-                        Where transaction.flag_id In ('4', '6') And transaction.date_1 BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
+                        Where transaction.flag_id In ('1', '2', '3', '4', '6', '8') And transaction.date_1 BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
             }
             if(isset($_POST['show_deleted']) && $_POST['show_deleted']==='show_deleted'){
                 $query .= "";
@@ -136,7 +143,7 @@ include_once "layout/header.php";
                 <br><br>
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
-                        <button class="btn btn-info" type="submit" name="submit">
+                        <button class="btn btn-info" type="submit" name="submit1">
                             <i class="ace-icon fa fa-search bigger-110"></i>
                             Search
                         </button>
@@ -149,8 +156,133 @@ include_once "layout/header.php";
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
+                            <h5><span class="big">إحصائية عن ما تم صرفة و ما تم توريده</span> </h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <?php
+                        if (isset($_POST['submit']))
+                        {
+                            $from_date=$_POST['date_1'];
+                            $to_date=$_POST['date_2'];
+                            $get_spent_value_query="
+                        Select COALESCE(SUM(transaction.value),0) As spent_count
+From transaction
+Where transaction.removed = 0 And transaction.flag_id in (4,6) And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
+
+                            $get_received_value_query="
+                        Select COALESCE(SUM(transaction.value),0) As received_count
+From transaction
+Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id in (1,2,3,8) And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
+
+                        }else{
+
+                            $get_spent_value_query="
+                        Select COALESCE(SUM(transaction.value),0) As spent_count
+From transaction
+Where transaction.removed = 0 And transaction.flag_id in (4,6)";
+
+                            $get_received_value_query="
+                        Select COALESCE(SUM(transaction.value),0) As received_count
+From transaction
+Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id in (1,2,3,8)";
+
+                        }
+                        $get_spent_value = mysqli_query($con, $get_spent_value_query);
+                        $get_spent_value = mysqli_fetch_assoc($get_spent_value);
+
+                        $get_received_value = mysqli_query($con, $get_received_value_query);
+                        $get_received_value = mysqli_fetch_assoc($get_received_value);
+                        ?>
+                        <div class="ibox-content">
+                            <div id="collapseOne" class="panel-collapse collapse in">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" class="form-inline">
+                                            <div class="form-group" id="date_2">
+                                                <div class="input-group date">
+                                                    <input type="text" id="date_1" class="form-control" name="date_1"  required>
+                                                    <span class="input-group-addon arabic">
+                                                من
+                                                </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" id="date_3">
+                                                <div class="input-group date">
+                                                    <input type="text" id="date" class="form-control" name="date_2"  required>
+                                                    <span class="input-group-addon arabic">
+                                                إلى
+                                                </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <button class="btn btn-info" type="Submit" name="submit">
+                                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                                    Search
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <div class="col-lg-4">
+                                            <div class="widget style1 red-bg">
+                                                <div class="row vertical-align">
+                                                    <div class="col-xs-12 text-center">
+                                                        <h2 class="font-bold">
+                                                            <?php
+                                                            echo $get_spent_value['spent_count']*-1;
+                                                            ?>
+                                                            المصروف
+                                                        </h2>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="widget style1 navy-bg">
+                                                <div class="row vertical-align">
+                                                    <div class="col-xs-12 text-center">
+                                                        <h2 class="font-bold">
+                                                            <?php
+                                                            echo $get_received_value['received_count'];
+                                                            ?>
+                                                            ما تم توريده
+                                                        </h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="widget style1 lazur-bg">
+                                                <div class="row vertical-align">
+                                                    <div class="col-xs-12 text-center">
+                                                        <h2 class="font-bold">
+                                                            <?php
+                                                            echo ($get_received_value['received_count'])+($get_spent_value['spent_count']);
+                                                            ?>
+                                                            الإجمالي
+                                                        </h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
                             <font face="myFirstFont">
-                                <h5>للبحث و مشاهدة المصاريف</h5>
+                                <h5>للبحث و مشاهدة تفاصيل حركة الخزنة</h5>
                             </font>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
@@ -164,7 +296,7 @@ include_once "layout/header.php";
                                     <table id="example" class=" dataTables-example table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
-                                            <th style="width:4em"></th>
+                                            <th style="width:10em"></th>
                                             <th>التاريخ</th>
                                             <th>البيان</th>
                                             <th>المبلغ</th>
@@ -175,18 +307,34 @@ include_once "layout/header.php";
                                         <?php
                                         $result = mysqli_query($con, $query);
                                         while($expenses = mysqli_fetch_assoc($result)) {
+                                            if (in_array($expenses['flag_id'], [1,2,3,8])){
+                                                ?>
+                                                <tr class="success"> <!--info plus-->
+                                                <?php
+                                            }elseif (in_array($expenses['flag_id'], [6,4])){
+                                                ?>
+                                                <tr class="danger"> <!--info plus-->
+                                                <?php
+                                            }
                                             ?>
-                                            <tr> <!--info plus-->
                                                 <th style="width:1em">
                                                     <?php
                                                     if ($expenses['flag_id']=='6'){
                                                         ?>
                                                         <a class="btn btn-success btn-circle" type="button" href="custody_plus.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
                                                         <?php
-                                                    }else{
+                                                    }elseif ($expenses['flag_id']=='8'){
                                                         ?>
-                                                    <a class="btn btn-success btn-circle" type="button" href="expense.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                        <a class="btn btn-success btn-circle" type="button" href="partner_plus.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
                                                         <?php
+                                                    }elseif ($expenses['flag_id']=='4'){
+                                                        ?>
+                                                        <a class="btn btn-success btn-circle" type="button" href="expense.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <?php
+                                                    }elseif (in_array($expenses['flag_id'], [1,2,3])){
+                                                        ?>
+                                                    <a class="btn btn-success btn-circle" type="button" href="payment.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
+                                                    <?php
                                                     }
                                                     ?>
                                                     <?php
@@ -200,6 +348,25 @@ include_once "layout/header.php";
                                                     <?php
                                                     }
                                                     ?>
+                                                    <?php
+                                                    if ($expenses['flag_id']=='6'){
+                                                        ?>
+                                                        <span class="badge badge-danger arabic">إضافة عهده</span>
+                                                        <?php
+                                                    }elseif ($expenses['flag_id']=='8'){
+                                                        ?>
+                                                        <span class="badge badge-primary arabic">إيراد من شريك</span>
+                                                        <?php
+                                                    }elseif ($expenses['flag_id']=='4'){
+                                                        ?>
+                                                        <span class="badge badge-danger arabic">مصروف</span>
+                                                        <?php
+                                                    }elseif (in_array($expenses['flag_id'], [1,2,3])){
+                                                        ?>
+                                                        <span class="badge badge-success arabic"><?php echo $expenses['flag_name'] ?></span>
+                                                        <?php
+                                                    }
+                                                    ?>
                                                 </th>
 
                                                 <td class="middle wrap">
@@ -209,20 +376,38 @@ include_once "layout/header.php";
                                                     <?php
                                                     if ($expenses['flag_id']=='6'){
                                                         echo "عهدة ".$expenses['custoder_name'];
-                                                    }else{
+                                                    }elseif ($expenses['flag_id']=='8'){
+                                                        echo $expenses['comment'];
+                                                    }elseif ($expenses['flag_id']=='4'){
                                                         echo $expenses['reason_name'];
+                                                    }elseif (in_array($expenses['flag_id'], [1,2,3])){
+                                                        echo $expenses['flag_name'];
                                                     }
                                                     ?>
                                                 </td>
                                                 <td class="middle wrap">
-                                                    <?php echo $expenses['value']*-1 ?>
+                                                    <?php
+                                                    if (in_array($expenses['flag_id'], [1,2,3,8])){
+                                                        echo $expenses['value'];
+                                                    }elseif(in_array($expenses['flag_id'], [4,6])){
+                                                        echo $expenses['value']*-1;
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <td class="middle wrap">
                                                     <?php
                                                     if ($expenses['flag_id']=='6'){
                                                         echo $expenses['flag_name'];
-                                                    }else{
+                                                    }elseif(in_array($expenses['flag_id'], [4,8])){
                                                         echo $expenses['site_name'];
+                                                    }elseif(in_array($expenses['flag_id'], [1,2,3])){
+                                                        ?>
+                                                        <span class='big'>
+                                                        <a href="property.php?property_id=<?php echo $expenses['property_id']; ?>"><button type='button' class='btn btn-outline btn-info'>
+                                                            <?php echo $expenses['property_id']; ?>
+                                                        </button></a>
+                                                    </span>
+                                                    <?php
                                                     }
                                                     ?>
                                                 </td>
@@ -397,6 +582,22 @@ include_once "layout/modals.php";
 </script>
 <script>
     $('#data_1 .input-group.date').datepicker({
+        todayBtn: "linked",
+        keyboardNavigation: false,
+        forceParse: false,
+        calendarWeeks: true,
+        autoclose: true,
+        format: 'yyyy-m-d'
+    });
+    $('#date_2 .input-group.date').datepicker({
+        todayBtn: "linked",
+        keyboardNavigation: false,
+        forceParse: false,
+        calendarWeeks: true,
+        autoclose: true,
+        format: 'yyyy-m-d'
+    });
+    $('#date_3 .input-group.date').datepicker({
         todayBtn: "linked",
         keyboardNavigation: false,
         forceParse: false,

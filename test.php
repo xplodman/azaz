@@ -1,91 +1,27 @@
-<html>
-<head>
-    <title>Sum Html Textbox Values using jQuery/JavaScript</title>
-    <style>
-        body {
-            font-family: sans-serif;
-        }
-        #summation {
-            font-size: 18px;
-            font-weight: bold;
-            color:#174C68;
-        }
-        .txt {
-            background-color: #FEFFB0;
-            font-weight: bold;
-            text-align: right;
-        }
-    </style>
-</head>
-<body>
-<table width="300px" border="1" style="border-collapse:collapse;background-color:#E8DCFF">
-    <tr>
-        <td width="40px">1</td>
-        <td>Butter</td>
-        <td><input class="txt" type="text" name="txt"/></td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>Cheese</td>
-        <td><input class="txt" type="text" name="txt"/></td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>Eggs</td>
-        <td><input class="txt" type="text" name="txt"/></td>
-    </tr>
-    <tr>
-        <td>4</td>
-        <td>Milk</td>
-        <td><input class="txt" type="text" name="txt"/></td>
-    </tr>
-    <tr>
-        <td>5</td>
-        <td>Bread</td>
-        <td><input class="txt" type="text" name="txt"/></td>
-    </tr>
-    <tr>
-        <td>6</td>
-        <td>Soap</td>
-        <td><input class="txt" type="text" name="txt"/></td>
-    </tr>
-    <tr id="summation">
-        <td>&nbsp;</td>
-        <td align="right">Sum :</td>
-        <td align="center"><span id="sum">0</span></td>
-    </tr>
-</table>
+<?php
+	// Set timezone
 
+	// Start date
+	$date = '2018-01-01';
+	// End date
+	$end_date = '2018-01-01';
+	$query = "select ca.nickname";
+		while (strtotime($date) <= strtotime($end_date)) {
+			$query .= ", max(case when ca.db_date = '$date' then coalesce(p.checkintime , 'غياب') end) `$date`";
+			$date = date("Y-m-d", strtotime("+1 day", strtotime($date)));
+		}
+	$query .= "
+	from
+	(
+	  select c.db_date, a.nickname, a.idusers
+	  from time_dimension c
+	  cross join users a
+	) ca
+	left join attendance p
+	  on ca.idusers = p.idusers
+	  and ca.db_date = p.checkindate
+	group by ca.idusers, ca.nickname
+	order by ca.idusers;";
+	echo $query;
+?>
 
-<script>
-    $(document).ready(function(){
-
-        //iterate through each textboxes and add keyup
-        //handler to trigger sum event
-        $(".txt").each(function() {
-
-            $(this).keyup(function(){
-                calculateSum();
-            });
-        });
-
-    });
-
-    function calculateSum() {
-
-        var sum = 0;
-        //iterate through each textboxes and add the values
-        $(".txt").each(function() {
-
-            //add only if the value is number
-            if(!isNaN(this.value) && this.value.length!=0) {
-                sum += parseFloat(this.value);
-            }
-
-        });
-        //.toFixed() method will roundoff the final sum to 2 decimal places
-        $("#sum").html(sum.toFixed(2));
-    }
-</script>
-</body>
-</html>

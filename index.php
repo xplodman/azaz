@@ -94,8 +94,16 @@ From transaction
 Where Month(transaction.date_2) = Month(curdate()) And transaction.status = 1 And
   transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+
+                                                        $count_partner_income_query = mysqli_query($con,"
+                                                        select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join site On transaction.site_id = site.id
+Where Month(transaction.date_1) = Month(curdate()) And transaction.status = 1 And
+  transaction.removed = 0 And transaction.flag_id In (8) And site.id = $site_info[id]") or die(mysqli_error($con));
+                                                        $count_partner_income_info = mysqli_fetch_assoc($count_partner_income_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']+$count_partner_income_info['Count_value']?></h2>
                                                     </div>
                                                 </div>
                                             </div>
@@ -137,10 +145,18 @@ From transaction
   Inner Join tower On property.tower_id = tower.id
   Inner Join site On tower.site_id = site.id
 Where WEEK(transaction.date_2) = WEEK(curdate()) And transaction.status = 1 And
-  transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And site.id = $site_info[id]") or die(mysqli_error($con));
+  transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 8) And site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
+
+                                                        $count_partner_income_query = mysqli_query($con,"
+                                                        select Coalesce(Sum(transaction.value), 0) As Count_value
+From transaction
+  Inner Join site On transaction.site_id = site.id
+Where WEEK(transaction.date_1) = WEEK(curdate()) And transaction.status = 1 And
+  transaction.removed = 0 And transaction.flag_id In (8) And site.id = $site_info[id]") or die(mysqli_error($con));
+                                                        $count_partner_income_info = mysqli_fetch_assoc($count_partner_income_query);
                                                         ?>
-                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']?></h2>
+                                                        <h2 class="font-bold"><?php echo $count_payment_info['Count_value']+$count_partner_income_info['Count_value']?></h2>
                                                     </div>
                                                 </div>
                                             </div>

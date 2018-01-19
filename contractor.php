@@ -338,9 +338,6 @@ if (!isset($_GET['reason_id'])){
                                         </tr>
                                         </tfoot>
                                     </table>
-                                    <span class="big badge badge-primary arabic">تم السداد في/قبل الميعاد</span> -
-                                    <span class="big badge badge-warning arabic">تم السداد بعد الميعاد</span> -
-                                    <span class="big badge badge-danger arabic">لم يتم السداد</span>
                                 </div>
                             </div>
                         </div>
