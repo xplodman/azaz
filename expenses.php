@@ -46,6 +46,7 @@ include_once "layout/header.php";
                           transaction.date_1,
                           transaction.date_2,
                           transaction.value,
+                          transaction.status,
                           transaction.comment,
                           transaction.removed,
                           transaction.property_id,
@@ -59,13 +60,14 @@ include_once "layout/header.php";
                           LEFT Join site On site.id = transaction.site_id
                           LEFT Join custoder On custoder.id = transaction.custoder_id
                           LEFT Join reason On reason.id = transaction.reason_id
-                        Where transaction.flag_id In ('1', '2', '3', '4', '6', '8') And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
+                        Where transaction.flag_id In ('1', '2', '3', '4', '6', '8', '9') And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
             }else{
             $query="
                         Select transaction.id,
                           transaction.date_1,
                           transaction.date_2,
                           transaction.value,
+                          transaction.status,
                           transaction.comment,
                           transaction.removed,
                           transaction.property_id,
@@ -79,7 +81,7 @@ include_once "layout/header.php";
                           LEFT Join site On site.id = transaction.site_id
                           LEFT Join custoder On custoder.id = transaction.custoder_id
                           LEFT Join reason On reason.id = transaction.reason_id
-                        Where transaction.flag_id In ('1', '2', '3', '4', '6', '8') And transaction.date_1 BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
+                        Where transaction.flag_id In ('1', '2', '3', '4', '6', '8', '9') And transaction.date_1 BETWEEN '$expense_from_date' and '$expense_to_date 23:59:59'";
             }
             if(isset($_POST['show_deleted']) && $_POST['show_deleted']==='show_deleted'){
                 $query .= "";
@@ -307,7 +309,7 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                         <?php
                                         $result = mysqli_query($con, $query);
                                         while($expenses = mysqli_fetch_assoc($result)) {
-                                            if (in_array($expenses['flag_id'], [1,2,3,8])){
+                                            if (in_array($expenses['flag_id'], [1,2,3,8,9]) and $expenses['status'] == 1){
                                                 ?>
                                                 <tr class="success"> <!--info plus-->
                                                 <?php
@@ -331,7 +333,7 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                                         ?>
                                                         <a class="btn btn-success btn-circle" type="button" href="expense.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
-                                                    }elseif (in_array($expenses['flag_id'], [1,2,3])){
+                                                    }elseif (in_array($expenses['flag_id'], [1,2,3,9])){
                                                         ?>
                                                     <a class="btn btn-success btn-circle" type="button" href="payment.php?transaction_id=<?php echo $expenses['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
@@ -361,7 +363,7 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                                         ?>
                                                         <span class="badge badge-danger arabic">مصروف</span>
                                                         <?php
-                                                    }elseif (in_array($expenses['flag_id'], [1,2,3])){
+                                                    }elseif (in_array($expenses['flag_id'], [1,2,3,9])){
                                                         ?>
                                                         <span class="badge badge-success arabic"><?php echo $expenses['flag_name'] ?></span>
                                                         <?php
@@ -380,14 +382,14 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                                         echo $expenses['comment'];
                                                     }elseif ($expenses['flag_id']=='4'){
                                                         echo $expenses['reason_name'];
-                                                    }elseif (in_array($expenses['flag_id'], [1,2,3])){
+                                                    }elseif (in_array($expenses['flag_id'], [1,2,3,9])){
                                                         echo $expenses['flag_name'];
                                                     }
                                                     ?>
                                                 </td>
                                                 <td class="middle wrap">
                                                     <?php
-                                                    if (in_array($expenses['flag_id'], [1,2,3,8])){
+                                                    if (in_array($expenses['flag_id'], [1,2,3,8,9])){
                                                         echo $expenses['value'];
                                                     }elseif(in_array($expenses['flag_id'], [4,6])){
                                                         echo $expenses['value']*-1;
@@ -400,7 +402,7 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                                         echo $expenses['flag_name'];
                                                     }elseif(in_array($expenses['flag_id'], [4,8])){
                                                         echo $expenses['site_name'];
-                                                    }elseif(in_array($expenses['flag_id'], [1,2,3])){
+                                                    }elseif(in_array($expenses['flag_id'], [1,2,3,9])){
                                                         ?>
                                                         <span class='big'>
                                                         <a href="property.php?property_id=<?php echo $expenses['property_id']; ?>"><button type='button' class='btn btn-outline btn-info'>

@@ -77,19 +77,19 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> إجمالي القيمة </label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control calc" data-action="add" id="property_price" name="property_price"/></div>
+                                <input type="text" class="form-control calc" data-action="add" id="property_price" name="property_price" onkeypress="return isNumberKey(event)"/></div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> دفعة المقدم </label>
                             <div class="col-sm-10 form-inline">
-                                <input type="text" class="form-control" name="first_date" required placeholder="تاريخ المقدم">&nbsp;<input type="text" class="form-control calc" data-action="sub" placeholder="قيمة المقدم" name="first_price" required>
+                                <input type="text" class="form-control" name="first_date" required placeholder="تاريخ المقدم">&nbsp;<input type="text" class="form-control calc" data-action="sub" placeholder="قيمة المقدم" name="first_price" required  onkeypress="return isNumberKey(event)">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> الأقساط </label>
                             <div class="col-sm-8">
                                 <div class="field_wrapper">
-                                    <div class="form-inline"><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" name="date[]" required placeholder="تاريخ القسط">&nbsp;<input type="text" class="form-control calc" data-action="sub" placeholder="قيمة القسط" name="price[]" required>&nbsp;<button type="button" class="btn btn-minier btn-info add_button" title="Add field" id="add"><i class="ace-icon fa fa-plus">Add</i></button></div></div></div>
+                                    <div class="form-inline"><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" name="date[]" required placeholder="تاريخ القسط">&nbsp;<input type="text" class="form-control calc" data-action="sub" placeholder="قيمة القسط" name="price[]" required onkeypress="return isNumberKey(event)">&nbsp;<button type="button" class="btn btn-minier btn-info add_button" title="Add field" id="add"><i class="ace-icon fa fa-plus">Add</i></button></div></div></div>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2">المقايسات</label>
                             <div class="col-sm-10">
-                                <input required class="form-control" type="text" id="form-field-2" name="basics_cost" />
+                                <input required class="form-control" type="text" id="form-field-2" name="basics_cost"  onkeypress="return isNumberKey(event)"/>
                             </div>
                         </div>
                         <div class="clearfix form-actions">
@@ -202,13 +202,13 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> مساحة العقار </label>
                             <div class="col-sm-10">
-                                <input required class="form-control" type="text" id="form-field-2" name="property_area" />
+                                <input required class="form-control" type="text" id="form-field-2" name="property_area" onkeypress="return isNumberKey(event)" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> سعر العقار </label>
                             <div class="col-sm-10">
-                                <input required class="form-control" type="text" id="form-field-2" name="property_price" />
+                                <input required class="form-control" type="text" id="form-field-2" name="property_price"  onkeypress="return isNumberKey(event)"/>
                             </div>
                         </div>
                         <div class="clearfix form-actions">
@@ -999,3 +999,11 @@ include_once "php/functions.php";
     <a class="play-pause"></a>
     <ol class="indicator"></ol>
 </div>
+<script>
+    function isNumberKey(evt){
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>

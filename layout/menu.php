@@ -104,8 +104,8 @@ function active($currect_page){
                 <?php
                 if ($_SESSION['azaz']['role'] < 2){
                     ?>
-                    <li class="<?php active('settings.php');?>">
-                        <a href="settings.php"><i class="fa fa-cogs"></i> <span class="nav-label">الإعدادات</span></a>
+                    <li class="<?php active('contractors.php');?>">
+                        <a href="contractors.php"><i class="fa fa-users"></i> <span class="nav-label">المقاولين</span></a>
                     </li>
                     <?php
                 }
@@ -113,8 +113,8 @@ function active($currect_page){
                 <?php
                 if ($_SESSION['azaz']['role'] < 2){
                     ?>
-                    <li class="<?php active('contractors.php');?>">
-                        <a href="contractors.php"><i class="fa fa-users"></i> <span class="nav-label">المقاولين</span></a>
+                    <li class="<?php active('settings.php');?>">
+                        <a href="settings.php"><i class="fa fa-cogs"></i> <span class="nav-label">الإعدادات</span></a>
                     </li>
                     <?php
                 }

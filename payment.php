@@ -53,7 +53,7 @@ include_once "layout/header.php";
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
                     Where transaction.id = $transaction_id And transaction.removed = 0 And
-                      transaction.flag_id In ('1', '2', '3')");
+                      transaction.flag_id In ('1', '2', '3', '9')");
                         $payment_info = mysqli_fetch_assoc($result)
                         ?>
                         <div class="ibox-title">

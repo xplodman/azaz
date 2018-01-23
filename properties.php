@@ -532,7 +532,7 @@ include_once "layout/modals.php";
         var addButton = $('.add_button'); //Add button selector
         var wrapper = $('.field_wrapper'); //Input field wrapper
         var y = 1; //Initial field counter is 1
-        var fieldHTML = '<div class="form-inline"><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" name="date[]" placeholder="تاريخ القسط" required>&nbsp;<input type="text" class="form-control calc"  data-action="sub" placeholder="قيمة القسط" name="price[]" required>&nbsp;<button type="button" class="btn btn-minier btn-danger remove_button" title="Remove" id="Remove"><i class="ace-icon fa fa-minus">Remove</i></button></div></div></div>'; //New input field html
+        var fieldHTML = '<div class="form-inline"><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" name="date[]" placeholder="تاريخ القسط" required>&nbsp;<input type="text" class="form-control calc"  data-action="sub" placeholder="قيمة القسط" name="price[]" required onkeypress="return isNumberKey(event)">&nbsp;<button type="button" class="btn btn-minier btn-danger remove_button" title="Remove" id="Remove"><i class="ace-icon fa fa-minus">Remove</i></button></div></div></div>'; //New input field html
         var x = 1; //Initial field counter is 1
         $(addButton).click(function(){ //Once add button is clicked
             y++; //Increment field counter

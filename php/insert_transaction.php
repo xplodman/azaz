@@ -15,6 +15,7 @@ $date=$_POST['date'];
 $last_date=$_POST['last_date'];
 $last_price=$_POST['last_price'];
 $contract_date=$_POST['contract_date'];
+$basics_cost=$_POST['basics_cost'];
 
 $len_date = count($date);
 $len_price = count($price);
@@ -39,11 +40,13 @@ if ($len_date == $len_price) {
 $insert_last_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$last_date', NULL, '$last_price', '0', '0', '3', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
 
+$insert_basics_cost = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$last_date', NULL, '$basics_cost', '0', '0', '9', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
+
 
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);
 
-if ($insert_owner & $insert_owner_has_property & $insert_first_payment & $insert_payment & $insert_last_payment) {
+if ($insert_owner & $insert_owner_has_property & $insert_first_payment & $insert_payment & $insert_last_payment & $insert_basics_cost) {
     mysqli_commit($con);
 
     header('Location: '.$uri_parts[0].'?backresult=1');

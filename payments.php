@@ -40,7 +40,8 @@ include_once "layout/header.php";
                       transaction.value,
                       transaction.status,
                       transaction.removed,
-                      flag.name,
+                      flag.name As flag_name,
+                      flag.id As flag_id,
                       property.id As property_id,
                       property.name As property_name,
                       property_type.name As property_type_name,
@@ -64,7 +65,8 @@ include_once "layout/header.php";
                       transaction.value,
                       transaction.status,
                       transaction.removed,
-                      flag.name,
+                      flag.name As flag_name,
+                      flag.id As flag_id,
                       property.id As property_id,
                       property.name As property_name,
                       property_type.name As property_type_name,
@@ -154,7 +156,7 @@ include_once "layout/header.php";
                                     <table id="example" class=" dataTables-example table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
-                                            <th style="width:4em"></th>
+                                            <th style="width:10em"></th>
                                             <th>التاريخ</th>
                                             <th>المبلغ</th>
                                             <th>أسم المشتري</th>
@@ -172,7 +174,7 @@ include_once "layout/header.php";
                                         while($payments = mysqli_fetch_assoc($result)) {
                                             ?>
                                             <tr> <!--info plus-->
-                                                <th style="width:1em">
+                                                <th style="width:10em">
                                                     <a class="btn btn-success btn-circle" type="button" href="payment.php?transaction_id=<?php echo $payments['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
                                                     switch ($payments['status']) {
@@ -185,6 +187,25 @@ include_once "layout/header.php";
                                                                href='#property_payment_receive'></a>
                                                             <?php
                                                             break;
+                                                    }
+                                                    ?>
+                                                    <?php
+                                                    if ($payments['flag_id']=='6'){
+                                                        ?>
+                                                        <span class="badge badge-danger arabic">إضافة عهده</span>
+                                                        <?php
+                                                    }elseif ($payments['flag_id']=='8'){
+                                                        ?>
+                                                        <span class="badge badge-primary arabic">إيراد من شريك</span>
+                                                        <?php
+                                                    }elseif ($payments['flag_id']=='4'){
+                                                        ?>
+                                                        <span class="badge badge-danger arabic">مصروف</span>
+                                                        <?php
+                                                    }elseif (in_array($payments['flag_id'], [1,2,3,9])){
+                                                        ?>
+                                                        <span class="badge badge-success arabic"><?php echo $payments['flag_name'] ?></span>
+                                                        <?php
                                                     }
                                                     ?>
                                                 </th>

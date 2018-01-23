@@ -154,9 +154,27 @@ if (!isset($_GET['property_id'])){
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label" for="form-field-2"> سعر العقار </label>
+                                            <label class="col-sm-2 control-label" for="form-field-2">سعر العقار قبل البيع</label>
                                             <div class="col-sm-10">
                                                 <input required class="form-control" type="text" id="form-field-2" name="property_price"  value="<?php echo $property_info['property_price']?>" required />
+                                            </div>
+                                        </div>
+                                        <?php
+                                        $property_price_query="SELECT
+  Sum(transaction.value) AS property_price
+FROM
+  transaction
+WHERE
+  transaction.removed = 0 AND
+  transaction.flag_id IN ('1', '2', '3', '9')";
+                                        $property_price_info = mysqli_query($con, $property_price_query);
+                                        $property_price_info_sum = mysqli_fetch_assoc($property_price_info)
+
+                                        ?>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="form-field-2">سعر العقار بعد البيع</label>
+                                            <div class="col-sm-10">
+                                                <input required class="form-control" type="text" id="form-field-2" name="property_price"  value="<?php echo $property_price_info_sum['property_price']?>" readonly />
                                             </div>
                                         </div>
                                         <input type="hidden" name="property_status"  value="<?php echo $owner_info['status']?>" />
@@ -264,7 +282,8 @@ if (!isset($_GET['property_id'])){
                       transaction.value,
                       transaction.status,
                       transaction.removed,
-                      flag.name,
+                      flag.name As flag_name,
+                      flag.id As flag_id,
                       property.id As property_id,
                       property.name As property_name,
                       property_type.name As property_type_name,
@@ -279,14 +298,14 @@ if (!isset($_GET['property_id'])){
                       Inner Join property_type On property_type.id = property.property_type_id
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
-                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND property.id= $property_id"
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '9') AND property.id= $property_id"
                             ?>
                             <div id="collapseOne" class="panel-collapse collapse in">
                                 <div class="table-responsive">
                                     <table id="example" class=" dataTables-example table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
-                                            <th style="width:4em"></th>
+                                            <th style="width:10em"></th>
                                             <th>التاريخ</th>
                                             <th>المبلغ</th>
                                             <th>أسم المشتري</th>
@@ -317,6 +336,25 @@ if (!isset($_GET['property_id'])){
                                                                href='#property_payment_receive_2'></a>
                                                             <?php
                                                             break;
+                                                    }
+                                                    ?>
+                                                    <?php
+                                                    if ($payments['flag_id']=='6'){
+                                                        ?>
+                                                        <span class="badge badge-danger arabic">إضافة عهده</span>
+                                                        <?php
+                                                    }elseif ($payments['flag_id']=='8'){
+                                                        ?>
+                                                        <span class="badge badge-primary arabic">إيراد من شريك</span>
+                                                        <?php
+                                                    }elseif ($payments['flag_id']=='4'){
+                                                        ?>
+                                                        <span class="badge badge-danger arabic">مصروف</span>
+                                                        <?php
+                                                    }elseif (in_array($payments['flag_id'], [1,2,3,9])){
+                                                        ?>
+                                                        <span class="badge badge-success arabic"><?php echo $payments['flag_name'] ?></span>
+                                                        <?php
                                                     }
                                                     ?>
                                                 </th>
