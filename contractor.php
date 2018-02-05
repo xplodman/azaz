@@ -102,6 +102,9 @@ if (!isset($_GET['reason_id'])){
                                                     Submit
                                                 </button>
                                             </div>
+                                            <div class="col-sm-2 col-sm-offset-4">
+                                                <button class="arabic btn btn-danger" type="button" onclick="delete_reason(<?php echo $reason_id ?>)" data-value="1" > لحذف المقاول </button>
+                                            </div>
                                         </div>
                                     </span>
                                 </form>
@@ -651,10 +654,10 @@ include_once "layout/modals.php";
     };
 </script>
 <script>
-    function delete_property(id){
+    function delete_reason(id){
         swal({
                 title: "هل أنت متأكد؟",
-                text: "هذا العقار سيتم إلغائه!!!",
+                text: "هذا المقاول سيتم إلغائه!!!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -664,9 +667,9 @@ include_once "layout/modals.php";
                 closeOnCancel: false },
             function (isConfirm) {
                 if (isConfirm) {
-                    swal("Deleted!", "تم حذف العقار بنجاح.", "success");
+                    swal("Deleted!", "تم حذف المقاول بنجاح.", "success");
                     function explode(){
-                        window.location.href = "php/delete_property.php?property_id=" + id;
+                        window.location.href = "php/delete_reason.php?reason_id=" + id;
 
                     }
                     setTimeout(explode, 1200);

@@ -119,6 +119,15 @@ function active($currect_page){
                     <?php
                 }
                 ?>
+                <?php
+                if ($_SESSION['azaz']['role'] < 2){
+                    ?>
+                    <li class="<?php active('backup_and_restore.php');?>">
+                        <a href="backup_and_restore.php"><i class="fa fa-cloud-upload"></i> <span class="nav-label">Backup and restore</span></a>
+                    </li>
+                    <?php
+                }
+                ?>
             </ul>
         </font>
     </div>

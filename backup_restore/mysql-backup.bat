@@ -6,5 +6,9 @@ set "datestamp=%YYYY%%MM%%DD%" & set "timestamp=%HH%%Min%%Sec%"
 set "fullstamp=%YYYY%-%MM%-%DD%_%HH%-%Min%-%Sec%"
 
 
-cd C:\wamp64\www\newarch\backup_restore
-mysqldump.exe -e -uroot -proot -hlocalhost azaz > azaz.sql
+mysqldump -e -uroot -proot -hlocalhost azaz > azaz.sql
+
+if NOT ["%errorlevel%"]==["0"] (
+    pause
+    exit /b %errorlevel%
+)

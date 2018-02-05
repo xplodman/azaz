@@ -1,2 +1,0 @@
-ALTER TABLE `azaz`.`owner` 
-ADD COLUMN `mobile_2` VARCHAR(15) NOT NULL AFTER `mobile`

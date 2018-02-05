@@ -11,7 +11,7 @@ if (!isset($_SESSION['azaz']['authenticate']) or $_SESSION['azaz']['authenticate
  */
 if (($_SESSION['azaz']['authenticate']))
 {
-    if(time() - $_SESSION['azaz']['timestamp'] > 1*60) { //subtract new timestamp from the old one
+    if(time() - $_SESSION['azaz']['timestamp'] > 1*60000) { //subtract new timestamp from the old one
         header('Location: php/logout.php');
     } else {
         $_SESSION['azaz']['timestamp'] = time(); //set new timestamp

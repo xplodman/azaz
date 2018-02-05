@@ -1,2 +1,6 @@
-mysql.exe
-mysql -u root -proot 5inarch < 5inarch.sql
+mysql -u root -proot -h localhost azaz < azaz.sql
+
+if NOT ["%errorlevel%"]==["0"] (
+    pause
+    exit /b %errorlevel%
+)

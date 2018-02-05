@@ -166,7 +166,8 @@ FROM
   transaction
 WHERE
   transaction.removed = 0 AND
-  transaction.flag_id IN ('1', '2', '3', '9')";
+  transaction.flag_id IN ('1', '2', '3', '9') AND
+  transaction.property_id = $property_id";
                                         $property_price_info = mysqli_query($con, $property_price_query);
                                         $property_price_info_sum = mysqli_fetch_assoc($property_price_info)
 
@@ -276,7 +277,9 @@ WHERE
                         <div class="ibox-content">
                             <?php
                                 $query="
-                    Select transaction.id,
+                    Select 
+                      (@cnt := @cnt + 1) AS rowNumber,
+                      transaction.id,
                       transaction.date_1,
                       transaction.date_2,
                       transaction.value,
@@ -292,13 +295,15 @@ WHERE
                       owner.name As owner_name,
                       owner.mobile As owner_mobile
                     From transaction
+                      CROSS JOIN (SELECT @cnt := -1) AS dummy
                       Inner Join flag On flag.id = transaction.flag_id
                       Inner Join owner On transaction.owner_id = owner.id
                       Inner Join property On property.id = transaction.property_id 
                       Inner Join property_type On property_type.id = property.property_type_id
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
-                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '9') AND property.id= $property_id"
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '9') AND property.id= $property_id
+                    order by transaction.id"
                             ?>
                             <div id="collapseOne" class="panel-collapse collapse in">
                                 <div class="table-responsive">
@@ -351,7 +356,11 @@ WHERE
                                                         ?>
                                                         <span class="badge badge-danger arabic">مصروف</span>
                                                         <?php
-                                                    }elseif (in_array($payments['flag_id'], [1,2,3,9])){
+                                                    }elseif ($payments['flag_id']=='2'){
+                                                        ?>
+                                                        <span class="badge badge-success arabic"><?php echo $payments['flag_name']." رقم ".$payments['rowNumber'] ?></span>
+                                                    <?php
+                                                    }elseif (in_array($payments['flag_id'], [1,3,9])){
                                                         ?>
                                                         <span class="badge badge-success arabic"><?php echo $payments['flag_name'] ?></span>
                                                         <?php
@@ -432,11 +441,15 @@ WHERE
                                                     <?php
                                                 }
                                                 ?>
+                                                <td class="middle wrap">
+                                                    <?php echo $payments['id'] ?>
+                                                </td>
                                             </tr>
                                         <?php } ?>
                                         </tbody>
                                         <tfoot>
                                         <tr>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -533,8 +546,12 @@ include_once "layout/modals.php";
                     target: 'tr'
                 }
             },
+            columnDefs: [{
+                targets: [ 10 ],
+                visible: false
+            }],
 
-            order: [2, 'desc'],
+            order: [10, 'asc'],
             dom: 'Blfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
