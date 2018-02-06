@@ -38,14 +38,11 @@ include_once "layout/header.php";
                         <div class="ibox-title">
                             <font face="myFirstFont"><h5>تفاصيل موقع <?php echo $site_info['name']?></h5></font>
                             <div class="ibox-tools">
-                            <?php /*
                                 <button class="btn btn-danger" type="button"  onclick="delete_site(<?php echo $site_info['id'] ?>)">
                                     <font face="myFirstFont">
                                     لإزالة الموقع
                                     </font>
                                 </button>
-                            */ ?>
-
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
                                 </a>
