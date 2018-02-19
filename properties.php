@@ -85,7 +85,7 @@ include_once "layout/header.php";
                                                 From property
                                                   Inner Join tower On tower.id = property.tower_id
                                                   Inner Join site On site.id = tower.site_id
-                                                  Inner Join property_type On property_type.id = property.property_type_id  where 1 = 2
+                                                  Inner Join property_type On property_type.id = property.property_type_id
                                                   Order By property_id desc") or die(mysqli_error($con));
                                         while($property_info = mysqli_fetch_assoc($property_query_info))
                                         {
