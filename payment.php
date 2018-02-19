@@ -278,7 +278,7 @@ include_once "layout/modals.php";
                     } );
                 } );
             },
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',
@@ -371,7 +371,7 @@ include_once "layout/modals.php";
     var date_input=$('input[name="payment_date"]'); //our date input has the name "date"
     var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
     date_input.datepicker({
-        format: 'yyyy-m-d',
+        format: 'd-m-yyyy',
         container: container,
         todayHighlight: true,
         autoclose: true,

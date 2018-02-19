@@ -9,10 +9,12 @@ $owner_number_2=$_POST['owner_number_2'];
 $property_price_2=$_POST['property_price_2'];
 $property_price=$_POST['property_price'];
 $first_date=$_POST['first_date'];
+$first_date=date("Y-m-d", strtotime($first_date) );
 $first_price=$_POST['first_price'];
 $price=$_POST['price'];
 $date=$_POST['date'];
 $last_date=$_POST['last_date'];
+$last_date=date("Y-m-d", strtotime($last_date) );
 $last_price=$_POST['last_price'];
 $contract_date=$_POST['contract_date'];
 $basics_cost=$_POST['basics_cost'];
@@ -33,6 +35,7 @@ $insert_first_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `da
 if ($len_date == $len_price) {
     for($y=0 ; $y < $len_date ; $y++)
     {
+        $date[$y]=date("Y-m-d", strtotime($date[$y]) );
         $insert_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`) VALUES (NULL, '$date[$y]', NULL, '$price[$y]', '0', '0', '2', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
     }
 }

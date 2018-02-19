@@ -178,6 +178,44 @@ WHERE
                                                 <input required class="form-control" type="text" id="form-field-2" name="property_price"  value="<?php echo $property_price_info_sum['property_price']?>" readonly />
                                             </div>
                                         </div>
+                                        <?php
+                                        $property_price_needs_query="SELECT
+  Sum(transaction.value) AS property_needs_price
+FROM
+  transaction
+WHERE
+  transaction.removed = 0 AND
+  transaction.flag_id IN ('1', '2', '3', '9') AND
+  transaction.property_id = $property_id AND transaction.status = 0";
+                                        $property_price_needs_info = mysqli_query($con, $property_price_needs_query);
+                                        $property_price_info_needs_sum = mysqli_fetch_assoc($property_price_needs_info)
+
+                                        ?>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="form-field-2">ما لم يتم دفعه</label>
+                                            <div class="col-sm-10">
+                                                <input required class="form-control" type="text" id="form-field-2" name="property_needs_price"  value="<?php echo $property_price_info_needs_sum['property_needs_price']?>" readonly />
+                                            </div>
+                                        </div>
+                                        <?php
+                                        $property_price_done_query="SELECT
+  Sum(transaction.value) AS property_done_price
+FROM
+  transaction
+WHERE
+  transaction.removed = 0 AND
+  transaction.flag_id IN ('1', '2', '3', '9') AND
+  transaction.property_id = $property_id AND transaction.status = 1";
+                                        $property_price_done_info = mysqli_query($con, $property_price_done_query);
+                                        $property_price_info_done_sum = mysqli_fetch_assoc($property_price_done_info)
+
+                                        ?>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label" for="form-field-2">ما تم دفعه</label>
+                                            <div class="col-sm-10">
+                                                <input required class="form-control" type="text" id="form-field-2" name="property_done_price"  value="<?php echo $property_price_info_done_sum['property_done_price']?>" readonly />
+                                            </div>
+                                        </div>
                                         <input type="hidden" name="property_status"  value="<?php echo $owner_info['status']?>" />
                                         <input type="hidden" name="owner_has_property_id"  value="<?php echo $owner_info['owner_has_property_id']?>" />
                                         <input type="hidden" name="owner_id"  value="<?php echo $owner_info['owner_id']?>" />
@@ -539,7 +577,7 @@ include_once "layout/modals.php";
                     } );
                 } );
             },
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',
@@ -653,7 +691,7 @@ include_once "layout/modals.php";
         var date_input=$('input[name="payment_date"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
-            format: 'yyyy-m-d',
+            format: 'd-m-yyyy',
             container: container,
             todayHighlight: true,
             autoclose: true,

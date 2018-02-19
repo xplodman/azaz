@@ -496,7 +496,7 @@ include_once "layout/modals.php";
                     } );
                 } );
             },
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',
@@ -536,7 +536,7 @@ include_once "layout/modals.php";
 <script>
     $(document).ready(function() {
         $('#example2').DataTable({
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',

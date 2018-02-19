@@ -85,7 +85,7 @@ include_once "layout/header.php";
                                                 From property
                                                   Inner Join tower On tower.id = property.tower_id
                                                   Inner Join site On site.id = tower.site_id
-                                                  Inner Join property_type On property_type.id = property.property_type_id
+                                                  Inner Join property_type On property_type.id = property.property_type_id  where 1 = 2
                                                   Order By property_id desc") or die(mysqli_error($con));
                                         while($property_info = mysqli_fetch_assoc($property_query_info))
                                         {
@@ -348,7 +348,7 @@ include_once "layout/modals.php";
                     } );
                 } );
             },
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',
@@ -478,7 +478,7 @@ include_once "layout/modals.php";
         var date_input=$('input[name="date[]"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
-            format: 'yyyy-m-d',
+            format: 'd-m-yyyy',
             container: container,
             todayHighlight: true,
             autoclose: true,
@@ -486,7 +486,7 @@ include_once "layout/modals.php";
         var date_input=$('input[name="first_date"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
-            format: 'yyyy-m-d',
+            format: 'd-m-yyyy',
             container: container,
             todayHighlight: true,
             autoclose: true,
@@ -494,7 +494,7 @@ include_once "layout/modals.php";
         var date_input=$('input[name="last_date"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
-            format: 'yyyy-m-d',
+            format: 'd-m-yyyy',
             container: container,
             todayHighlight: true,
             autoclose: true,
@@ -502,7 +502,7 @@ include_once "layout/modals.php";
         var date_input=$('input[name="payment_date"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
-            format: 'yyyy-m-d',
+            format: 'd-m-yyyy',
             container: container,
             todayHighlight: true,
             autoclose: true,
@@ -510,7 +510,7 @@ include_once "layout/modals.php";
         var date_input=$('input[name="contract_date"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
-            format: 'yyyy-m-d',
+            format: 'd-m-yyyy',
             container: container,
             todayHighlight: true,
             autoclose: true,
@@ -542,7 +542,7 @@ include_once "layout/modals.php";
                 var date_input=$('input[name="date[]"]'); //our date input has the name "date"
                 var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
                 date_input.datepicker({
-                    format: 'yyyy-m-d',
+                    format: 'd-m-yyyy',
                     container: container,
                     todayHighlight: true,
                     autoclose: true,

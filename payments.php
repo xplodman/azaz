@@ -56,7 +56,9 @@ include_once "layout/header.php";
                       Inner Join property_type On property_type.id = property.property_type_id
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
-                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59' ORDER BY
+  property_id,
+  transaction.id";
             }else{
                 $query="
                     Select transaction.id,
@@ -170,6 +172,8 @@ include_once "layout/header.php";
                                         </thead>
                                         <tbody>
                                         <?php
+                                        $x=0;
+                                        $payment_number="";
                                         $result = mysqli_query($con, $query);
                                         while($payments = mysqli_fetch_assoc($result)) {
                                             ?>
@@ -202,9 +206,30 @@ include_once "layout/header.php";
                                                         ?>
                                                         <span class="badge badge-danger arabic">مصروف</span>
                                                         <?php
-                                                    }elseif (in_array($payments['flag_id'], [1,2,3,9])){
+                                                    }elseif (in_array($payments['flag_id'], [2])){
                                                         ?>
-                                                        <span class="badge badge-success arabic"><?php echo $payments['flag_name'] ?></span>
+                                                        <span class="badge badge-success arabic">
+                                                            <?php
+                                                            if($payments['property_id']==$payment_number){
+                                                                echo $payments['flag_name'].$x;
+                                                            }else{
+                                                                $x=1;
+                                                                echo $payments['flag_name'].$x;
+                                                            }
+                                                            $x=$x+1;
+                                                            $payment_number=$payments['property_id'];
+                                                            ?>
+
+                                                        </span>
+                                                        <?php
+                                                    }elseif (in_array($payments['flag_id'], [1,3,9])){
+                                                        ?>
+                                                        <span class="badge badge-success arabic">
+                                                            <?php
+                                                            echo $payments['flag_name'];
+                                                            ?>
+
+                                                        </span>
                                                         <?php
                                                     }
                                                     ?>
@@ -377,7 +402,7 @@ include_once "layout/modals.php";
                     } );
                 } );
             },
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',
@@ -469,7 +494,7 @@ include_once "layout/modals.php";
     var date_input=$('input[name="payment_date"]'); //our date input has the name "date"
     var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
     date_input.datepicker({
-        format: 'yyyy-m-d',
+        format: 'd-m-yyyy',
         container: container,
         todayHighlight: true,
         autoclose: true,

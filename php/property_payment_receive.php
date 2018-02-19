@@ -2,6 +2,7 @@
 include_once "connection.php";
 
 $payment_date=$_POST['payment_date'];
+$payment_date=date("Y-m-d", strtotime($payment_date) );
 $payment_id=$_POST['payment_id'];
 $property_id=$_POST['property_id'];
 

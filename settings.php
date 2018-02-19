@@ -242,7 +242,7 @@ include_once "layout/modals.php";
 <script>
     $(document).ready(function() {
         $('.dataTables-example').DataTable({
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',

@@ -520,7 +520,7 @@ Where custoder.id = $custoders_info[id] And transaction.removed = 0 And transact
     }
     $(document).ready(function() {
         $('.dataTables-example').DataTable({
-            pageLength: 10,
+            pageLength: 50,
             responsive: {
                 details: {
                     type: 'column',
