@@ -50,6 +50,7 @@ include_once "layout/header.php";
                           transaction.comment,
                           transaction.removed,
                           transaction.property_id,
+                          transaction.number,
                           flag.name As flag_name,
                           flag.id As flag_id,
                           site.name As site_name,
@@ -71,6 +72,7 @@ include_once "layout/header.php";
                           transaction.comment,
                           transaction.removed,
                           transaction.property_id,
+                          transaction.number,
                           flag.name As flag_name,
                           flag.id As flag_id,
                           site.name As site_name,
@@ -178,7 +180,7 @@ Where transaction.removed = 0 And transaction.flag_id in (4,6) And transaction.d
                             $get_received_value_query="
                         Select COALESCE(SUM(transaction.value),0) As received_count
 From transaction
-Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id in (1,2,3,8) And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
+Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id in (1,2,3,8,9) And transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'";
 
                         }else{
 
@@ -190,7 +192,7 @@ Where transaction.removed = 0 And transaction.flag_id in (4,6)";
                             $get_received_value_query="
                         Select COALESCE(SUM(transaction.value),0) As received_count
 From transaction
-Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id in (1,2,3,8)";
+Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id in (1,2,3,8,9)";
 
                         }
                         $get_spent_value = mysqli_query($con, $get_spent_value_query);
@@ -317,6 +319,8 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                                 ?>
                                                 <tr class="danger"> <!--info plus-->
                                                 <?php
+                                            }elseif (in_array($expenses['flag_id'], [1,2,3,8,9]) and $expenses['status'] == 0){
+                                                goto end;
                                             }
                                             ?>
                                                 <th style="width:1em">
@@ -363,9 +367,13 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                                         ?>
                                                         <span class="badge badge-danger arabic">مصروف</span>
                                                         <?php
-                                                    }elseif (in_array($expenses['flag_id'], [1,2,3,9])){
+                                                    }elseif (in_array($expenses['flag_id'], [1,3,9])){
                                                         ?>
                                                         <span class="badge badge-success arabic"><?php echo $expenses['flag_name'] ?></span>
+                                                        <?php
+                                                    }elseif ($expenses['flag_id']=='2'){
+                                                        ?>
+                                                        <span class="badge badge-success arabic"><?php echo $expenses['flag_name']." ".$expenses['number'] ?></span>
                                                         <?php
                                                     }
                                                     ?>
@@ -415,6 +423,7 @@ Where transaction.removed = 0 And transaction.status = 1 And transaction.flag_id
                                                 </td>
                                             </tr>
                                             <?php
+                                            end:
                                         }
                                         ?>
                                         </tbody>

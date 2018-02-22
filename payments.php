@@ -40,6 +40,7 @@ include_once "layout/header.php";
                       transaction.value,
                       transaction.status,
                       transaction.removed,
+                      transaction.number,
                       flag.name As flag_name,
                       flag.id As flag_id,
                       property.id As property_id,
@@ -60,7 +61,7 @@ include_once "layout/header.php";
                     ORDER BY
                       property_id,
                       transaction.id,
-                      transaction.date_1 DESC";
+                      transaction.number DESC";
             }else{
                 $query="
                     Select transaction.id,
@@ -69,6 +70,7 @@ include_once "layout/header.php";
                       transaction.value,
                       transaction.status,
                       transaction.removed,
+                      transaction.number,
                       flag.name As flag_name,
                       flag.id As flag_id,
                       property.id As property_id,
@@ -89,7 +91,7 @@ include_once "layout/header.php";
                     ORDER BY
                       property_id,
                       transaction.id,
-                      transaction.date_1 DESC";
+                      transaction.number DESC";
             }
             ?>
             <div class="col-sm-12">
@@ -164,7 +166,7 @@ include_once "layout/header.php";
                                     <table id="example" class=" dataTables-example table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
                                         <thead>
                                         <tr>
-                                            <th style="width:10em"></th>
+                                            <th style="width:12em"></th>
                                             <th>التاريخ</th>
                                             <th>المبلغ</th>
                                             <th>أسم المشتري</th>
@@ -184,7 +186,7 @@ include_once "layout/header.php";
                                         while($payments = mysqli_fetch_assoc($result)) {
                                             ?>
                                             <tr> <!--info plus-->
-                                                <th style="width:10em">
+                                                <th style="width:12em">
                                                     <a class="btn btn-success btn-circle" type="button" href="payment.php?transaction_id=<?php echo $payments['id'] ?>"><i class="fa fa-cog"></i></a>
                                                     <?php
                                                     switch ($payments['status']) {
@@ -212,29 +214,58 @@ include_once "layout/header.php";
                                                         ?>
                                                         <span class="badge badge-danger arabic">مصروف</span>
                                                         <?php
-                                                    }elseif (in_array($payments['flag_id'], [2])){
+                                                    }elseif ($payments['flag_id']=='2'){
                                                         ?>
                                                         <span class="badge badge-success arabic">
                                                             <?php
-                                                            if($payments['property_id']==$payment_number){
-                                                                echo $payments['flag_name'].$x;
+//                                                            if($payments['property_id']==$payment_number){
+//                                                                echo $payments['flag_name'].$x;
+//                                                                $update_payment = mysqli_query($con, "UPDATE `azaz`.`transaction` SET `number` = '$x' WHERE `transaction`.`id` = '$payments[id]';")or die(mysqli_error($con));
+//                                                            }else{
+//                                                                $x=1;
+//                                                                echo $payments['flag_name'].$x;
+//                                                            $update_payment = mysqli_query($con, "UPDATE `azaz`.`transaction` SET `number` = '$x' WHERE `transaction`.`id` = '$payments[id]';")or die(mysqli_error($con));
+//                                                            }
+//                                                            $x=$x+1;
+//                                                            $payment_number=$payments['property_id'];
+//                                                            mysqli_commit($con);
+                                                            if(round($payments['number'])==$payments['number']){
+                                                                echo $payments['flag_name']." رقم ".round($payments['number']);
                                                             }else{
-                                                                $x=1;
-                                                                echo $payments['flag_name'].$x;
+                                                                echo $payments['flag_name']." رقم ".round($payments['number'])."/".explode('.', number_format($payments['number'], 1))[1]; // 3
                                                             }
-                                                            $x=$x+1;
-                                                            $payment_number=$payments['property_id'];
                                                             ?>
 
                                                         </span>
                                                         <?php
-                                                    }elseif (in_array($payments['flag_id'], [1,3,9])){
+                                                    }elseif ($payments['flag_id']=='1'){
                                                         ?>
                                                         <span class="badge badge-success arabic">
                                                             <?php
+//                                                                $update_payment = mysqli_query($con, "UPDATE `azaz`.`transaction` SET `number` = '0' WHERE `transaction`.`id` = '$payments[id]';")or die(mysqli_error($con));
+//                                                            mysqli_commit($con);
                                                             echo $payments['flag_name'];
                                                             ?>
-
+                                                        </span>
+                                                        <?php
+                                                    }elseif ($payments['flag_id']=='3'){
+                                                        ?>
+                                                        <span class="badge badge-success arabic">
+                                                            <?php
+//                                                            $update_payment = mysqli_query($con, "UPDATE `azaz`.`transaction` SET `number` = '999' WHERE `transaction`.`id` = '$payments[id]';")or die(mysqli_error($con));
+//                                                            mysqli_commit($con);
+                                                            echo $payments['flag_name'];
+                                                            ?>
+                                                        </span>
+                                                        <?php
+                                                    }elseif ($payments['flag_id']=='9'){
+                                                        ?>
+                                                        <span class="badge badge-success arabic">
+                                                            <?php
+//                                                            $update_payment = mysqli_query($con, "UPDATE `azaz`.`transaction` SET `number` = '1000' WHERE `transaction`.`id` = '$payments[id]';")or die(mysqli_error($con));
+//                                                            mysqli_commit($con);
+                                                            echo $payments['flag_name'];
+                                                            ?>
                                                         </span>
                                                         <?php
                                                     }

@@ -850,6 +850,104 @@ include_once "php/functions.php";
             </div>
         </div>
     </div>
+    <div class="modal inmodal" id="add_premium" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة قسط</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="form_submit" action="php/add_premium.php?property_id=<?php echo $property_id; ?>" class="form-horizontal">
+                        <div class="form-group" id="data_1">
+                            <span class="arabic">
+                            <label class="col-sm-2 control-label">تاريخ الإستحقاق </label>
+                            <div class="col-sm-10">
+                                <div class="input-group date">
+                                    <input type="text" id="date" class="form-control" name="date_1">
+                                    <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="arabic">
+                                <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
+                                <div class="col-sm-10">
+                                    <input required class="form-control" type="number" id="form-field-2" name="value"/>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                                <button class="btn btn-info" type="Submit" name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="property_payment_division" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة قسط</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="form_submit" action="php/add_premium_division.php?transaction_id=<?php echo $payment_info['id']; ?>" class="form-horizontal">
+                        <div class="form-group" id="data_1">
+                            <span class="arabic">
+                            <label class="col-sm-2 control-label">تاريخ الإستحقاق </label>
+                            <div class="col-sm-10">
+                                <div class="input-group date">
+                                    <input type="text" id="date" class="form-control" name="date_1">
+                                    <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="arabic">
+                                <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
+                                <div class="col-sm-10">
+                                    <input required class="form-control" type="number" id="form-field-2" name="value"/>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                                <button class="btn btn-info" type="Submit" name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal inmodal" id="add_property_type" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content animated rotateIn">

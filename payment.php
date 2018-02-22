@@ -34,9 +34,11 @@ include_once "layout/header.php";
                     Select transaction.id,
                       transaction.date_1,
                       transaction.date_2,
+                      transaction.number,
                       transaction.value,
                       transaction.status,
                       transaction.removed,
+                      flag.id As flag_id,
                       flag.name As flag_name,
                       property.name As property_name,
                       property_type.name As property_type_name,
@@ -106,6 +108,26 @@ include_once "layout/header.php";
                                             </div>
                                         </span>
                                     </div>
+                                    <?php
+                                    if($payment_info['flag_id']==2){
+                                        ?>
+                                        <div class="form-group">
+                                        <span class="arabic">
+                                            <label class="col-sm-2 control-label" for="form-field-2"> رقم القسط </label>
+                                            <div class="col-sm-10">
+                                                <input required class="form-control" type="text" value="<?php
+                                                if(round($payment_info['number'])==$payment_info['number']){
+                                                    echo round($payment_info['number']);
+                                                }else{
+                                                    echo round($payment_info['number'])."/".explode('.', number_format($payment_info['number'], 1))[1]; // 3
+                                                }
+                                                ?>" readonly/>
+                                            </div>
+                                        </span>
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
                                     <div class="form-group">
                                         <span class="arabic">
                                             <label class="col-sm-2 control-label" for="form-field-2"> المبلغ </label>
@@ -165,7 +187,7 @@ include_once "layout/header.php";
                                     <div class="hr-line-dashed"></div>
 
                                     <div class="form-group">
-                                        <div class="col-sm-4 col-sm-offset-2">
+                                        <div class="col-sm-2 col-sm-offset-2">
                                             <button class="btn" type="reset">
                                                 <i class="ace-icon fa fa-undo bigger-110"></i>
                                                 Reset
@@ -179,11 +201,17 @@ include_once "layout/header.php";
                                         switch ($payment_info['status']) {
                                             case "0":
                                                 ?>
-                                                <div class="col-sm-4 col-sm-offset-2">
-                                                    <a data-toggle='modal' class=" pull-right property_payment_receive btn btn-info" href='#property_payment_receive' data-id='<?php echo $payment_info['id']; ?>'>
+                                                <div class="col-sm-4 col-sm-offset-4">
+                                                    <a data-toggle='modal' class="property_payment_receive btn btn-info" href='#property_payment_receive' data-id='<?php echo $payment_info['id']; ?>'>
+                                                        <span class="arabic">
+                                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                                    تحصيل القسط
+                                                        </span>
+                                                    </a>
+                                                    <a data-toggle='modal' class=" property_payment_receive btn btn-success" href='#property_payment_division' data-id='<?php echo $payment_info['id']; ?>'>
                                                         <span class="arabic">
                                                             <i class="ace-icon fa fa-usd bigger-110"></i>
-                                                    تحصيل القسط
+                                                   تقسيم القسط
                                                         </span>
                                                     </a>
                                                 </div>
@@ -191,19 +219,18 @@ include_once "layout/header.php";
                                                 break;
                                             case "1":
                                                 ?>
-                                                <div class="col-sm-4 col-sm-offset-2">
-                                                    <a data-toggle='modal' class=" pull-right property_payment_receive btn btn-primary">
-                                                        <span class="arabic">
-                                                            <i class="ace-icon fa fa-check bigger-110"></i>
+                                        <div class="col-sm-4 col-sm-offset-4">
+                                            <a data-toggle='modal' class="pull-right property_payment_receive btn btn-primary">
+                                                <span class="arabic">
+                                                    <i class="ace-icon fa fa-check bigger-110"></i>
 تم السداد
-                                                        </span>
-                                                    </a>
-                                                </div>
+                                                </span>
+                                            </a>
+                                        </div>
                                                 <?php
                                                 break;
                                         }
                                         ?>
-
                                     </div>
                                 </form>
                             </div>

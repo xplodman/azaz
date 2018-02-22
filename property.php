@@ -30,6 +30,12 @@ if (!isset($_GET['property_id'])){
             <div class="col-sm-4">
                 <h2><p>تفاصيل الوحدة</p></h2>
             </div>
+            <div class="col-sm-8">
+                <font face="myFirstFont">
+                    <div class="title-action">
+                    </div>
+                </font>
+            </div>
         </div>
         <div class="animated fadeInRightBig">
             <div class="row">
@@ -273,7 +279,7 @@ WHERE
                                             switch ($owner_info['status']) {
                                                 default:
                                                     ?>
-                                                    <div class="col-sm-2 col-sm-offset-2">
+                                                    <div class="col-sm-2 col-lg-offset-4">
                                                         <span class="arabic  pull-right btn btn-warning">
 لم يتم البيع
                                                         </span>
@@ -282,13 +288,11 @@ WHERE
                                                 break;
                                                 case "1":
                                                     ?>
-                                                    <div class="col-sm-2 col-sm-offset-2">
-                                                        <span class="arabic  pull-right btn btn-info">
-تم البيع
-                                                        </span>
-                                                    </div>
+                                                    <div class="right col-sm-4 col-lg-offset-2">
                                                     <button class="arabic btn btn-danger" type="button" onclick="delete_contract(<?php echo $owner_info['owner_has_property_id'] ?> , <?php echo $property_info['property_id'] ?>)" data-value="1" > لفسخ التعاقد </button>
                                                     <button class="arabic btn btn-danger" type="button" onclick="delete_property(<?php echo $property_info['property_id'] ?>)" data-value="1" > لحذف العقار </button>
+                                                    <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_premium"><i class="fa fa-plus"></i> إضافة قسط</button>
+                                                    </div>
                                                     <?php
                                                 break;
                                                 }
@@ -316,8 +320,8 @@ WHERE
                             <?php
                                 $query="
                     Select 
-                      (@cnt := @cnt + 1) AS rowNumber,
                       transaction.id,
+                      transaction.number,
                       transaction.date_1,
                       transaction.date_2,
                       transaction.value,
@@ -333,7 +337,6 @@ WHERE
                       owner.name As owner_name,
                       owner.mobile As owner_mobile
                     From transaction
-                      CROSS JOIN (SELECT @cnt := -1) AS dummy
                       Inner Join flag On flag.id = transaction.flag_id
                       Inner Join owner On transaction.owner_id = owner.id
                       Inner Join property On property.id = transaction.property_id 
@@ -341,7 +344,7 @@ WHERE
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
                     Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '9') AND property.id= $property_id
-                    order by transaction.id"
+                    order by transaction.number"
                             ?>
                             <div id="collapseOne" class="panel-collapse collapse in">
                                 <div class="table-responsive">
@@ -396,7 +399,15 @@ WHERE
                                                         <?php
                                                     }elseif ($payments['flag_id']=='2'){
                                                         ?>
-                                                        <span class="badge badge-success arabic"><?php echo $payments['flag_name']." رقم ".$payments['rowNumber'] ?></span>
+                                                        <span class="badge badge-success arabic">
+                                                            <?php
+                                                            if(round($payments['number'])==$payments['number']){
+                                                                echo $payments['flag_name']." رقم ".round($payments['number']);
+                                                            }else{
+                                                                echo $payments['flag_name']." رقم ".round($payments['number'])."/".explode('.', number_format($payments['number'], 1))[1]; // 3
+                                                            }
+                                                            ?>
+                                                        </span>
                                                     <?php
                                                     }elseif (in_array($payments['flag_id'], [1,3,9])){
                                                         ?>
@@ -589,7 +600,7 @@ include_once "layout/modals.php";
                 visible: false
             }],
 
-            order: [10, 'asc'],
+            order: [],
             dom: 'Blfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
