@@ -19,8 +19,7 @@ $last_price=$_POST['last_price'];
 $contract_date=$_POST['contract_date'];
 $basics_cost=$_POST['basics_cost'];
 
-$len_date = count($date);
-$len_price = count($price);
+$transaction_number=1;
 
 $insert_owner = mysqli_query($con, "INSERT INTO `owner` (`id`, `name`, `mobile`,`mobile_2`, `create_time`, `update_time`) VALUES (NULL, '$owner_name', '$owner_number','$owner_number_2', CURRENT_TIMESTAMP, NULL);")or die(mysqli_error($con));
 
@@ -30,9 +29,27 @@ $maxownerid = implode("", $maxownerid);
 
 $insert_owner_has_property = mysqli_query($con, "INSERT INTO `owner_has_property` (`id`, `owner_id`, `property_id`, `create_time`, `update_time`, `status`, `contract_date`, `users_id`) VALUES (NULL, '$maxownerid', '$property_number', CURRENT_TIMESTAMP, NULL, '1', '$contract_date', '$user_id');")or die(mysqli_error($con));
 
+
+$first_auto_date=$_POST['first_auto_date'];
+$first_auto_date=date("Y-m-d", strtotime($first_auto_date) );
+$total_auto_price=$_POST['total_auto_price'];
+$total_auto_count=$_POST['total_auto_count'];
+$total_auto_date_count=$_POST['total_auto_date_count'];
+$payment_price=$total_auto_price/$total_auto_count;
+
+$effectiveDate = date('Y-m-d', strtotime($first_auto_date. " + {$total_auto_date_count} months"));
+
 $insert_first_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`, `number`) VALUES (NULL, '$first_date', '$first_date', '$first_price', '1', '0', '1', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL, '0');")or die(mysqli_error($con));
 
-$transaction_number=1;
+for($y=0 ; $y < $total_auto_count ; $y++){
+    $insert_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`, `number`) VALUES (NULL, '$first_auto_date', NULL, '$payment_price', '0', '0', '2', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL, '$transaction_number');")or die(mysqli_error($con));
+    $transaction_number++;
+    $first_auto_date = date('Y-m-d', strtotime($first_auto_date. " + {$total_auto_date_count} months"));
+}
+
+$len_date = count($date);
+$len_price = count($price);
+
 
 if ($len_date == $len_price) {
     for($y=0 ; $y < $len_date ; $y++)

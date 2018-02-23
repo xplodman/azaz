@@ -6,9 +6,9 @@ $property_id=$_GET['property_id'];
 $result=mysqli_query($con, "Select owner.id From owner_has_property Inner Join owner On owner.id = owner_has_property.owner_id Where owner_has_property.id = $contract_id");
 $owner_info = mysqli_fetch_assoc($result);
 
-$remove_contract = mysqli_query($con, "UPDATE `owner_has_property` SET `status` = '0', `update_time` = NOW() WHERE `owner_has_property`.`id` = '$contract_id';")or die(mysqli_error($con));
+$remove_contract = mysqli_query($con, "delete from `owner_has_property` WHERE `owner_has_property`.`id` = '$contract_id';")or die(mysqli_error($con));
 
-$remove_payments = mysqli_query($con, "UPDATE `transaction` SET `update_time` = NOW(), `removed` = '1' WHERE `transaction`.`owner_id` = '$owner_info[id]';")or die(mysqli_error($con));
+$remove_payments = mysqli_query($con, "delete from `transaction` WHERE `transaction`.`owner_id` = '$owner_info[id]';")or die(mysqli_error($con));
 
 
 $uri_parts = explode('?', $_SERVER['HTTP_REFERER'], 2);

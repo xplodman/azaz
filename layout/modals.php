@@ -2,6 +2,148 @@
 include_once "php/functions.php";
 ?>
 <font face="myFirstFont">
+    <div class="modal inmodal" id="insert_transaction_advanced" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إضافة عملية بيع</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post" action="php/insert_transaction_advanced.php">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> الموقع </label>
+                            <div class="col-sm-10">
+                                <select class="chosen-select form-control" id="site_id" name="site_id"  onchange="get_tower_id(this.value);">
+                                    <option></option>
+                                    <?php
+                                    $query = "SELECT * FROM site";
+                                    $results=mysqli_query($con, $query);
+                                    //loop
+                                    foreach ($results as $site){
+                                        ?>
+                                        <option value="<?php echo $site["id"];?>"><?php echo $site["name"];?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2">رقم البرج </label>
+                            <div class="col-sm-10">
+                                <select required class="chosen-select" size="6" name="tower_number" id="towerlist" onchange="get_property_type_id(this.value);">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2">نوع العقار </label>
+                            <div class="col-sm-10">
+                                <select required class="chosen-select" size="6" id="property_type" name="property_type" onchange="get_property_number();">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> رقم العقار </label>
+                            <div class="col-sm-10">
+                                <select required class="chosen-select" size="6" name="property_number" id="property_number" onchange="get_property_price(this.value);">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> أسم المشتري </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="owner_name" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> تليفون المشتري </label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="owner_number" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> رقم آخر للمشتري</label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="owner_number_2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> سعر العقار قبل التعديل</label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="property_price_2" name="property_price_2"  readonly="readonly" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> إجمالي القيمة </label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control calc" data-action="add" id="property_price" name="property_price" onkeypress="return isNumberKey(event)"/></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> دفعة المقدم </label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control" name="first_date" required placeholder="تاريخ المقدم">&nbsp;<input type="text" class="form-control calc" data-action="sub" placeholder="قيمة المقدم" name="first_price" required  onkeypress="return isNumberKey(event)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> تقسيم الأقساط آلياً </label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control" name="first_auto_date" required placeholder="تاريخ أول قسط">&nbsp;
+                                <input type="text" class="form-control calc" data-action="sub" placeholder="قيمة الأقساط" name="total_auto_price" required  onkeypress="return isNumberKey(event)">&nbsp;
+                                <input type="text" class="form-control" placeholder="عدد الأقساط" name="total_auto_count" required  onkeypress="return isNumberKey(event)">&nbsp;
+                                <input type="text" class="form-control" placeholder="عدد الشهور" name="total_auto_date_count" required  onkeypress="return isNumberKey(event)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> الأقساط السنوية </label>
+                            <div class="col-sm-8">
+                                <div class="field_wrapper">
+                                    <div class="form-inline"><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" name="date[]" required placeholder="تاريخ القسط">&nbsp;<input type="text" class="form-control calc" data-action="sub" placeholder="قيمة القسط" name="price[]" required onkeypress="return isNumberKey(event)">&nbsp;<button type="button" class="btn btn-minier btn-info add_button" title="Add field" id="add"><i class="ace-icon fa fa-plus">Add</i></button></div></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2"> دفعة الإستلام </label>
+                            <div class="col-sm-10 form-inline">
+                                <input type="text" class="form-control" name="last_date" required placeholder="تاريخ الإستلام">&nbsp;<input class="form-control" name="last_price" type="text" id="total"  readonly="readonly" />
+                            </div>
+                        </div>
+                        <div class="form-group" id="data_1">
+                            <label class="col-sm-2 control-label">تاريخ العقد</label>
+                            <div class="col-sm-10">
+                                <div class="input-group date">
+                                    <input type="text" id="date" class="form-control" name="contract_date" required>
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="form-field-2">المقايسات</label>
+                            <div class="col-sm-10">
+                                <input required class="form-control" type="text" id="form-field-2" name="basics_cost"  onkeypress="return isNumberKey(event)"/>
+                            </div>
+                        </div>
+                        <div class="clearfix form-actions">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button class="btn btn-info"  type="Submit"  name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal inmodal" id="add_transaction" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content animated flipInY">
@@ -86,7 +228,7 @@ include_once "php/functions.php";
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="form-field-2"> الأقساط </label>
+                            <label class="col-sm-2 control-label" for="form-field-2"> الأقساط  </label>
                             <div class="col-sm-8">
                                 <div class="field_wrapper">
                                     <div class="form-inline"><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" name="date[]" required placeholder="تاريخ القسط">&nbsp;<input type="text" class="form-control calc" data-action="sub" placeholder="قيمة القسط" name="price[]" required onkeypress="return isNumberKey(event)">&nbsp;<button type="button" class="btn btn-minier btn-info add_button" title="Add field" id="add"><i class="ace-icon fa fa-plus">Add</i></button></div></div></div>
@@ -927,6 +1069,59 @@ include_once "php/functions.php";
                                 <div class="col-sm-10">
                                     <input required class="form-control" type="number" id="form-field-2" name="value"/>
                                 </div>
+                            </span>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn" type="reset">
+                                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                                    Reset
+                                </button>
+                                <button class="btn btn-info" type="Submit" name="submit">
+                                    <i class="ace-icon fa fa-check bigger-110"></i>
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal inmodal" id="remove_contract_and_recevice_payments" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated flipInY">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">إسترداد الأقساط</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="form_submit" action="php/remove_contract_and_recevice_payments.php?property_id=<?php echo $property_id; ?>" class="form-horizontal">
+                        <input type="hidden" name="owner_id" value="<?php echo $owner_info['owner_id']?>">
+                        <input type="hidden" name="owner_has_property_id" value="<?php echo $owner_info['owner_has_property_id'] ?>">
+                        <div class="form-group" id="data_1">
+                            <span class="arabic">
+                            <label class="col-sm-2 control-label">تاريخ الإسترداد </label>
+                            <div class="col-sm-10">
+                                <div class="input-group date">
+                                    <input type="text" id="date" class="form-control" name="date_1">
+                                    <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            </span>
+                        </div>
+                        <div class="form-group" id="data_1">
+                            <span class="arabic">
+                            <label class="col-sm-2 control-label">المبلغ المستحق إسترداده </label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                <input required class="form-control" type="text" id="form-field-2" name="property_done_price"  value="<?php echo $property_price_info_done_sum['property_done_price']?>" readonly />
+                                </div>
+                            </div>
                             </span>
                         </div>
                         <div class="hr-line-dashed"></div>

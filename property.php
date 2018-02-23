@@ -288,10 +288,11 @@ WHERE
                                                 break;
                                                 case "1":
                                                     ?>
-                                                    <div class="right col-sm-4 col-lg-offset-2">
-                                                    <button class="arabic btn btn-danger" type="button" onclick="delete_contract(<?php echo $owner_info['owner_has_property_id'] ?> , <?php echo $property_info['property_id'] ?>)" data-value="1" > لفسخ التعاقد </button>
+                                                    <div class="right col-sm-6">
+                                                    <button class="arabic btn btn-danger" type="button" onclick="delete_contract(<?php echo $owner_info['owner_has_property_id'] ?> , <?php echo $property_info['property_id'] ?>)" data-value="1" > تعاقد بالخطأ </button>
                                                     <button class="arabic btn btn-danger" type="button" onclick="delete_property(<?php echo $property_info['property_id'] ?>)" data-value="1" > لحذف العقار </button>
                                                     <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_premium"><i class="fa fa-plus"></i> إضافة قسط</button>
+                                                    <button class="btn btn-info " type="button" data-toggle="modal" data-target="#remove_contract_and_recevice_payments">فسخ التعاقد و إسترداد المبلغ</button>
                                                     </div>
                                                     <?php
                                                 break;

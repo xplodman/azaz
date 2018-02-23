@@ -26,10 +26,11 @@ include_once "layout/header.php";
             <div class="col-sm-8">
                 <font face="myFirstFont">
                     <div class="title-action">
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_properties"><i class="fa fa-plus"></i> إضافة عقار</button>
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_tower"><i class="fa fa-plus"></i> إضافة برج</button>
-                        <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_site"><i class="fa fa-plus"></i> إضافة موقع</button>
+                        <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_properties"><i class="fa fa-plus"></i> إضافة عقار</button>
+                        <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_tower"><i class="fa fa-plus"></i> إضافة برج</button>
+                        <button class="btn btn-success " type="button" data-toggle="modal" data-target="#add_site"><i class="fa fa-plus"></i> إضافة موقع</button>
                         <button class="btn btn-primary " type="button" data-toggle="modal" data-target="#add_transaction"><i class="fa fa-plus"></i> إضافة عملية بيع</button>
+                        <button class="btn btn-info " type="button" data-toggle="modal" data-target="#insert_transaction_advanced"><i class="fa fa-plus"></i> إضافة عملية بيع مطورة </button>
                     </div>
                 </font>
             </div>
@@ -484,6 +485,14 @@ include_once "layout/modals.php";
             autoclose: true,
         })
         var date_input=$('input[name="first_date"]'); //our date input has the name "date"
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        date_input.datepicker({
+            format: 'd-m-yyyy',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+        var date_input=$('input[name="first_auto_date"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
             format: 'd-m-yyyy',

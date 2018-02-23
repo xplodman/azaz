@@ -71,7 +71,6 @@ include_once "layout/header.php";
                                 <form method="post" id="form_submit" action="php/edit_payment.php?transaction_id=<?php echo $payment_info['id']; ?>" class="form-horizontal">
 
                                     <input type="hidden" name="owner_id" value="<?php echo $payment_info['owner_id']; ?>">
-
                                     <div class="form-group" id="data_1">
                                         <span class="arabic">
                                         <label class="col-sm-2 control-label">تاريخ الإستحقاق </label>
