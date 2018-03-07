@@ -89,7 +89,7 @@ From transaction
   Inner Join tower On property.tower_id = tower.id
   Inner Join site On tower.site_id = site.id
 Where Month(transaction.date_2) = Month(curdate()) And transaction.status = 1 And
-  transaction.removed = 0 And transaction.flag_id In (1, 2, 3) And site.id = $site_info[id]") or die(mysqli_error($con));
+  transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 12) And site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
 
                                                         $count_partner_income_query = mysqli_query($con,"
@@ -142,7 +142,7 @@ From transaction
   Inner Join tower On property.tower_id = tower.id
   Inner Join site On tower.site_id = site.id
 Where WEEK(transaction.date_2) = WEEK(curdate()) And transaction.status = 1 And
-  transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 8) And site.id = $site_info[id]") or die(mysqli_error($con));
+  transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 8, 9, 12) And site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
 
                                                         $count_partner_income_query = mysqli_query($con,"
@@ -176,7 +176,7 @@ From transaction
   Inner Join tower On tower.id = property.tower_id
   Inner Join site On tower.site_id = site.id
 Where Month(transaction.date_1) = Month(CurDate()) And transaction.status = 0
-  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9) And
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9, 12) And
   site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
@@ -203,7 +203,7 @@ From transaction
   Inner Join tower On tower.id = property.tower_id
   Inner Join site On tower.site_id = site.id
 Where WEEK(transaction.date_1) = WEEK(CurDate()) And transaction.status = 0
-  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9) And
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9, 12) And
   site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
@@ -230,7 +230,7 @@ From transaction
   Inner Join tower On tower.id = property.tower_id
   Inner Join site On tower.site_id = site.id
 Where transaction.date_1 = CurDate() And transaction.status = 0
-  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9) And
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9, 12) And
   site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
@@ -255,7 +255,7 @@ From transaction
   Inner Join tower On tower.id = property.tower_id
   Inner Join site On tower.site_id = site.id
 Where transaction.date_1 <= CurDate() And transaction.status = 0
-  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9) And
+  And transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9, 12) And
   site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_payment_info = mysqli_fetch_assoc($count_payment_query);
                                                         ?>
@@ -285,7 +285,7 @@ Where property.id Not In (Select property.id
       On property.id = transaction.property_id And owner_has_property.owner_id =
       transaction.owner_id
   Where transaction.flag_id In (1, 2, 3) And owner_has_property.status = 1 And site.id = $site_info[id] And transaction.status = 0
-  Group By property.id) And transaction.flag_id In (1, 2, 3)And owner_has_property.status = 1 And site.id = $site_info[id] And
+  Group By property.id) And transaction.flag_id In (1, 2, 3, 12)And owner_has_property.status = 1 And site.id = $site_info[id] And
   transaction.status = 1
 Group By 
   property_type.name
@@ -322,7 +322,7 @@ From property
   Inner Join site On tower.site_id = site.id
   Inner Join transaction On transaction.property_id = property.id
 Where site.id = $site_info[id] And transaction.status = 0 And transaction.removed = 0 And
-  transaction.flag_id In (1, 2, 3) And owner_has_property.status = 1
+  transaction.flag_id In (1, 2, 3, 12) And owner_has_property.status = 1
 Group By property_type.name
 ") or die(mysqli_error($con));
                                         while($count_properties_info = mysqli_fetch_assoc($count_properties_query))
@@ -405,7 +405,7 @@ From transaction
   Inner Join property On property.id = transaction.property_id
   Inner Join tower On tower.id = property.tower_id
   Inner Join site On site.id = tower.site_id
-Where transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9) And
+Where transaction.removed = 0 And transaction.flag_id In (1, 2, 3, 9, 12) And
   site.id = $site_info[id]") or die(mysqli_error($con));
                                                         $count_all_income = mysqli_fetch_assoc($count_all_income_query);
                                                         ?>

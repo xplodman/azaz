@@ -57,7 +57,7 @@ include_once "layout/header.php";
                       Inner Join property_type On property_type.id = property.property_type_id
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
-                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '12') AND transaction.date_1 BETWEEN '$from_date' and '$to_date 23:59:59'
                     ORDER BY
                       property_id,
                       transaction.id,
@@ -87,7 +87,7 @@ include_once "layout/header.php";
                       Inner Join property_type On property_type.id = property.property_type_id
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
-                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3') AND transaction.date_1 BETWEEN '$payment_from_date' and '$payment_to_date 23:59:59'
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '12') AND transaction.date_1 BETWEEN '$payment_from_date' and '$payment_to_date 23:59:59'
                     ORDER BY
                       property_id,
                       transaction.id,
@@ -264,6 +264,14 @@ include_once "layout/header.php";
                                                             <?php
 //                                                            $update_payment = mysqli_query($con, "UPDATE `azaz`.`transaction` SET `number` = '1000' WHERE `transaction`.`id` = '$payments[id]';")or die(mysqli_error($con));
 //                                                            mysqli_commit($con);
+                                                            echo $payments['flag_name'];
+                                                            ?>
+                                                        </span>
+                                                        <?php
+                                                    }elseif ($payments['flag_id']=='12'){
+                                                        ?>
+                                                        <span class="badge badge-success arabic">
+                                                            <?php
                                                             echo $payments['flag_name'];
                                                             ?>
                                                         </span>

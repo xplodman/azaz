@@ -344,7 +344,7 @@ WHERE
                       Inner Join property_type On property_type.id = property.property_type_id
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
-                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '9') AND property.id= $property_id
+                    Where transaction.removed = 0 And transaction.flag_id In ('1', '2', '3', '9', '12') AND property.id= $property_id
                     order by transaction.number"
                             ?>
                             <div id="collapseOne" class="panel-collapse collapse in">
@@ -410,7 +410,7 @@ WHERE
                                                             ?>
                                                         </span>
                                                     <?php
-                                                    }elseif (in_array($payments['flag_id'], [1,3,9])){
+                                                    }elseif (in_array($payments['flag_id'], [1,3,9,12])){
                                                         ?>
                                                         <span class="badge badge-success arabic"><?php echo $payments['flag_name'] ?></span>
                                                         <?php

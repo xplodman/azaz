@@ -156,7 +156,7 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> الموقع </label>
                             <div class="col-sm-10">
-                                <select class="chosen-select form-control" id="site_id" name="site_id"  onchange="get_tower_id(this.value);">
+                                <select class="chosen-select form-control" id="site_id_2" name="site_id"  onchange="get_tower_id(this.value);">
                                     <option></option>
                                     <?php
                                     $query = "SELECT * FROM site";
@@ -174,21 +174,21 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2">رقم البرج </label>
                             <div class="col-sm-10">
-                                <select required class="chosen-select" size="6" name="tower_number" id="towerlist" onchange="get_property_type_id(this.value);">
+                                <select required class="chosen-select" size="6" name="tower_number" id="towerlist_2" onchange="get_property_type_id(this.value);">
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2">نوع العقار </label>
                             <div class="col-sm-10">
-                                <select required class="chosen-select" size="6" id="property_type" name="property_type" onchange="get_property_number();">
+                                <select required class="chosen-select" size="6" id="property_type_2" name="property_type" onchange="get_property_number();">
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> رقم العقار </label>
                             <div class="col-sm-10">
-                                <select required class="chosen-select" size="6" name="property_number" id="property_number" onchange="get_property_price(this.value);">
+                                <select required class="chosen-select" size="6" name="property_number" id="property_number_2" onchange="get_property_price(this.value);">
                                 </select>
                             </div>
                         </div>
@@ -213,13 +213,13 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> سعر العقار قبل التعديل</label>
                             <div class="col-sm-10">
-                                <input required class="form-control" type="text" id="property_price_2" name="property_price_2"  readonly="readonly" />
+                                <input required class="form-control" type="text" id="property_price_2_2" name="property_price_2"  readonly="readonly" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> إجمالي القيمة </label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control calc" data-action="add" id="property_price" name="property_price" onkeypress="return isNumberKey(event)"/></div>
+                                <input type="text" class="form-control calc" data-action="add" id="property_price_2" name="property_price" onkeypress="return isNumberKey(event)"/></div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> دفعة المقدم </label>
@@ -238,7 +238,7 @@ include_once "php/functions.php";
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="form-field-2"> دفعة الإستلام </label>
                             <div class="col-sm-10 form-inline">
-                                <input type="text" class="form-control" name="last_date" required placeholder="تاريخ الإستلام">&nbsp;<input class="form-control" name="last_price" type="text" id="total"  readonly="readonly" />
+                                <input type="text" class="form-control" name="last_date" required placeholder="تاريخ الإستلام">&nbsp;<input class="form-control" name="last_price" type="text" id="total_2"  readonly="readonly" />
                             </div>
                         </div>
                         <div class="form-group" id="data_1">

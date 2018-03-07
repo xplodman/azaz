@@ -2,13 +2,14 @@
 include_once "connection.php";
 $transaction_id=$_GET['transaction_id'];
 $date_1=$_POST['date_1'];
+$flag_id=$_POST['flag_id'];
 $date_2=$_POST['date_2'];
 $value=$_POST['value'];
 $owner_id=$_POST['owner_id'];
 $owner_name=$_POST['owner_name'];
 $owner_number=$_POST['owner_number'];
 
-$update_payment = mysqli_query($con, "UPDATE `transaction` SET `date_1` = '$date_1', `date_2` = '$date_2', `value` = '$value', `update_time` = NOW() WHERE `transaction`.`id` = '$transaction_id';")or die(mysqli_error($con));
+$update_payment = mysqli_query($con, "UPDATE `transaction` SET `date_1` = '$date_1', `date_2` = '$date_2', `value` = '$value', `flag_id` = '$flag_id', `update_time` = NOW() WHERE `transaction`.`id` = '$transaction_id';")or die(mysqli_error($con));
 
 $update_owner = mysqli_query($con, "UPDATE `owner` SET `name` = '$owner_name' , `mobile` = '$owner_number' WHERE `id` = '$owner_id';")or die(mysqli_error($con));
 

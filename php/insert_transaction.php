@@ -17,6 +17,7 @@ $last_date=$_POST['last_date'];
 $last_date=date("Y-m-d", strtotime($last_date) );
 $last_price=$_POST['last_price'];
 $contract_date=$_POST['contract_date'];
+$contract_date=date("Y-m-d", strtotime($contract_date) );
 $basics_cost=$_POST['basics_cost'];
 
 $len_date = count($date);

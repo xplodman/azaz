@@ -17,6 +17,7 @@ $last_date=$_POST['last_date'];
 $last_date=date("Y-m-d", strtotime($last_date) );
 $last_price=$_POST['last_price'];
 $contract_date=$_POST['contract_date'];
+$contract_date=date("Y-m-d", strtotime($contract_date) );
 $basics_cost=$_POST['basics_cost'];
 
 $transaction_number=1;
@@ -50,12 +51,11 @@ for($y=0 ; $y < $total_auto_count ; $y++){
 $len_date = count($date);
 $len_price = count($price);
 
-
 if ($len_date == $len_price) {
     for($y=0 ; $y < $len_date ; $y++)
     {
         $date[$y]=date("Y-m-d", strtotime($date[$y]) );
-        $insert_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`, `number`) VALUES (NULL, '$date[$y]', NULL, '$price[$y]', '0', '0', '2', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL, '$transaction_number');")or die(mysqli_error($con));
+        $insert_payment = mysqli_query($con, "INSERT INTO `transaction` (`id`, `date_1`, `date_2`, `value`, `status`, `removed`, `flag_id`, `property_id`, `owner_id`, `site_id`, `custoder_id`, `reason_id`, `users_id`, `create_time`, `update_time`, `number`) VALUES (NULL, '$date[$y]', NULL, '$price[$y]', '0', '0', '12', '$property_number', '$maxownerid', NULL, NULL, NULL, '$user_id', CURRENT_TIMESTAMP, NULL, '$transaction_number');")or die(mysqli_error($con));
         $transaction_number++;
     }
 }

@@ -55,7 +55,7 @@ include_once "layout/header.php";
                       Inner Join tower On tower.id = property.tower_id
                       Inner Join site On site.id = tower.site_id
                     Where transaction.id = $transaction_id And transaction.removed = 0 And
-                      transaction.flag_id In ('1', '2', '3', '9')");
+                      transaction.flag_id In ('1', '2', '3', '9', '12')");
                         $payment_info = mysqli_fetch_assoc($result)
                         ?>
                         <div class="ibox-title">
@@ -101,9 +101,24 @@ include_once "layout/header.php";
                                         <span class="arabic">
                                             <label class="col-sm-2 control-label" for="form-field-2"> نوع القسط </label>
                                             <div class="col-sm-10">
-                                                <input required class="form-control" type="text" id="form-field-2" value="<?php
-                                                echo $payment_info['flag_name'];
-                                                ?>" readonly/>
+                                                <?php
+                                                if(in_array($payment_info['flag_id'], [2,12])){
+                                                  ?>
+                                                    <select class="chosen-select form-control" id="site_id" name="flag_id">
+                                                    <option value="2" <?php if($payment_info['flag_id']=="2") echo 'selected="selected"'; ?>> قسط</option>
+                                                    <option value="12" <?php if($payment_info['flag_id']=="12") echo 'selected="selected"'; ?>> قسط سنوي</option>
+                                                </select>
+                                                <?php
+                                                }else {
+                                                    ?>
+                                                    <input required class="form-control" type="text" id="form-field-2"
+                                                           value="<?php
+                                                           echo $payment_info['flag_name'];
+                                                           ?>" readonly/>
+                                                    <?php
+                                                }
+                                                ?>
+
                                             </div>
                                         </span>
                                     </div>
